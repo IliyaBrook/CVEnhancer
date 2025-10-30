@@ -38,7 +38,7 @@ export const ProcessingStatus: React.FC<ProcessingStatusProps> = ({ status }) =>
 
   const config = statusConfig[status];
 
-  const colorClasses = {
+  const colorClasses: Record<string, string> = {
     blue: 'bg-blue-50 border-blue-200 text-blue-800',
     purple: 'bg-purple-50 border-purple-200 text-purple-800',
     green: 'bg-green-50 border-green-200 text-green-800',

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { AIConfig, AIProvider } from '../types';
 import { AIProvider as AIProviderEnum } from '../types';
+import { saveConfig, loadConfig } from '../utils/storage';
 
 interface AIProviderSettingsProps {
   config: AIConfig | null;
@@ -8,11 +9,24 @@ interface AIProviderSettingsProps {
 }
 
 export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ config, onConfigChange }) => {
-  const [provider, setProvider] = useState<AIProvider>(config?.provider || AIProviderEnum.OPENAI);
-  const [apiKey, setApiKey] = useState(config?.apiKey || '');
-  const [model, setModel] = useState(config?.model || '');
-  const [ollamaEndpoint, setOllamaEndpoint] = useState(config?.ollamaEndpoint || 'http://localhost:11434');
+  const [provider, setProvider] = useState<AIProvider>(AIProviderEnum.OPENAI);
+  const [apiKey, setApiKey] = useState('');
+  const [model, setModel] = useState('');
+  const [ollamaEndpoint, setOllamaEndpoint] = useState('http://localhost:11434');
   const [ollamaModels, setOllamaModels] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [filteredModels, setFilteredModels] = useState<string[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const loadedConfig = loadConfig();
+    if (loadedConfig) {
+      setProvider(loadedConfig.provider);
+      setApiKey(loadedConfig.apiKey || '');
+      setModel(loadedConfig.model || '');
+      setOllamaEndpoint(loadedConfig.ollamaEndpoint || 'http://localhost:11434');
+    }
+  }, []);
 
   useEffect(() => {
     if (provider === AIProviderEnum.OLLAMA) {
@@ -25,11 +39,41 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ config, 
       const response = await fetch(`${ollamaEndpoint}/api/tags`);
       if (response.ok) {
         const data = await response.json();
-        setOllamaModels(data.models?.map((m: any) => m.name) || []);
+        const models = data.models?.map((m: any) => m.name) || [];
+        setOllamaModels(models);
+        setFilteredModels(models);
       }
     } catch (error) {
       console.error('Failed to fetch Ollama models:', error);
     }
+  };
+
+  const handleModelInputChange = (value: string) => {
+    setModel(value);
+    
+    if (value.trim() === '') {
+      setFilteredModels(ollamaModels);
+    } else {
+      const filtered = ollamaModels.filter(m =>
+        m.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredModels(filtered);
+    }
+    setShowSuggestions(true);
+  };
+
+  const handleModelSelect = (selectedModel: string) => {
+    setModel(selectedModel);
+    setShowSuggestions(false);
+  };
+
+  const handleInputFocus = () => {
+    setFilteredModels(ollamaModels);
+    setShowSuggestions(true);
+  };
+
+  const handleInputBlur = () => {
+    setTimeout(() => setShowSuggestions(false), 200);
   };
 
   const handleSave = () => {
@@ -39,6 +83,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ config, 
       model: model || undefined,
       ollamaEndpoint: provider === AIProviderEnum.OLLAMA ? ollamaEndpoint : undefined
     };
+    saveConfig(newConfig);
     onConfigChange(newConfig);
   };
 
@@ -144,23 +189,40 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ config, 
             />
           </div>
 
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Select Model
             </label>
-            <select
+            <input
+              ref={inputRef}
+              type="text"
               value={model}
-              onChange={(e) => setModel(e.target.value)}
+              onChange={(e) => handleModelInputChange(e.target.value)}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              placeholder="Type or select a model..."
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              {ollamaModels.length === 0 ? (
-                <option value="">No models found</option>
-              ) : (
-                ollamaModels.map((m) => (
-                  <option key={m} value={m}>{m}</option>
-                ))
-              )}
-            </select>
+            />
+            {showSuggestions && filteredModels.length > 0 && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                {filteredModels.map((m) => (
+                  <div
+                    key={m}
+                    onClick={() => handleModelSelect(m)}
+                    className="px-4 py-2 hover:bg-blue-50 cursor-pointer transition-colors"
+                  >
+                    {m}
+                  </div>
+                ))}
+              </div>
+            )}
+            {showSuggestions && filteredModels.length === 0 && model.trim() !== '' && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                <div className="px-4 py-2 text-gray-500 text-sm">
+                  No matching models. Press Enter to use "{model}"
+                </div>
+              </div>
+            )}
           </div>
         </>
       )}

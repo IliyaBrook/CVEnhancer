@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { validateFile, formatFileSize } from '../utils/fileValidation';
+import React, { useState, useCallback, useRef } from 'react';
+import { validateFile } from '../utils/fileValidation';
 import type { SupportedFileType } from '../types';
 
 interface FileUploaderProps {
@@ -9,43 +9,9 @@ interface FileUploaderProps {
 export const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dragCounter = useRef(0);
 
-  const handleDragEnter = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  }, []);
-
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  }, []);
-
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
-
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      processFile(files[0]);
-    }
-  }, []);
-
-  const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      processFile(files[0]);
-    }
-  }, []);
-
-  const processFile = (file: File) => {
+  const processFile = useCallback((file: File) => {
     setError(null);
     
     const validation = validateFile(file);
@@ -58,7 +24,49 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
     if (validation.fileType) {
       onFileSelect(file, validation.fileType);
     }
-  };
+  }, [onFileSelect]);
+
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current++;
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      setIsDragging(true);
+    }
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current--;
+    if (dragCounter.current === 0) {
+      setIsDragging(false);
+    }
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    dragCounter.current = 0;
+
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      processFile(files[0]);
+    }
+  }, [processFile]);
+
+  const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      processFile(files[0]);
+    }
+  }, [processFile]);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">

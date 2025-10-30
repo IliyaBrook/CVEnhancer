@@ -2,7 +2,10 @@ import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
 import type { SupportedFileType } from '../types';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString();
 
 export const parseFile = async (file: File, fileType: SupportedFileType): Promise<string> => {
   switch (fileType) {

@@ -14,15 +14,77 @@ const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI.
 9. DO NOT invent or add any information not present in the original resume
 10. Maintain professional tone and perfect grammar
 
-Return the enhanced resume as a structured JSON object matching the ResumeData type with these fields:
+Return ONLY a valid JSON object (no markdown, no code blocks) matching the ResumeData type with these fields:
 - personalInfo (name, title, email, phone, location, linkedin)
 - experience (array of jobs with company, location, description, title, dateRange, duties)
-- education (array with institution, degree, fieldOfStudy, location, date)
-- skills (array of skill categories with title and skills array)
+- education (array with institution, university, degree, field, location, dateRange)
+- skills (array of skill categories with title, categoryTitle, and skills array)
 - projects (optional array)
 - certifications (optional array of strings)
 
-IMPORTANT: Only use information from the original resume. Do not add skills, experiences, or details that are not explicitly mentioned.`;
+IMPORTANT: Only use information from the original resume. Do not add skills, experiences, or details that are not explicitly mentioned.
+Output ONLY valid JSON without any markdown formatting or code blocks.`;
+
+const OLLAMA_JSON_PROMPT = `You MUST respond with ONLY valid JSON. Do not include any explanations, markdown, or text before or after the JSON object.
+
+Parse the resume and output a JSON object with this exact structure:
+{
+  "personalInfo": {
+    "name": "string",
+    "title": "string",
+    "email": "string",
+    "phone": "string",
+    "location": "string",
+    "linkedin": "string (optional)"
+  },
+  "experience": [
+    {
+      "company": "string",
+      "location": "string",
+      "description": "string (optional)",
+      "title": "string",
+      "dateRange": "string",
+      "duties": ["string"]
+    }
+  ],
+  "education": [
+    {
+      "institution": "string",
+      "university": "string",
+      "degree": "string",
+      "field": "string",
+      "location": "string",
+      "dateRange": "string"
+    }
+  ],
+  "skills": [
+    {
+      "categoryTitle": "string",
+      "skills": ["string"]
+    }
+  ],
+  "projects": [],
+  "certifications": ["string"]
+}
+
+Extract information from the resume below. Use ONLY information present in the resume. Do not invent details.
+Start your response with { and end with }. No other text.`;
+
+const extractJSON = (text: string): string => {
+  const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  if (jsonMatch) {
+    return jsonMatch[1].trim();
+  }
+  
+  const braceStart = text.indexOf('{');
+  const braceEnd = text.lastIndexOf('}');
+  
+  if (braceStart !== -1 && braceEnd !== -1 && braceEnd > braceStart) {
+    return text.substring(braceStart, braceEnd + 1);
+  }
+  
+  return text.trim();
+};
 
 export const enhanceResume = async (
   resumeText: string,
@@ -67,7 +129,8 @@ const enhanceWithOpenAI = async (
   }
 
   const data = await response.json();
-  return JSON.parse(data.choices[0].message.content);
+  const content = extractJSON(data.choices[0].message.content);
+  return JSON.parse(content);
 };
 
 const enhanceWithClaude = async (
@@ -98,7 +161,7 @@ const enhanceWithClaude = async (
   }
 
   const data = await response.json();
-  const contentText = data.content[0].text;
+  const contentText = extractJSON(data.content[0].text);
   return JSON.parse(contentText);
 };
 
@@ -115,16 +178,47 @@ const enhanceWithOllama = async (
     },
     body: JSON.stringify({
       model: config.model || 'llama2',
-      prompt: `${RESUME_ENHANCEMENT_PROMPT}\n\nOriginal resume:\n\n${resumeText}`,
+      prompt: `${OLLAMA_JSON_PROMPT}\n\nResume text:\n${resumeText}\n\nJSON output:`,
       stream: false,
-      format: 'json'
+      format: 'json',
+      options: {
+        temperature: 0.1,
+        top_p: 0.9
+      }
     })
   });
 
   if (!response.ok) {
-    throw new Error(`Ollama API error: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(`Ollama API error: ${response.statusText} - ${errorText}`);
   }
 
   const data = await response.json();
-  return JSON.parse(data.response);
+  
+  if (!data.response) {
+    console.error('Ollama API response:', data);
+    throw new Error('Ollama API returned empty response');
+  }
+  
+  console.log('Ollama raw response (first 500 chars):', data.response.substring(0, 500));
+  
+  let jsonContent = data.response.trim();
+  
+  const jsonStart = jsonContent.indexOf('{');
+  const jsonEnd = jsonContent.lastIndexOf('}');
+  
+  if (jsonStart === -1 || jsonEnd === -1) {
+    console.error('No JSON object found in response:', jsonContent);
+    throw new Error('Ollama response does not contain valid JSON object');
+  }
+  
+  jsonContent = jsonContent.substring(jsonStart, jsonEnd + 1);
+  
+  try {
+    return JSON.parse(jsonContent);
+  } catch (parseError) {
+    console.error('Failed to parse JSON:', jsonContent);
+    console.error('Parse error:', parseError);
+    throw new Error(`Failed to parse Ollama response as JSON: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`);
+  }
 };

@@ -9,7 +9,7 @@ export interface AIConfig {
   provider: AIProvider
   apiKey?: string
   ollamaEndpoint?: string
-  ollamaModel?: string
+  model?: string
 }
 
 export interface ResumeData {
@@ -41,6 +41,7 @@ export interface Experience {
 }
 
 export interface Education {
+  institution: string
   university: string
   degree: string
   field?: string
@@ -49,6 +50,7 @@ export interface Education {
 }
 
 export interface SkillCategory {
+  title: string
   categoryTitle: string
   skills: string[]
 }
@@ -60,17 +62,13 @@ export interface Project {
   link?: string
 }
 
-export interface ProcessingStatus {
-  isProcessing: boolean
-  progress: number
-  message: string
-  error?: string
-}
+export type ProcessingStatus = 'idle' | 'uploading' | 'parsing' | 'enhancing' | 'completed' | 'error'
 
 export type SupportedFileType = 'pdf' | 'docx' | 'jpeg' | 'png'
 
 export interface FileValidationResult {
   isValid: boolean
+  error?: string
   errorMessage?: string
   fileType?: SupportedFileType
 }

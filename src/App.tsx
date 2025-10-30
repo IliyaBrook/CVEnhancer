@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AIProviderSettings } from './components/AIProviderSettings';
 import { FileUploader } from './components/FileUploader';
 import { ResumePreview } from './components/ResumePreview';
@@ -7,24 +7,28 @@ import { ProcessingStatus } from './components/ProcessingStatus';
 import { useAIConfig } from './hooks/useAIConfig';
 import { parseFile } from './utils/fileParser';
 import { enhanceResume } from './services/aiServiceFactory';
-import type { ResumeData, ProcessingStatus as StatusType } from './types';
+import type { ResumeData, ProcessingStatus as StatusType, SupportedFileType } from './types';
 
 function App() {
-  const { config } = useAIConfig();
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const { config, updateConfig } = useAIConfig();
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [status, setStatus] = useState<StatusType>('idle');
   const [error, setError] = useState<string>('');
 
-  const handleFileUpload = async (file: File) => {
-    setUploadedFile(file);
+  const handleFileSelect = async (file: File, fileType: SupportedFileType) => {
     setStatus('parsing');
     setError('');
 
     try {
-      const extractedText = await parseFile(file);
+      const extractedText = await parseFile(file, fileType);
 
-      if (!config.provider || (!config.apiKey && config.provider !== 'ollama')) {
+      if (!config) {
+        setError('Please configure AI provider settings first');
+        setStatus('error');
+        return;
+      }
+
+      if (!config.apiKey && config.provider !== 'ollama') {
         setError('Please configure AI provider settings first');
         setStatus('error');
         return;
@@ -55,11 +59,13 @@ function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 space-y-6">
-            <AIProviderSettings />
+            <AIProviderSettings
+              config={config}
+              onConfigChange={updateConfig}
+            />
             
-            <FileUploader 
-              onFileUpload={handleFileUpload}
-              disabled={status === 'parsing' || status === 'enhancing'}
+            <FileUploader
+              onFileSelect={handleFileSelect}
             />
 
             {error && (
