@@ -1,4 +1,4 @@
-const getEnvVar = (key: string, defaultValue?: string): string => {
+const getEnvString = (key: string, defaultValue?: string): string => {
 	const value = import.meta.env[key] ?? defaultValue
 	if (!value) {
 		throw new Error(`Missing required environment variable: ${key}`)
@@ -17,6 +17,7 @@ const getEnvNumber = (key: string, defaultValue: number): number => {
 	return parsed
 }
 
-export const envKey = getEnvVar('VITE_ENCRYPTION_KEY', '')
-export const topOp = getEnvNumber('TOP_OP', 0.9)
-export const temperature = getEnvNumber('TEMPERATURE', 0.9)
+export const topOp = getEnvNumber('VITE_TOP_OP', 0.9)
+export const temperature = getEnvNumber('VITE_TEMPERATURE', 0.9)
+export const maxTokens = getEnvNumber('VITE_MAX_TOKENS', 0.9)
+export const stopGeneration = getEnvString('STOP_GENERATION', '"}\\n\\n", "\\n\\n\\n"')

@@ -1,4 +1,5 @@
 import { AIProvider, AIConfig, ResumeData } from '@/types';
+import * as envs from '@/config';
 
 const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI. Your task is to improve the given resume following these strict rules:
 
@@ -118,8 +119,11 @@ const enhanceWithOpenAI = async (
         { role: 'system', content: RESUME_ENHANCEMENT_PROMPT },
         { role: 'user', content: `Original resume:\n\n${resumeText}` }
       ],
-      temperature: 0.3,
-      response_format: { type: 'json_object' }
+	    temperature: envs.temperature,
+	    top_p: envs.topOp,
+	    max_tokens: envs.maxTokens,
+	    stop: envs.stopGeneration,
+	    response_format: { type: 'json_object' }
     })
   });
 
@@ -144,8 +148,11 @@ const enhanceWithClaude = async (
       'anthropic-version': '2023-06-01'
     },
     body: JSON.stringify({
-      model: config.model || 'claude-3-sonnet-20240229',
-      max_tokens: 4096,
+	    model: config.model || 'claude-3-sonnet-20240229',
+	    max_tokens: envs.maxTokens,
+	    temperature: envs.temperature,
+	    top_p: envs.topOp,
+	    stop_sequences: envs.stopGeneration,
       messages: [
         {
           role: 'user',
@@ -180,10 +187,12 @@ const enhanceWithOllama = async (
       prompt: `${OLLAMA_JSON_PROMPT}\n\nResume text:\n${resumeText}\n\nJSON output:`,
       stream: false,
       format: 'json',
-      options: {
-        temperature: 0.1,
-        top_p: 0.9
-      }
+	    options: {
+		    temperature: envs.temperature,
+		    top_p: envs.topOp,
+		    num_predict: envs.maxTokens,
+		    stop: envs.stopGeneration
+	    }
     })
   });
 
