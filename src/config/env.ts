@@ -37,7 +37,7 @@ const stopOption: string[] = [
 	"\n\n\n"
 ]
 
-export const debugPDF = getEnvBoolean('VITE_DEBUG_PDF', false)
+export const debug = getEnvBoolean('VITE_DEBUG', false)
 
 // OPEN AI
 export const openaiOptions: OpenAIOptions = {

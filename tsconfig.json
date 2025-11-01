@@ -31,6 +31,7 @@
 			"@/hooks": ["./hooks/index.ts"],
 			"@/components": ["./components/index.ts"],
 			"@/config": ["./config/index.ts"],
+			"@/fakeData": ["./fakeData/index.ts"],
 		}
 	},
 	"include": [

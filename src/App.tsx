@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AIProviderSettings, FileUploader, ResumePreview, ExportButtons, ProcessingStatus } from '@/components';
 import { useAIConfig } from '@/hooks';
 import { parseFile } from '@/utils';
 import { enhanceResume } from '@/services';
+import { debug } from '@/config';
+import { fakeResumeData } from '@/fakeData';
 import type { ResumeData, ProcessingStatus as StatusType, SupportedFileType } from '@/types';
 
 function App() {
@@ -10,6 +12,13 @@ function App() {
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [status, setStatus] = useState<StatusType>('idle');
   const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    if (debug) {
+      setResumeData(fakeResumeData);
+      setStatus('completed');
+    }
+  }, []);
 
   const handleFileSelect = async (file: File, fileType: SupportedFileType) => {
     setStatus('parsing');
