@@ -29,7 +29,8 @@
 			"@/types": ["./types/index.ts"],
 			"@/services": ["./services/index.ts"],
 			"@/hooks": ["./hooks/index.ts"],
-			"@/components": ["./components/index.ts"]
+			"@/components": ["./components/index.ts"],
+			"@/config": ["./config/index.ts"],
 		}
 	},
 	"include": [
