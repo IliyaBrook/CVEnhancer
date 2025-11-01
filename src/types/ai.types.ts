@@ -6,12 +6,8 @@ export enum AIProvider {
 }
 
 export interface AIConfig {
+	model?: string,
 	provider: AIProvider
 	apiKey?: string
 	ollamaEndpoint?: string
-	model?: string,
-	topOp: number,
-	temperature: number,
-	maxTokens: number,
-	stopGeneration: Array<string>,
 }

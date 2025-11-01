@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import  { type AIConfig, type AIProvider, AIProvider as AIProviderEnum } from '@/types';
 import { saveConfig, loadConfig } from '@/utils';
-import { temperature, topOp, maxTokens, stopGeneration } from '@/config';
 
 interface AIProviderSettingsProps {
   config: AIConfig | null;
@@ -81,11 +80,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
       provider,
       apiKey: requiresApiKey() ? apiKey : undefined,
       model: model || undefined,
-      ollamaEndpoint: provider === AIProviderEnum.OLLAMA ? ollamaEndpoint : undefined,
-      temperature,
-      topOp,
-      maxTokens,
-      stopGeneration
+      ollamaEndpoint: provider === AIProviderEnum.OLLAMA ? ollamaEndpoint : undefined
     };
     saveConfig(newConfig);
     onConfigChange(newConfig);

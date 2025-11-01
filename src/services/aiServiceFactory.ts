@@ -1,4 +1,11 @@
-import { AIProvider, AIConfig, ResumeData } from '@/types';
+import {
+	AIProvider,
+	AIConfig,
+	ResumeData,
+	OpenAIApiBody,
+	ClaudeApiBody, OllamaApiBody
+} from '@/types';
+import {claudeOptions, ollamaOptions, openaiOptions} from '@/config';
 
 const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI. Your task is to improve the given resume following these strict rules:
 
@@ -75,156 +82,151 @@ CRITICAL RULES:
 6. Start your response with { and end with }. No other text.`;
 
 const extractJSON = (text: string): string => {
-  const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-  if (jsonMatch) {
-    return jsonMatch[1].trim();
-  }
-  
-  const braceStart = text.indexOf('{');
-  const braceEnd = text.lastIndexOf('}');
-  
-  if (braceStart !== -1 && braceEnd !== -1 && braceEnd > braceStart) {
-    return text.substring(braceStart, braceEnd + 1);
-  }
-  
-  return text.trim();
+	const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+	if (jsonMatch) {
+		return jsonMatch[1].trim();
+	}
+	
+	const braceStart = text.indexOf('{');
+	const braceEnd = text.lastIndexOf('}');
+	
+	if (braceStart !== -1 && braceEnd !== -1 && braceEnd > braceStart) {
+		return text.substring(braceStart, braceEnd + 1);
+	}
+	
+	return text.trim();
 };
 
 export const enhanceResume = async (
-  resumeText: string,
-  config: AIConfig
+	resumeText: string,
+	config: AIConfig
 ): Promise<ResumeData> => {
-  switch (config.provider) {
-    case AIProvider.OPENAI:
-    case AIProvider.CHATGPT:
-      return enhanceWithOpenAI(resumeText, config);
-    case AIProvider.CLAUDE:
-      return enhanceWithClaude(resumeText, config);
-    case AIProvider.OLLAMA:
-      return enhanceWithOllama(resumeText, config);
-    default:
-      throw new Error(`Unsupported AI provider: ${config.provider}`);
-  }
+	switch (config.provider) {
+		case AIProvider.OPENAI:
+		case AIProvider.CHATGPT:
+			return enhanceWithOpenAI(resumeText, config);
+		case AIProvider.CLAUDE:
+			return enhanceWithClaude(resumeText, config);
+		case AIProvider.OLLAMA:
+			return enhanceWithOllama(resumeText, config);
+		default:
+			throw new Error(`Unsupported AI provider: ${config.provider}`);
+	}
 };
 
 const enhanceWithOpenAI = async (
-  resumeText: string,
-  config: AIConfig
+	resumeText: string,
+	config: AIConfig
 ): Promise<ResumeData> => {
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${config.apiKey}`
-    },
-    body: JSON.stringify({
-      model: config.model || 'gpt-4',
-      messages: [
-        { role: 'system', content: RESUME_ENHANCEMENT_PROMPT },
-        { role: 'user', content: `Original resume:\n\n${resumeText}` }
-      ],
-	    temperature: config.temperature,
-	    top_p: config.topOp,
-	    max_tokens: config.maxTokens,
-	    stop: config.stopGeneration,
-	    response_format: { type: 'json_object' }
-    })
-  });
-
-  if (!response.ok) {
-    throw new Error(`OpenAI API error: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  const content = extractJSON(data.choices[0].message.content);
-  return JSON.parse(content);
+	const openAiBody:OpenAIApiBody = {
+		model: config.model || 'gpt-4',
+		messages: [
+			{role: 'system', content: RESUME_ENHANCEMENT_PROMPT},
+			{role: 'user', content: `Original resume:\n\n${resumeText}`}
+		],
+		...openaiOptions
+	}
+	
+	const response = await fetch('https://api.openai.com/v1/chat/completions', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${config.apiKey}`
+		},
+		body: JSON.stringify(openAiBody)
+	});
+	
+	if (!response.ok) {
+		throw new Error(`OpenAI API error: ${response.statusText}`);
+	}
+	
+	const data = await response.json();
+	const content = extractJSON(data.choices[0].message.content);
+	return JSON.parse(content);
 };
 
 const enhanceWithClaude = async (
-  resumeText: string,
-  config: AIConfig
+	resumeText: string,
+	config: AIConfig
 ): Promise<ResumeData> => {
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': config.apiKey!,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-	    model: config.model || 'claude-3-sonnet-20240229',
-	    max_tokens: config.maxTokens,
-	    temperature: config.temperature,
-	    top_p: config.topOp,
-	    stop_sequences: config.stopGeneration,
-      messages: [
-        {
-          role: 'user',
-          content: `${RESUME_ENHANCEMENT_PROMPT}\n\nOriginal resume:\n\n${resumeText}`
-        }
-      ]
-    })
-  });
-
-  if (!response.ok) {
-    throw new Error(`Claude API error: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  const contentText = extractJSON(data.content[0].text);
-  return JSON.parse(contentText);
+	const claudeBody:ClaudeApiBody = {
+		model: config.model || 'claude-3-sonnet-20240229',
+		messages: [
+			{
+				role: 'user',
+				content: `${RESUME_ENHANCEMENT_PROMPT}\n\nOriginal resume:\n\n${resumeText}`
+			}
+		],
+		...claudeOptions
+	}
+	const response = await fetch('https://api.anthropic.com/v1/messages', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'x-api-key': config.apiKey!,
+			'anthropic-version': '2023-06-01'
+		},
+		body: JSON.stringify(claudeBody)
+	});
+	
+	if (!response.ok) {
+		throw new Error(`Claude API error: ${response.statusText}`);
+	}
+	
+	const data = await response.json();
+	const contentText = extractJSON(data.content[0].text);
+	return JSON.parse(contentText);
 };
 
 const enhanceWithOllama = async (
-  resumeText: string,
-  config: AIConfig
+	resumeText: string,
+	config: AIConfig
 ): Promise<ResumeData> => {
-  const endpoint = config.ollamaEndpoint || 'http://localhost:11434';
-  const response = await fetch(`${endpoint}/api/generate`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: config.model || 'llama2',
-      prompt: `${OLLAMA_JSON_PROMPT}\n\nResume text:\n${resumeText}\n\nJSON output:`,
-      stream: false,
-      format: 'json',
-	    options: {
-		    temperature: config.temperature,
-		    top_p: config.topOp,
-		    num_predict: config.maxTokens,
-		    stop: config.stopGeneration
-	    }
-    })
-  });
 	
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Ollama API error: ${response.statusText} - ${errorText}`);
-  }
-
-  const data = await response.json();
-  
-  if (!data.response) {
-    console.error('Ollama API response:', data);
-    throw new Error('Ollama API returned empty response');
-  }
-  
-  console.log('Ollama raw response (first 500 chars):', data.response.substring(0, 500));
-  
-  let jsonContent = data.response.trim();
-  const jsonStart = jsonContent.indexOf('{');
-  const jsonEnd = jsonContent.lastIndexOf('}');
-  
-  if (jsonStart === -1 || jsonEnd === -1) {
-    console.error('No JSON object found in response:', jsonContent);
-    throw new Error('Ollama response does not contain valid JSON object');
-  }
-  
-  jsonContent = jsonContent.substring(jsonStart, jsonEnd + 1);
+	const ollamaBody:OllamaApiBody = {
+		model: config.model || 'llama2',
+		prompt: `${OLLAMA_JSON_PROMPT}\n\nResume text:\n${resumeText}\n\nJSON output:`,
+		stream: false,
+		format: 'json',
+		options: ollamaOptions
+	}
+	
+	const endpoint = config.ollamaEndpoint || 'http://localhost:11434';
+	const response = await fetch(`${endpoint}/api/generate`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(ollamaBody)
+	});
+	
+	if (!response.ok) {
+		const errorText = await response.text();
+		throw new Error(`Ollama API error: ${response.statusText} - ${errorText}`);
+	}
+	
+	const data = await response.json();
+	
+	if (!data.response) {
+		console.error('Ollama API response:', data);
+		throw new Error('Ollama API returned empty response');
+	}
+	
+	console.log('Ollama raw response (first 500 chars):', data.response.substring(0, 500));
+	
+	let jsonContent = data.response.trim();
+	const jsonStart = jsonContent.indexOf('{');
+	const jsonEnd = jsonContent.lastIndexOf('}');
+	
+	if (jsonStart === -1 || jsonEnd === -1) {
+		console.error('No JSON object found in response:', jsonContent);
+		throw new Error('Ollama response does not contain valid JSON object');
+	}
+	
+	jsonContent = jsonContent.substring(jsonStart, jsonEnd + 1);
 	
 	try {
+		// Fix if the model returns a duplicate job 1
 		const parsedData = JSON.parse(jsonContent);
 		if (parsedData.experience && Array.isArray(parsedData.experience)) {
 			const uniqueExperience = new Map();
@@ -235,6 +237,21 @@ const enhanceWithOllama = async (
 				}
 			});
 			parsedData.experience = Array.from(uniqueExperience.values());
+		}
+		// deduplicate fix 2
+		if (parsedData.education && Array.isArray(parsedData.education)) {
+			const uniqueEducation = new Map();
+			parsedData.education.forEach((edu: any) => {
+				const key = `${edu.institution}-${edu.degree}-${edu.field}`;
+				if (!uniqueEducation.has(key)) {
+					uniqueEducation.set(key, edu);
+				}
+			});
+			parsedData.education = Array.from(uniqueEducation.values());
+		}
+		// deduplicate fix 3 for certifications
+		if (parsedData.certifications && Array.isArray(parsedData.certifications)) {
+			parsedData.certifications = [...new Set(parsedData.certifications)];
 		}
 		
 		return parsedData;

@@ -1,5 +1,7 @@
+import { ClaudeOptions, OpenAIOptions, OllamaOptions } from '@/types';
+
 // @ts-ignore
-const getEnvString = (key: string, defaultValue?: string): string => {
+const getEnvString = (key: string, defaultValue?: string = ''): string => {
 	const value = import.meta.env[key] ?? defaultValue
 	if (!value) {
 		throw new Error(`Missing required environment variable: ${key}`)
@@ -7,7 +9,7 @@ const getEnvString = (key: string, defaultValue?: string): string => {
 	return value
 }
 
-const getEnvNumber = (key: string, defaultValue: number): number => {
+const getEnvNumber = (key: string, defaultValue: number = 0): number => {
 	const value = import.meta.env[key]
 	if (!value) return defaultValue
 	
@@ -18,11 +20,36 @@ const getEnvNumber = (key: string, defaultValue: number): number => {
 	return parsed
 }
 
-export const topOp = getEnvNumber('VITE_TOP_OP', 0.9)
-export const temperature = getEnvNumber('VITE_TEMPERATURE', 0.9)
-export const maxTokens = getEnvNumber('VITE_MAX_TOKENS', 8042)
-export const stopGeneration = [
+const stopOption: string[] = [
 	"}\n\n",
 	"\n\nHuman:",
 	"\n\n\n"
-];
+]
+
+// OPEN AI
+export const openaiOptions: OpenAIOptions = {
+	temperature: getEnvNumber('VITE_OPENAI_TEMPERATURE'),
+	top_p: getEnvNumber('VITE_OPENAI_TOP_P'),
+	max_tokens: getEnvNumber('VITE_OPENAI_MAX_TOKENS'),
+	frequency_penalty: getEnvNumber('VITE_OPENAI_FREQUENCY_PENALTY'),
+	presence_penalty: getEnvNumber('VITE_OPENAI_PRESENCE_PENALTY'),
+	stop: stopOption
+}
+// CLAUDE
+export const claudeOptions: ClaudeOptions = {
+	temperature: getEnvNumber('VITE_CLAUDE_TEMPERATURE'),
+	max_tokens: getEnvNumber('VITE_CLAUDE_MAX_TOKENS'),
+	top_p: getEnvNumber('VITE_CLAUDE_TOP_P'),
+	top_k: getEnvNumber('VITE_CLAUDE_TOP_K'),
+	stop_sequences: stopOption
+}
+// OLLAMA
+export const ollamaOptions: OllamaOptions = {
+	temperature: getEnvNumber('VITE_OLLAMA_TEMPERATURE'),
+	top_p: getEnvNumber('VITE_OLLAMA_TOP_OP'),
+	top_k: getEnvNumber('VITE_OLLAMA_TOP_K'),
+	num_predict: getEnvNumber('VITE_OLLAMA_MAX_TOKENS'),
+	repeat_penalty: getEnvNumber('VITE_OLLAMA_REPEAT_PENALTY'),
+	presence_penalty: getEnvNumber('VITE_OLLAMA_PRESENCE_PENALTY'),
+	stop: stopOption
+}
