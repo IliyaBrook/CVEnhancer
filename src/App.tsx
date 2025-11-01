@@ -1,13 +1,9 @@
 import { useState } from 'react';
-import { AIProviderSettings } from './components/AIProviderSettings';
-import { FileUploader } from './components/FileUploader';
-import { ResumePreview } from './components/ResumePreview';
-import { ExportButtons } from './components/ExportButtons';
-import { ProcessingStatus } from './components/ProcessingStatus';
-import { useAIConfig } from './hooks/useAIConfig';
-import { parseFile } from './utils/fileParser';
-import { enhanceResume } from './services/aiServiceFactory';
-import type { ResumeData, ProcessingStatus as StatusType, SupportedFileType } from './types';
+import { AIProviderSettings, FileUploader, ResumePreview, ExportButtons, ProcessingStatus } from '@/components';
+import { useAIConfig } from '@/hooks';
+import { parseFile } from '@/utils';
+import { enhanceResume } from '@/services';
+import type { ResumeData, ProcessingStatus as StatusType, SupportedFileType } from '@/types';
 
 function App() {
   const { config, updateConfig } = useAIConfig();

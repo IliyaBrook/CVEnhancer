@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import type { AIConfig } from '../types';
-import { loadConfig, saveConfig } from '@/utils/storage';
+import type { AIConfig } from '@/types';
+import { loadConfig, saveConfig } from '@/utils';
 
 export const useAIConfig = () => {
   const [config, setConfig] = useState<AIConfig | null>(null);

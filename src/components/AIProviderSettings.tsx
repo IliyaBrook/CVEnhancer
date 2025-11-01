@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import  { type AIConfig, type AIProvider, AIProvider as AIProviderEnum } from '@/types';
-import { saveConfig, loadConfig } from '@/utils/storage';
+import { saveConfig, loadConfig } from '@/utils';
 
 interface AIProviderSettingsProps {
   config: AIConfig | null;
