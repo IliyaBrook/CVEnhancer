@@ -66,8 +66,13 @@ Parse the resume and output a JSON object with this exact structure:
   "certifications": ["string"]
 }
 
-Extract information from the resume below. Use ONLY information present in the resume. Do not invent details.
-Start your response with { and end with }. No other text.`;
+CRITICAL RULES:
+1. Extract information from the resume below. Use ONLY information present in the resume.
+2. Do NOT invent details.
+3. Do NOT duplicate entries - each company should appear ONLY ONCE in the experience array.
+4. Do NOT repeat the same job position multiple times.
+5. Combine all duties from the same company/position into a single entry.
+6. Start your response with { and end with }. No other text.`;
 
 const extractJSON = (text: string): string => {
   const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
@@ -175,7 +180,6 @@ const enhanceWithOllama = async (
   config: AIConfig
 ): Promise<ResumeData> => {
   const endpoint = config.ollamaEndpoint || 'http://localhost:11434';
-  
   const response = await fetch(`${endpoint}/api/generate`, {
     method: 'POST',
     headers: {
@@ -194,7 +198,7 @@ const enhanceWithOllama = async (
 	    }
     })
   });
-
+	
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Ollama API error: ${response.statusText} - ${errorText}`);
@@ -210,7 +214,6 @@ const enhanceWithOllama = async (
   console.log('Ollama raw response (first 500 chars):', data.response.substring(0, 500));
   
   let jsonContent = data.response.trim();
-  
   const jsonStart = jsonContent.indexOf('{');
   const jsonEnd = jsonContent.lastIndexOf('}');
   
@@ -220,12 +223,24 @@ const enhanceWithOllama = async (
   }
   
   jsonContent = jsonContent.substring(jsonStart, jsonEnd + 1);
-  
-  try {
-    return JSON.parse(jsonContent);
-  } catch (parseError) {
-    console.error('Failed to parse JSON:', jsonContent);
-    console.error('Parse error:', parseError);
-    throw new Error(`Failed to parse Ollama response as JSON: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`);
-  }
+	
+	try {
+		const parsedData = JSON.parse(jsonContent);
+		if (parsedData.experience && Array.isArray(parsedData.experience)) {
+			const uniqueExperience = new Map();
+			parsedData.experience.forEach((job: any) => {
+				const key = `${job.company}-${job.title}-${job.dateRange}`;
+				if (!uniqueExperience.has(key)) {
+					uniqueExperience.set(key, job);
+				}
+			});
+			parsedData.experience = Array.from(uniqueExperience.values());
+		}
+		
+		return parsedData;
+	} catch (parseError) {
+		console.error('Failed to parse JSON:', jsonContent);
+		console.error('Parse error:', parseError);
+		throw new Error(`Failed to parse Ollama response as JSON: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`);
+	}
 };
