@@ -1,7 +1,6 @@
 import React from 'react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import type { ResumeData } from '@/types';
+import { downloadPDF } from '@/utils/pdfExport';
 
 interface ExportButtonsProps {
   resumeData: ResumeData | null;
@@ -145,42 +144,11 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
   const handleDownloadPDF = async () => {
     if (!resumeData) return;
 
-    const html = generateHTML();
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.left = '-9999px';
-    document.body.appendChild(tempDiv);
-
     try {
-      const canvas = await html2canvas(tempDiv, {
-        scale: 2,
-        useCORS: true,
-        logging: false
-      });
-
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      const imgY = 0;
-
-      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-      pdf.save(`${resumeData.personalInfo.name.replace(/\s+/g, '_')}_Resume.pdf`);
+      await downloadPDF(resumeData);
     } catch (error) {
       console.error('Failed to generate PDF:', error);
       alert('Failed to generate PDF');
-    } finally {
-      document.body.removeChild(tempDiv);
     }
   };
 
