@@ -9,5 +9,9 @@ export interface AIConfig {
 	provider: AIProvider
 	apiKey?: string
 	ollamaEndpoint?: string
-	model?: string
+	model?: string,
+	topOp: number,
+	temperature: number,
+	maxTokens: number,
+	stopGeneration: string,
 }

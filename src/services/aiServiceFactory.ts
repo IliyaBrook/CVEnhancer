@@ -1,5 +1,5 @@
 import { AIProvider, AIConfig, ResumeData } from '@/types';
-import * as envs from '@/config';
+import {maxTokens, temperature, topOp, stopGeneration } from '@/config';
 
 const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI. Your task is to improve the given resume following these strict rules:
 
@@ -119,10 +119,10 @@ const enhanceWithOpenAI = async (
         { role: 'system', content: RESUME_ENHANCEMENT_PROMPT },
         { role: 'user', content: `Original resume:\n\n${resumeText}` }
       ],
-	    temperature: envs.temperature,
-	    top_p: envs.topOp,
-	    max_tokens: envs.maxTokens,
-	    stop: envs.stopGeneration,
+	    temperature: config.temperature,
+	    top_p: config.topOp,
+	    max_tokens: config.maxTokens,
+	    stop: config.stopGeneration,
 	    response_format: { type: 'json_object' }
     })
   });
@@ -149,10 +149,10 @@ const enhanceWithClaude = async (
     },
     body: JSON.stringify({
 	    model: config.model || 'claude-3-sonnet-20240229',
-	    max_tokens: envs.maxTokens,
-	    temperature: envs.temperature,
-	    top_p: envs.topOp,
-	    stop_sequences: envs.stopGeneration,
+	    max_tokens: config.maxTokens,
+	    temperature: config.temperature,
+	    top_p: config.topOp,
+	    stop_sequences: config.stopGeneration,
       messages: [
         {
           role: 'user',
@@ -188,10 +188,10 @@ const enhanceWithOllama = async (
       stream: false,
       format: 'json',
 	    options: {
-		    temperature: envs.temperature,
-		    top_p: envs.topOp,
-		    num_predict: envs.maxTokens,
-		    stop: envs.stopGeneration
+		    temperature: config.temperature,
+		    top_p: config.topOp,
+		    num_predict: config.maxTokens,
+		    stop: config.stopGeneration
 	    }
     })
   });
