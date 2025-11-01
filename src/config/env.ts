@@ -9,6 +9,17 @@ const getEnvString = (key: string, defaultValue?: string = ''): string => {
 	return value
 }
 
+// @ts-ignore
+const getEnvBoolean = (key: string, defaultValue: boolean = false): boolean => {
+	const value = import.meta.env[key]
+	if (!value) return defaultValue
+	
+	if (value === 'true') return true
+	if (value === 'false') return false
+	
+	throw new Error(`${key} must be 'true' or 'false', got: ${value}`)
+}
+
 const getEnvNumber = (key: string, defaultValue: number = 0): number => {
 	const value = import.meta.env[key]
 	if (!value) return defaultValue
@@ -25,6 +36,8 @@ const stopOption: string[] = [
 	"\n\nHuman:",
 	"\n\n\n"
 ]
+
+export const debugPDF = getEnvBoolean('VITE_DEBUG_PDF', false)
 
 // OPEN AI
 export const openaiOptions: OpenAIOptions = {

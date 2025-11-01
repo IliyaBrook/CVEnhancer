@@ -1,5 +1,5 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, pdf} from '@react-pdf/renderer';
 import type { ResumeData } from '@/types';
 
 const styles = StyleSheet.create({
@@ -172,7 +172,10 @@ const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData }) => 
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page
+	      size="A4"
+	      style={styles.page}
+      >
         <View style={styles.mainContent}>
           <View style={styles.header}>
             <Text style={styles.name}>{personalInfo.name}</Text>
