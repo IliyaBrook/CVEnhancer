@@ -60,8 +60,8 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
   <title>${personalInfo.name} - Resume</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; line-height: 1.3; color: #333; background-color: #f5f5f5; padding: 20px; }
-    .resume-container { max-width: 900px; margin: 0 auto; background-color: white; display: flex; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; line-height: 1.3; color: #333; }
+    .resume-container { background-color: white; display: flex; }
     .main-content { flex: 2; padding: 35px 40px; }
     .sidebar { flex: 1; background-color: #dceefb; padding: 35px 25px; }
     .header { margin-bottom: 30px; }
