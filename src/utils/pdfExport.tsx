@@ -156,6 +156,11 @@ const styles = StyleSheet.create({
     color: '#555',
     fontSize: 12,
   },
+  certification: {
+    color: '#555',
+    fontSize: 12,
+    marginBottom: 5,
+  },
 });
 
 interface ResumePDFDocumentProps {
@@ -163,7 +168,7 @@ interface ResumePDFDocumentProps {
 }
 
 const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData }) => {
-  const { personalInfo, experience, skills, education } = resumeData;
+  const { personalInfo, experience, skills, education, certifications } = resumeData;
 
   return (
     <Document>
@@ -228,7 +233,7 @@ const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData }) => 
               <Text style={styles.sidebarSectionTitle}>SKILLS</Text>
               {skills.map((category, index) => (
                 <View key={index} style={styles.skillCategory}>
-                  <Text style={styles.skillCategoryTitle}>{category.title}:</Text>
+                  <Text style={styles.skillCategoryTitle}>{category.categoryTitle}</Text>
                   {category.skills.map((skill, skillIndex) => (
                     <View key={skillIndex} style={styles.skillItem}>
                       <Text style={styles.skillBullet}>•</Text>
@@ -245,8 +250,8 @@ const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData }) => 
               <Text style={styles.sidebarSectionTitle}>EDUCATION</Text>
               {education.map((edu, index) => (
                 <View key={index} style={styles.educationItem}>
-                  <Text style={styles.university}>{edu.institution}</Text>
-                  <Text style={styles.degree}>{edu.degree}</Text>
+                  <Text style={styles.university}>{edu.university || edu.institution}</Text>
+                  {edu.degree && <Text style={styles.degree}>{edu.degree}</Text>}
                   {edu.field && <Text style={styles.degree}>{edu.field}</Text>}
                   {edu.location && (
                     <Text style={styles.educationLocation}>{edu.location}</Text>
@@ -255,6 +260,15 @@ const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData }) => 
                     <Text style={styles.educationDate}>{edu.dateRange}</Text>
                   )}
                 </View>
+              ))}
+            </View>
+          )}
+
+          {certifications && certifications.length > 0 && (
+            <View style={styles.sidebarSection}>
+              <Text style={styles.sidebarSectionTitle}>OTHER</Text>
+              {certifications.map((cert, index) => (
+                <Text key={index} style={styles.certification}>{cert}</Text>
               ))}
             </View>
           )}
