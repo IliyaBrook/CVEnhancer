@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { validateFile } from '../utils/fileValidation';
-import type { SupportedFileType } from '../types';
+import { validateFile } from '@/utils/fileValidation';
+import type { SupportedFileType } from '@/types';
 
 interface FileUploaderProps {
   onFileSelect: (file: File, fileType: SupportedFileType) => void;

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ProcessingStatus as StatusType } from '../types';
+import type { ProcessingStatus as StatusType } from '@/types';
 
 interface ProcessingStatusProps {
   status: StatusType;

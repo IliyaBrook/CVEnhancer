@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import type { AIConfig, AIProvider } from '../types';
-import { AIProvider as AIProviderEnum } from '../types';
-import { saveConfig, loadConfig } from '../utils/storage';
+import  { type AIConfig, type AIProvider, AIProvider as AIProviderEnum } from '@/types';
+import { saveConfig, loadConfig } from '@/utils/storage';
 
 interface AIProviderSettingsProps {
   config: AIConfig | null;
   onConfigChange: (config: AIConfig) => void;
 }
 
-export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ config, onConfigChange }) => {
+export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfigChange }) => {
   const [provider, setProvider] = useState<AIProvider>(AIProviderEnum.OPENAI);
   const [apiKey, setApiKey] = useState('');
   const [model, setModel] = useState('');

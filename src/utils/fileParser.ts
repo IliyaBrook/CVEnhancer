@@ -1,6 +1,6 @@
 import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
-import type { SupportedFileType } from '../types';
+import type { SupportedFileType } from '@/types';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',

@@ -1,4 +1,4 @@
-import type { AIConfig } from '../types';
+import type { AIConfig } from '@/types';
 import { encrypt, decrypt } from './encryption';
 
 const STORAGE_KEY = 'cvenhancer_config';

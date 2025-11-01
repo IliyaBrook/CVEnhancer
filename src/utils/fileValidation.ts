@@ -1,4 +1,4 @@
-import type { SupportedFileType, FileValidationResult } from '../types';
+import type { SupportedFileType, FileValidationResult } from '@/types';
 
 const SUPPORTED_TYPES: SupportedFileType[] = ['pdf', 'docx', 'jpeg', 'png'];
 const MAX_FILE_SIZE = 10 * 1024 * 1024;

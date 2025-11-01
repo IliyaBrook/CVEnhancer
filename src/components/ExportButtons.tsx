@@ -1,7 +1,7 @@
 import React from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import type { ResumeData } from '../types';
+import type { ResumeData } from '@/types';
 
 interface ExportButtonsProps {
   resumeData: ResumeData | null;
