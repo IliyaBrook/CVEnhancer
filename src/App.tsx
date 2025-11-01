@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AIProviderSettings, FileUploader, ResumePreview, ExportButtons, ProcessingStatus } from '@/components';
+import { AIProviderSettings, FileUploader, ResumePreview, ExportButtons, ProcessingStatus, PDFDebugViewer } from '@/components';
 import { useAIConfig } from '@/hooks';
 import { parseFile } from '@/utils';
 import { enhanceResume } from '@/services';
@@ -91,6 +91,7 @@ function App() {
 
           <div className="lg:col-span-2">
             <ResumePreview resumeData={resumeData} />
+            {debug && resumeData && <PDFDebugViewer resumeData={resumeData} />}
           </div>
         </div>
 
