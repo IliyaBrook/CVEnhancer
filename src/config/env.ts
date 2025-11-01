@@ -1,3 +1,4 @@
+// @ts-ignore
 const getEnvString = (key: string, defaultValue?: string): string => {
 	const value = import.meta.env[key] ?? defaultValue
 	if (!value) {
@@ -19,5 +20,5 @@ const getEnvNumber = (key: string, defaultValue: number): number => {
 
 export const topOp = getEnvNumber('VITE_TOP_OP', 0.9)
 export const temperature = getEnvNumber('VITE_TEMPERATURE', 0.9)
-export const maxTokens = getEnvNumber('VITE_MAX_TOKENS', 0.9)
-export const stopGeneration = getEnvString('STOP_GENERATION', '"}\\n\\n", "\\n\\n\\n"')
+export const maxTokens = getEnvNumber('VITE_MAX_TOKENS', 8042)
+export const stopGeneration = ["}\n\n", "\n\n\n"]

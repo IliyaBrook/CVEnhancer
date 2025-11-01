@@ -13,5 +13,5 @@ export interface AIConfig {
 	topOp: number,
 	temperature: number,
 	maxTokens: number,
-	stopGeneration: string,
+	stopGeneration: Array<string>,
 }
