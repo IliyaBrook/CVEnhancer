@@ -1,5 +1,7 @@
 import React from 'react';
 import type { ResumeData } from '@/types';
+import { resumePdfStyles as styles } from '@/styles';
+import { stylesToCss } from '@/utils';
 
 interface ResumePreviewProps {
   resumeData: ResumeData | null;
@@ -22,59 +24,14 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Resume Preview</h2>
       
       <style>{`
-        .resume-container {
-          max-width: 900px;
-          margin: 0 auto;
-          background-color: white;
-          display: flex;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-          font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
-          line-height: 1.3;
-          color: #333;
-        }
-        
-        .main-content {
-          flex: 2;
-          padding: 35px 40px;
-        }
-        
-        .sidebar {
-          flex: 1;
-          background-color: #dceefb;
-          padding: 35px 25px;
-        }
-        
-        .header {
-          margin-bottom: 30px;
-        }
-        
-        .name {
-          font-size: 36px;
-          font-weight: bold;
-          color: #1a4d8f;
-          margin-bottom: 5px;
-          letter-spacing: 0.5px;
-        }
-        
-        .title {
-          font-size: 16px;
-          color: #555;
-          margin-bottom: 25px;
-        }
-        
-        .section-title {
-          font-size: 14px;
-          font-weight: bold;
-          color: #1a4d8f;
-          margin-bottom: 15px;
-          margin-top: 25px;
-          text-transform: uppercase;
-          letter-spacing: 1.5px;
-        }
-        
-        .section-title:first-child {
-          margin-top: 0;
-        }
+        .resume-container { ${stylesToCss(styles.page)} }
+        .main-content { ${stylesToCss(styles.mainContent)} }
+        .sidebar { ${stylesToCss(styles.sidebar)} }
+        .header { ${stylesToCss(styles.header)} }
+        .name { ${stylesToCss(styles.name)} }
+        .title { ${stylesToCss(styles.titleText)} }
+        .section-title { ${stylesToCss(styles.sectionTitle)} }
+        .section-title:first-child { ${stylesToCss(styles.sectionTitleFirst)} }
         
         .job {
           margin-bottom: 20px;
