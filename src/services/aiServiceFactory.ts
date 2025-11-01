@@ -1,5 +1,4 @@
 import { AIProvider, AIConfig, ResumeData } from '@/types';
-import {maxTokens, temperature, topOp, stopGeneration } from '@/config';
 
 const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI. Your task is to improve the given resume following these strict rules:
 
