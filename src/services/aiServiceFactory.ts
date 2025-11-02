@@ -109,7 +109,7 @@ CRITICAL RULES:
 const createValidationPrompt = (resumeData: ResumeData): string => {
   const config = resumeAiConfig;
   const hasConfig = config && Object.keys(config).length > 0;
-  
+
   let validationPrompt = `You are a resume quality validator. Review the following resume data and fix any issues. Output ONLY valid JSON.
 
 CRITICAL VALIDATION RULES:
@@ -126,45 +126,56 @@ CRITICAL VALIDATION RULES:
 ADDITIONAL CONFIGURATION CONSTRAINTS:`;
 
     if (config.experience) {
-      validationPrompt += `
-- Maximum ${config.experience.maxJobs} jobs in experience section
-- Maximum ${config.experience.bulletPointsPerJob} bullet points per job
-- Maximum ${config.experience.maxBulletLength} characters per bullet point`;
-      
-      if (config.experience.exclude && config.experience.exclude.length > 0) {
-        validationPrompt += `
-- COMPLETELY REMOVE jobs with these titles from experience section: ${config.experience.exclude.join(', ')}`;
+      if (config.experience.maxJobs !== null && config.experience.maxJobs !== undefined) {
+        validationPrompt += `\n- Maximum ${config.experience.maxJobs} jobs in experience section`;
       }
-      
+
+      if (config.experience.bulletPointsPerJob !== null && config.experience.bulletPointsPerJob !== undefined) {
+        validationPrompt += `\n- Maximum ${config.experience.bulletPointsPerJob} bullet points per job`;
+      }
+
+      if (config.experience.maxBulletLength !== null && config.experience.maxBulletLength !== undefined) {
+        validationPrompt += `\n- Maximum ${config.experience.maxBulletLength} characters per bullet point`;
+      }
+
+      if (
+        config.experience.exclude &&
+        Array.isArray(config.experience.exclude) &&
+        config.experience.exclude.length > 0
+      ) {
+        validationPrompt += `\n- COMPLETELY REMOVE jobs with these titles from experience section: ${config.experience.exclude.join(', ')}`;
+      }
+
       if (config.experience.requireActionVerbs) {
-        validationPrompt += `
-- Each bullet point MUST start with a strong action verb`;
+        validationPrompt += `\n- Each bullet point MUST start with a strong action verb`;
       }
-      
+
       if (config.experience.avoidDuplicatePoints) {
-        validationPrompt += `
-- Strictly avoid any duplicate or similar bullet points across all jobs`;
+        validationPrompt += `\n- Strictly avoid any duplicate or similar bullet points across all jobs`;
       }
     }
 
     if (config.skills) {
-      validationPrompt += `
-- Maximum ${config.skills.categoriesLimit} skill categories
-- Maximum ${config.skills.skillsPerCategory} skills per category`;
+      if (config.skills.categoriesLimit !== null && config.skills.categoriesLimit !== undefined) {
+        validationPrompt += `\n- Maximum ${config.skills.categoriesLimit} skill categories`;
+      }
+
+      if (config.skills.skillsPerCategory !== null && config.skills.skillsPerCategory !== undefined) {
+        validationPrompt += `\n- Maximum ${config.skills.skillsPerCategory} skills per category`;
+      }
     }
 
     if (config.education) {
-      validationPrompt += `
-- Maximum ${config.education.maxEntries} education entries`;
-      
-      if (config.education.exclude && config.education.exclude.length > 0) {
-        validationPrompt += `
-- COMPLETELY REMOVE education entries containing these degrees/certifications: ${config.education.exclude.join(', ')}`;
+      if (config.education.maxEntries !== null && config.education.maxEntries !== undefined) {
+        validationPrompt += `\n- Maximum ${config.education.maxEntries} education entries`;
       }
-      
-      if (!config.education.showDates) {
-        validationPrompt += `
-- Remove dates from education entries (set dateRange to empty string or "-")`;
+
+      if (config.education.exclude && Array.isArray(config.education.exclude) && config.education.exclude.length > 0) {
+        validationPrompt += `\n- COMPLETELY REMOVE education entries containing these degrees/certifications: ${config.education.exclude.join(', ')}`;
+      }
+
+      if (config.education.showDates === false) {
+        validationPrompt += `\n- Remove dates from education entries (set dateRange to empty string or "-")`;
       }
     }
   }
@@ -376,7 +387,7 @@ const enhanceWithOpenAI = async (resumeText: string, config: AIConfig): Promise<
   const content = extractJSON(data.choices[0].message.content);
   let resumeData = JSON.parse(content);
   resumeData = enforceResumeConstraints(resumeData);
-  
+
   resumeData = await validateResumeWithAI(resumeData, config, AIProvider.OPENAI);
   return enforceResumeConstraints(resumeData);
 };
@@ -410,7 +421,7 @@ const enhanceWithClaude = async (resumeText: string, config: AIConfig): Promise<
   const contentText = extractJSON(data.content[0].text);
   let resumeData = JSON.parse(contentText);
   resumeData = enforceResumeConstraints(resumeData);
-  
+
   resumeData = await validateResumeWithAI(resumeData, config, AIProvider.CLAUDE);
   return enforceResumeConstraints(resumeData);
 };
@@ -554,10 +565,10 @@ const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<
     }
 
     let finalData = enforceResumeConstraints(combinedData);
-    
+
     await new Promise(resolve => setTimeout(resolve, 300));
     finalData = await validateResumeWithAI(finalData, config, AIProvider.OLLAMA);
-    
+
     return enforceResumeConstraints(finalData);
   } catch (error) {
     console.error('❌ Ollama error:', error);

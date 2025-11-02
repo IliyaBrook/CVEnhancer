@@ -90,7 +90,7 @@ function App() {
 
           <div className="lg:col-span-2">
             <ResumePreview resumeData={resumeData} />
-            {debug && resumeData && <PDFDebugViewer resumeData={resumeData} />}
+            {resumeData && <PDFDebugViewer resumeData={resumeData} isDebugMode={debug} />}
           </div>
         </div>
 

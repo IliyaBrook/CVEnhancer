@@ -2,7 +2,7 @@
   "experience": {
     "maxJobs": 2,
     "bulletPointsPerJob": 5,
-    "maxBulletLength": 150,
+    "maxBulletLength": null,
     "requireActionVerbs": true,
     "metricsLevel": "moderate",
     "exclude": ["Network Support Engineer"],
