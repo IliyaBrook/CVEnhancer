@@ -1,0 +1,40 @@
+{
+  "pageLimit": 1,
+  "atsMode": true,
+  "tone": "professional-natural",
+
+  "experience": {
+    "maxJobs": 2,
+    "bulletPointsPerJob": 5,
+    "maxBulletLength": 150,
+    "requireActionVerbs": true,
+    "metricsLevel": "moderate",
+    "excludeJobs": ["Network Support Engineer"],
+    "avoidDuplicatePoints": true
+  },
+
+  "skills": {
+    "categoriesLimit": 7,
+    "skillsPerCategory": 8,
+    "layout": "grid"
+  },
+
+  "education": {
+    "maxEntries": 3,
+    "excludeDegrees": ["CCNA"],
+    "showDates": false
+  },
+
+  "summary": {
+    "enabled": true,
+    "maxWords": 80,
+    "highlight": ["full-stack", "years-experience", "key-tech"]
+  },
+
+  "sections": {
+    "militaryService": true,
+    "projects": false,
+    "certifications": false,
+    "languages": true
+  }
+}
