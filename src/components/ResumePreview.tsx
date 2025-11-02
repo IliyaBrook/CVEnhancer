@@ -80,6 +80,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .education-date { ${stylesToCss(styles.educationDate)} }
         
         .military-section { ${stylesToCss(styles.militarySection)} }
+        .military-section-title { ${stylesToCss(styles.militarySectionTitle)} }
         .military-text { ${stylesToCss(styles.militaryText)} }
       `}</style>
 
@@ -136,7 +137,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
 
           {resumeData.militaryService && resumeData.militaryService.trim().length > 0 && (
             <div className="military-section">
-              <div className="section-title">MILITARY SERVICE</div>
+              <div className="section-title military-section-title">MILITARY SERVICE</div>
               <div className="military-text">{resumeData.militaryService}</div>
             </div>
           )}

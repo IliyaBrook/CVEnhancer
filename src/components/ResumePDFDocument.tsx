@@ -16,7 +16,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
         <View style={styles.mainContent}>
           <View style={styles.header} wrap={false}>
             <Text style={styles.name}>{personalInfo.name}</Text>
-	          {personalInfo.title && <Text style={styles.titleText}>{personalInfo.title}</Text>}
+            {personalInfo.title && <Text style={styles.titleText}>{personalInfo.title}</Text>}
           </View>
 
           {experience && experience.length > 0 && (
@@ -28,9 +28,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
                     <Text style={styles.companyName}>{exp.company}</Text>
                     {exp.location && <Text style={styles.location}>, {exp.location}</Text>}
                   </View>
-                  {exp.description && (
-                    <Text style={styles.companyDescription}>{exp.description}</Text>
-                  )}
+                  {exp.description && <Text style={styles.companyDescription}>{exp.description}</Text>}
                   <View style={styles.jobTitleLine} wrap={false}>
                     <Text style={styles.jobTitle}>{exp.title}</Text>
                     <Text style={styles.dateRange}>{exp.dateRange}</Text>
@@ -63,9 +61,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
                   </View>
                   {edu.degree && <Text style={styles.degreeMain}>{edu.degree}</Text>}
                   {edu.field && <Text style={styles.degreeMain}>{edu.field}</Text>}
-                  {edu.location && (
-                    <Text style={styles.educationLocationMain}>{edu.location}</Text>
-                  )}
+                  {edu.location && <Text style={styles.educationLocationMain}>{edu.location}</Text>}
                 </View>
               ))}
             </View>
@@ -73,7 +69,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
 
           {militaryService && militaryService.trim().length > 0 && (
             <View style={styles.militarySection}>
-              <Text style={styles.sectionTitle}>MILITARY SERVICE</Text>
+              <Text style={[styles.sectionTitle, styles.militarySectionTitle]}>MILITARY SERVICE</Text>
               <Text style={styles.militaryText}>{militaryService}</Text>
             </View>
           )}
@@ -82,18 +78,10 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
         <View style={styles.sidebar}>
           <View style={styles.sidebarContactSection}>
             <Text style={styles.sectionTitle}>CONTACT</Text>
-            {personalInfo.location && (
-              <Text style={styles.contactInfo}>{personalInfo.location}</Text>
-            )}
-            {personalInfo.phone && (
-              <Text style={styles.contactInfo}>{personalInfo.phone}</Text>
-            )}
-            {personalInfo.email && (
-              <Text style={styles.contactInfo}>{personalInfo.email}</Text>
-            )}
-            {personalInfo.linkedin && (
-              <Text style={styles.contactInfo}>{personalInfo.linkedin}</Text>
-            )}
+            {personalInfo.location && <Text style={styles.contactInfo}>{personalInfo.location}</Text>}
+            {personalInfo.phone && <Text style={styles.contactInfo}>{personalInfo.phone}</Text>}
+            {personalInfo.email && <Text style={styles.contactInfo}>{personalInfo.email}</Text>}
+            {personalInfo.linkedin && <Text style={styles.contactInfo}>{personalInfo.linkedin}</Text>}
           </View>
 
           {skills && skills.length > 0 && (

@@ -248,6 +248,9 @@ export const resumePdfStyles = StyleSheet.create({
   militarySection: {
     marginTop: 15,
   },
+  militarySectionTitle: {
+    marginBottom: 0,
+  },
   militaryText: {
     color: '#555',
     fontSize: 11,
