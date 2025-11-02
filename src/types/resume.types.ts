@@ -4,6 +4,7 @@ export interface ResumeData {
 	education: Education[]
 	skills: SkillCategory[]
 	projects?: Project[]
+	militaryService?: string
 }
 
 export interface PersonalInfo {

@@ -14,7 +14,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.mainContent}>
-          <View style={styles.header}>
+          <View style={styles.header} wrap={false}>
             <Text style={styles.name}>{personalInfo.name}</Text>
 	          {personalInfo.title && <Text style={styles.titleText}>{personalInfo.title}</Text>}
           </View>
@@ -24,21 +24,21 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
               <Text style={styles.sectionTitle}>WORK EXPERIENCE</Text>
               {experience.map((exp, index) => (
                 <View key={index} style={styles.job}>
-                  <View style={styles.companyInfo}>
+                  <View style={styles.companyInfo} wrap={false}>
                     <Text style={styles.companyName}>{exp.company}</Text>
                     {exp.location && <Text style={styles.location}>, {exp.location}</Text>}
                   </View>
                   {exp.description && (
                     <Text style={styles.companyDescription}>{exp.description}</Text>
                   )}
-                  <View style={styles.jobTitleLine}>
+                  <View style={styles.jobTitleLine} wrap={false}>
                     <Text style={styles.jobTitle}>{exp.title}</Text>
                     <Text style={styles.dateRange}>{exp.dateRange}</Text>
                   </View>
                   {exp.duties && exp.duties.length > 0 && (
                     <View style={styles.jobDuties}>
                       {exp.duties.map((duty, dutyIndex) => (
-                        <View key={dutyIndex} style={styles.jobDuty}>
+                        <View key={dutyIndex} style={styles.jobDuty} wrap={false}>
                           <Text style={styles.bullet}>•</Text>
                           <Text style={styles.dutyText}>{duty}</Text>
                         </View>

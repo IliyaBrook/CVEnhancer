@@ -7,33 +7,45 @@ import {
 } from '@/types';
 import {claudeOptions, ollamaOptions, openaiOptions} from '@/config';
 
-const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI. Your task is to improve the given resume following these strict rules:
+const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI. Your task is to improve the given resume following these STRICT rules:
 
+CRITICAL CONSTRAINTS:
+1. Resume MUST fit on ONE page - be extremely concise
+2. Each job duty must be ONE line maximum (50-60 characters)
+3. Maximum 4-5 bullet points per job
+4. Maximum 3 job positions in experience section
+5. Remove ALL redundant or repetitive information
+
+FORMATTING RULES:
 1. Fix all spelling and grammar errors
 2. Use ATS-optimized formatting with clear section headers
 3. Include only: name, email, phone, location, LinkedIn profile in contact info
-4. Use bullet points for achievements and responsibilities
-5. Quantify achievements with numbers and metrics wherever possible
+4. Use short, impactful bullet points for achievements
+5. Quantify ONLY the most important achievements (not every single one)
 6. Emphasize technical skills and keywords
-7. Remove objective statements
-8. Ensure required sections: Education, Experience, Skills, Projects
-9. DO NOT invent or add any information not present in the original resume
-10. Maintain professional tone and perfect grammar
+7. Remove objective statements and verbose descriptions
+8. Keep job descriptions to 2-3 words maximum (e.g., "Full Stack Developer")
 
-Return ONLY a valid JSON object (no markdown, no code blocks) matching the ResumeData type with these fields:
+CONTENT RULES:
+1. Prioritize most recent and relevant experience only
+2. Combine similar responsibilities into one concise bullet point
+3. Remove duplicated skills across categories
+4. Keep skills list focused - maximum 4-5 skills per category
+5. DO NOT invent or add any information not present in the original resume
+6. If experience section is too long, keep only the most recent 2-3 positions
+
+OUTPUT FORMAT:
+Return ONLY a valid JSON object (no markdown, no code blocks) matching the ResumeData type:
 - personalInfo (name, title, email, phone, location, linkedin)
-- experience (array of jobs with company, location, description, title, dateRange, duties)
+- experience (array of jobs with company, location, description [max 3 words], title, dateRange, duties [max 5 items, each max 60 chars])
 - education (array with institution, university, degree, field, location, dateRange)
-- skills (array of skill categories with title, categoryTitle, and skills array)
-- projects (optional array)
-- certifications (optional array of strings)
+- skills (array of skill categories with categoryTitle and skills array [max 5 skills per category])
+- projects (optional - only if highly relevant)
 
-IMPORTANT: Only use information from the original resume. Do not add skills, experiences, or details that are not explicitly mentioned.
-Output ONLY valid JSON without any markdown formatting or code blocks.`;
+CRITICAL: Output ONLY valid JSON. Be concise. One page maximum.`;
 
-const OLLAMA_JSON_PROMPT = `You MUST respond with ONLY valid JSON. Do not include any explanations, markdown, or text before or after the JSON object.
+const OLLAMA_STEP1_PROMPT = `Extract ONLY basic information from the resume. Output valid JSON without any markdown.
 
-Parse the resume and output a JSON object with this exact structure:
 {
   "personalInfo": {
     "name": "string",
@@ -41,45 +53,60 @@ Parse the resume and output a JSON object with this exact structure:
     "email": "string",
     "phone": "string",
     "location": "string",
-    "linkedin": "string (optional)"
-  },
-  "experience": [
-    {
-      "company": "string",
-      "location": "string",
-      "description": "string (optional)",
-      "title": "string",
-      "dateRange": "string",
-      "duties": ["string"]
-    }
-  ],
+    "linkedin": "string or empty"
+  }
+}
+
+CRITICAL: Output ONLY valid JSON. Start with { and end with }. No other text.`;
+
+const OLLAMA_STEP2_PROMPT = `Extract education and skills from the resume. Output valid JSON without any markdown.
+
+{
   "education": [
     {
       "institution": "string",
-      "university": "string",
+      "university": "string or empty",
       "degree": "string",
-      "field": "string",
-      "location": "string",
-      "dateRange": "string"
+      "field": "string or empty",
+      "location": "string or empty",
+      "dateRange": "string or -"
     }
   ],
   "skills": [
     {
-      "categoryTitle": "string",
-      "skills": ["string"]
+      "categoryTitle": "string (e.g., Programming Languages)",
+      "skills": ["skill1", "skill2", "skill3", "skill4", "skill5"]
     }
-  ],
-  "projects": [],
-  "certifications": ["string"]
+  ]
+}
+
+RULES:
+- Maximum 5 skills per category
+- Maximum 7 skill categories total
+- Output ONLY valid JSON. Start with { and end with }. No other text.`;
+
+const OLLAMA_STEP3_PROMPT = `Extract work experience from the resume. Be EXTREMELY concise. Output valid JSON without any markdown.
+
+{
+  "experience": [
+    {
+      "company": "string",
+      "location": "string",
+      "description": "2-3 words max",
+      "title": "string",
+      "dateRange": "string",
+      "duties": ["duty1 (max 60 chars)", "duty2", "duty3", "duty4", "duty5"]
+    }
+  ]
 }
 
 CRITICAL RULES:
-1. Extract information from the resume below. Use ONLY information present in the resume.
-2. Do NOT invent details.
-3. Do NOT duplicate entries - each company should appear ONLY ONCE in the experience array.
-4. Do NOT repeat the same job position multiple times.
-5. Combine all duties from the same company/position into a single entry.
-6. Start your response with { and end with }. No other text.`;
+- Maximum 3 companies
+- Maximum 5 duties per company
+- Each duty maximum 60 characters
+- Description maximum 3 words
+- NO duplicates
+- Output ONLY valid JSON. Start with { and end with }. No other text.`;
 
 const extractJSON = (text: string): string => {
 	const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
@@ -95,6 +122,54 @@ const extractJSON = (text: string): string => {
 	}
 	
 	return text.trim();
+};
+
+/**
+ * Принудительно ограничивает данные резюме для размещения на одной странице
+ */
+const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
+	const MAX_JOBS = 3;
+	const MAX_DUTIES_PER_JOB = 5;
+	const MAX_DUTY_LENGTH = 80;
+	const MAX_SKILLS_PER_CATEGORY = 5;
+	const MAX_DESCRIPTION_WORDS = 3;
+	
+	// Ограничиваем количество работ
+	if (resumeData.experience && resumeData.experience.length > MAX_JOBS) {
+		resumeData.experience = resumeData.experience.slice(0, MAX_JOBS);
+	}
+	
+	// Ограничиваем duties для каждой работы
+	if (resumeData.experience) {
+		resumeData.experience = resumeData.experience.map(job => ({
+			...job,
+			// Ограничиваем количество duties
+			duties: job.duties.slice(0, MAX_DUTIES_PER_JOB).map(duty => {
+				// Обрезаем слишком длинные duties
+				if (duty.length > MAX_DUTY_LENGTH) {
+					return duty.substring(0, MAX_DUTY_LENGTH - 3) + '...';
+				}
+				return duty;
+			}),
+			// Ограничиваем описание компании до 3 слов
+			description: job.description 
+				? job.description.split(' ').slice(0, MAX_DESCRIPTION_WORDS).join(' ')
+				: job.description
+		}));
+	}
+	
+	// Ограничиваем количество навыков в каждой категории
+	if (resumeData.skills) {
+		resumeData.skills = resumeData.skills.map(category => ({
+			...category,
+			skills: category.skills.slice(0, MAX_SKILLS_PER_CATEGORY)
+		}));
+	}
+	
+	// Удаляем projects если они есть (для экономии места)
+	delete resumeData.projects;
+	
+	return resumeData;
 };
 
 export const enhanceResume = async (
@@ -142,7 +217,8 @@ const enhanceWithOpenAI = async (
 	
 	const data = await response.json();
 	const content = extractJSON(data.choices[0].message.content);
-	return JSON.parse(content);
+	const resumeData = JSON.parse(content);
+	return enforceResumeConstraints(resumeData);
 };
 
 const enhanceWithClaude = async (
@@ -175,89 +251,174 @@ const enhanceWithClaude = async (
 	
 	const data = await response.json();
 	const contentText = extractJSON(data.content[0].text);
-	return JSON.parse(contentText);
+	const resumeData = JSON.parse(contentText);
+	return enforceResumeConstraints(resumeData);
 };
 
 const enhanceWithOllama = async (
 	resumeText: string,
 	config: AIConfig
 ): Promise<ResumeData> => {
-	
-	const ollamaBody:OllamaApiBody = {
-		model: config.model || 'llama2',
-		prompt: `${OLLAMA_JSON_PROMPT}\n\nResume text:\n${resumeText}\n\nJSON output:`,
-		stream: false,
-		format: 'json',
-		options: ollamaOptions
-	}
-	
 	const endpoint = config.ollamaEndpoint || 'http://localhost:11434';
-	const response = await fetch(`${endpoint}/api/generate`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(ollamaBody)
-	});
 	
-	if (!response.ok) {
-		const errorText = await response.text();
-		throw new Error(`Ollama API error: ${response.statusText} - ${errorText}`);
-	}
-	
-	const data = await response.json();
-	
-	if (!data.response) {
-		console.error('Ollama API response:', data);
-		throw new Error('Ollama API returned empty response');
-	}
-	
-	console.log('Ollama raw response (first 500 chars):', data.response.substring(0, 500));
-	
-	let jsonContent = data.response.trim();
-	const jsonStart = jsonContent.indexOf('{');
-	const jsonEnd = jsonContent.lastIndexOf('}');
-	
-	if (jsonStart === -1 || jsonEnd === -1) {
-		console.error('No JSON object found in response:', jsonContent);
-		throw new Error('Ollama response does not contain valid JSON object');
-	}
-	
-	jsonContent = jsonContent.substring(jsonStart, jsonEnd + 1);
+	// Вспомогательная функция для запроса к Ollama
+	const ollamaRequest = async (prompt: string, stepName: string): Promise<any> => {
+		console.log(`\n=== ${stepName} - Starting ===`);
+		
+		const ollamaBody: OllamaApiBody = {
+			model: config.model || 'llama2',
+			prompt: `${prompt}\n\nResume text:\n${resumeText}\n\nJSON output:`,
+			stream: false,
+			format: 'json',
+			options: ollamaOptions
+		};
+		
+		const response = await fetch(`${endpoint}/api/generate`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(ollamaBody)
+		});
+		
+		if (!response.ok) {
+			const errorText = await response.text();
+			throw new Error(`Ollama API error: ${response.statusText} - ${errorText}`);
+		}
+		
+		const data = await response.json();
+		console.log(`${stepName} - Available keys:`, Object.keys(data));
+		
+		// Ollama может возвращать ответ в разных полях в зависимости от модели
+		let jsonContent = '';
+		
+		if (data.response && typeof data.response === 'string') {
+			jsonContent = data.response;
+			console.log(`${stepName} - Using 'response' field`);
+		} else if (data.thinking && typeof data.thinking === 'string') {
+			jsonContent = data.thinking;
+			console.log(`${stepName} - Using 'thinking' field`);
+		} else if (data.message && typeof data.message === 'string') {
+			jsonContent = data.message;
+			console.log(`${stepName} - Using 'message' field`);
+		} else if (data.content && typeof data.content === 'string') {
+			jsonContent = data.content;
+			console.log(`${stepName} - Using 'content' field`);
+		}
+		
+		if (!jsonContent || jsonContent.trim().length === 0) {
+			console.error(`${stepName} - Empty response. Data:`, data);
+			throw new Error(`Ollama returned empty response in ${stepName}`);
+		}
+		
+		console.log(`${stepName} - Response preview:`, jsonContent.substring(0, 150));
+		jsonContent = jsonContent.trim();
+		
+		// Извлекаем первый валидный JSON объект
+		const jsonStart = jsonContent.indexOf('{');
+		if (jsonStart === -1) {
+			console.error(`${stepName} - No JSON found:`, jsonContent.substring(0, 300));
+			throw new Error(`No JSON object in ${stepName}`);
+		}
+		
+		let braceCount = 0;
+		let jsonEnd = -1;
+		
+		for (let i = jsonStart; i < jsonContent.length; i++) {
+			if (jsonContent[i] === '{') braceCount++;
+			if (jsonContent[i] === '}') braceCount--;
+			
+			if (braceCount === 0) {
+				jsonEnd = i;
+				break;
+			}
+		}
+		
+		if (jsonEnd === -1) {
+			throw new Error(`Incomplete JSON in ${stepName}`);
+		}
+		
+		jsonContent = jsonContent.substring(jsonStart, jsonEnd + 1);
+		console.log(`${stepName} - JSON length:`, jsonContent.length);
+		
+		try {
+			const parsed = JSON.parse(jsonContent);
+			console.log(`${stepName} - ✅ Parsed successfully. Keys:`, Object.keys(parsed));
+			return parsed;
+		} catch (parseError) {
+			console.error(`${stepName} - ❌ Parse failed:`, jsonContent.substring(0, 300));
+			throw new Error(`${stepName} parse error: ${parseError instanceof Error ? parseError.message : 'Unknown'}`);
+		}
+	};
 	
 	try {
-		// Fix if the model returns a duplicate job 1
-		const parsedData = JSON.parse(jsonContent);
-		if (parsedData.experience && Array.isArray(parsedData.experience)) {
+		console.log('\n🚀 Starting Ollama 3-step enhancement...');
+		
+		const step1Data = await ollamaRequest(OLLAMA_STEP1_PROMPT, 'Step 1: Personal Info');
+		await new Promise(resolve => setTimeout(resolve, 300));
+		
+		const step2Data = await ollamaRequest(OLLAMA_STEP2_PROMPT, 'Step 2: Education & Skills');
+		await new Promise(resolve => setTimeout(resolve, 300));
+		
+		const step3Data = await ollamaRequest(OLLAMA_STEP3_PROMPT, 'Step 3: Work Experience');
+		
+		console.log('\n✅ All 3 steps completed');
+		
+		// Объединяем результаты
+		const combinedData: ResumeData = {
+			personalInfo: step1Data.personalInfo || {},
+			education: step2Data.education || [],
+			skills: step2Data.skills || [],
+			experience: step3Data.experience || [],
+			projects: []
+		};
+		
+		console.log('Combined:', {
+			personalInfo: !!combinedData.personalInfo,
+			education: combinedData.education.length,
+			skills: combinedData.skills.length,
+			experience: combinedData.experience.length
+		});
+		
+		// Deduplicate experience
+		if (combinedData.experience && Array.isArray(combinedData.experience)) {
 			const uniqueExperience = new Map();
-			parsedData.experience.forEach((job: any) => {
+			combinedData.experience.forEach((job: any) => {
 				const key = `${job.company}-${job.title}-${job.dateRange}`;
 				if (!uniqueExperience.has(key)) {
 					uniqueExperience.set(key, job);
 				}
 			});
-			parsedData.experience = Array.from(uniqueExperience.values());
+			combinedData.experience = Array.from(uniqueExperience.values());
 		}
-		// deduplicate fix 2
-		if (parsedData.education && Array.isArray(parsedData.education)) {
+		
+		// Deduplicate education
+		if (combinedData.education && Array.isArray(combinedData.education)) {
 			const uniqueEducation = new Map();
-			parsedData.education.forEach((edu: any) => {
+			combinedData.education.forEach((edu: any) => {
 				const key = `${edu.institution}-${edu.degree}-${edu.field}`;
 				if (!uniqueEducation.has(key)) {
 					uniqueEducation.set(key, edu);
 				}
 			});
-			parsedData.education = Array.from(uniqueEducation.values());
-		}
-		// deduplicate fix 3 for certifications
-		if (parsedData.certifications && Array.isArray(parsedData.certifications)) {
-			parsedData.certifications = [...new Set(parsedData.certifications)];
+			combinedData.education = Array.from(uniqueEducation.values());
 		}
 		
-		return parsedData;
-	} catch (parseError) {
-		console.error('Failed to parse JSON:', jsonContent);
-		console.error('Parse error:', parseError);
-		throw new Error(`Failed to parse Ollama response as JSON: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`);
+		// Deduplicate skills
+		if (combinedData.skills && Array.isArray(combinedData.skills)) {
+			const uniqueSkills = new Map();
+			combinedData.skills.forEach((skillCat: any) => {
+				if (!uniqueSkills.has(skillCat.categoryTitle)) {
+					uniqueSkills.set(skillCat.categoryTitle, skillCat);
+				}
+			});
+			combinedData.skills = Array.from(uniqueSkills.values());
+		}
+		
+		return enforceResumeConstraints(combinedData);
+		
+	} catch (error) {
+		console.error('❌ Ollama error:', error);
+		throw error;
 	}
 };

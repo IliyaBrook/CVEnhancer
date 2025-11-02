@@ -11,90 +11,91 @@ export const resumePdfStyles = StyleSheet.create({
 	},
 	mainContent: {
 		flex: 2,
-		padding: '35px 40px'
+		padding: '25px 30px' // уменьшено с 35px 40px
 	},
 	sidebar: {
 		flex: 1,
 		backgroundColor: '#dceefb',
-		padding: '35px 25px',
+		padding: '25px 20px', // уменьшено с 35px 25px
 	},
 	header: {
-		marginBottom: 30,
+		marginBottom: 18, // уменьшено с 30
 		fontWeight: 'bold',
 	},
 	name: {
-		fontSize: 36,
+		fontSize: 28, // уменьшено с 36
 		fontWeight: 'bold',
 		color: '#1a4d8f',
-		marginBottom: 5,
-		letterSpacing: 0.5,
+		marginBottom: 3, // уменьшено с 5
+		letterSpacing: 0.3, // уменьшено с 0.5
 	},
 	titleText: {
-		fontSize: 16,
+		fontSize: 13, // уменьшено с 16
 		color: '#555',
-		marginBottom: 16,
+		marginBottom: 12, // уменьшено с 16
 	},
 	sectionTitle: {
-		fontSize: 14,
+		fontSize: 12, // уменьшено с 14
 		fontWeight: 'bold',
 		color: '#1a4d8f',
-		marginBottom: 15,
+		marginBottom: 10, // уменьшено с 15
 		marginTop: 0,
 		textTransform: 'uppercase',
-		letterSpacing: 1.5,
+		letterSpacing: 1.2, // уменьшено с 1.5
 	},
 	sectionTitleWithMargin: {
-		fontSize: 14,
+		fontSize: 12, // уменьшено с 14
 		fontWeight: 'bold',
 		color: '#1a4d8f',
-		marginBottom: 10,
+		marginBottom: 8, // уменьшено с 10
 		marginTop: 0,
 		textTransform: 'uppercase',
-		letterSpacing: 1.5,
+		letterSpacing: 1.2, // уменьшено с 1.5
 	},
 	job: {
-		marginBottom: 20,
+		marginBottom: 12, // уменьшено с 20
+		minPresenceAhead: 24,
 	},
 	companyInfo: {
-		marginBottom: 8,
+		marginBottom: 5, // уменьшено с 8
 		flexDirection: 'row',
 	},
 	companyName: {
 		fontWeight: 'bold',
 		color: '#333',
-		fontSize: 14,
+		fontSize: 12, // уменьшено с 14
 	},
 	location: {
 		color: '#666',
 		fontStyle: 'italic',
-		fontSize: 14,
+		fontSize: 11, // уменьшено с 14
 	},
 	companyDescription: {
 		color: '#666',
 		fontStyle: 'italic',
-		fontSize: 13,
-		marginBottom: 6,
+		fontSize: 10, // уменьшено с 13
+		marginBottom: 4, // уменьшено с 6
 	},
 	jobTitleLine: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		marginBottom: 8,
+		marginBottom: 5, // уменьшено с 8
 	},
 	jobTitle: {
 		fontWeight: 'bold',
 		color: '#333',
-		fontSize: 14,
+		fontSize: 11, // уменьшено с 14
 	},
 	dateRange: {
 		color: '#666',
-		fontSize: 14,
+		fontSize: 11, // уменьшено с 14
 	},
 	jobDutiesList: {
 		listStyle: 'none',
 		paddingLeft: 0,
 	},
 	jobDuties: {
-		marginTop: 5,
+		marginTop: 3, // уменьшено с 5
 	},
 	jobDutyLi: {
 		position: 'relative',
@@ -106,10 +107,10 @@ export const resumePdfStyles = StyleSheet.create({
 	},
 	jobDuty: {
 		flexDirection: 'row',
-		marginBottom: 5,
-		fontSize: 14,
+		marginBottom: 3, // уменьшено с 5
+		fontSize: 10.5, // уменьшено с 14
 		color: '#333',
-		lineHeight: 1.35,
+		lineHeight: 1.25, // уменьшено с 1.35
 	},
 	bulletBefore: {
 		content: '•',
@@ -122,34 +123,36 @@ export const resumePdfStyles = StyleSheet.create({
 	bullet: {
 		color: '#1a4d8f',
 		fontWeight: 'bold',
-		marginRight: 5,
+		marginRight: 4, // уменьшено с 5
+		fontSize: 10, // добавлено для меньшего буллета
 	},
 	dutyText: {
 		flex: 1,
 	},
 	sidebarSection: {
-		marginBottom: 25,
+		marginBottom: 18, // уменьшено с 25
 	},
 	sidebarContactSection: {
-		marginBottom: 25,
+		marginBottom: 18, // уменьшено с 25
 		lineHeight: 0.8
 	},
 	contactInfoList: {
 		listStyle: 'none',
 	},
 	contactInfo: {
-		marginBottom: 6,
+		marginBottom: 4, // уменьшено с 6
 		color: '#555',
-		fontSize: 13,
+		fontSize: 11, // уменьшено с 13
 	},
 	skillCategory: {
-		marginBottom: 15,
+		marginBottom: 10, // уменьшено с 15
+		minPresenceAhead: 12,
 	},
 	skillCategoryTitle: {
 		fontWeight: 'bold',
 		color: '#333',
-		fontSize: 13,
-		marginBottom: 6,
+		fontSize: 11, // уменьшено с 13
+		marginBottom: 4, // уменьшено с 6
 	},
 	skillList: {
 		listStyle: 'none',
@@ -163,8 +166,8 @@ export const resumePdfStyles = StyleSheet.create({
 	},
 	skillItem: {
 		flexDirection: 'row',
-		marginBottom: 3,
-		fontSize: 12,
+		marginBottom: 2, // уменьшено с 3
+		fontSize: 10, // уменьшено с 12
 		color: '#555',
 	},
 	skillBulletBefore: {
@@ -174,32 +177,34 @@ export const resumePdfStyles = StyleSheet.create({
 		color: '#666',
 	},
 	skillBullet: {
-		marginRight: 5,
+		marginRight: 4, // уменьшено с 5
 		color: '#666',
+		fontSize: 9, // добавлено
 	},
 	skillText: {
 		flex: 1,
 	},
 	educationItem: {
-		marginBottom: 15,
+		marginBottom: 10, // уменьшено с 15
+		minPresenceAhead: 12,
 	},
 	university: {
 		fontWeight: 'bold',
 		color: '#333',
-		fontSize: 13,
+		fontSize: 11, // уменьшено с 13
 	},
 	degree: {
 		color: '#555',
-		fontSize: 12,
-		marginBottom: 3,
+		fontSize: 10, // уменьшено с 12
+		marginBottom: 2, // уменьшено с 3
 	},
 	educationLocation: {
 		color: '#555',
-		fontSize: 12,
+		fontSize: 10, // уменьшено с 12
 		fontStyle: 'italic',
 	},
 	educationDate: {
 		color: '#555',
-		fontSize: 12,
+		fontSize: 10, // уменьшено с 12
 	},
 });
