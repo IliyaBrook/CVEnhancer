@@ -32,7 +32,7 @@ export const resumePdfStyles = StyleSheet.create({
 	titleText: {
 		fontSize: 16,
 		color: '#555',
-		marginBottom: 25,
+		marginBottom: 16,
 	},
 	sectionTitle: {
 		fontSize: 14,

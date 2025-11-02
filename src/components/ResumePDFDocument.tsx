@@ -16,7 +16,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
         <View style={styles.mainContent}>
           <View style={styles.header}>
             <Text style={styles.name}>{personalInfo.name}</Text>
-            {personalInfo.title && <Text style={styles.titleText}>{personalInfo.title}</Text>}
+	          {personalInfo.title && <Text style={styles.titleText}>{personalInfo.title}</Text>}
           </View>
 
           {experience && experience.length > 0 && (
