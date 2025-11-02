@@ -11,7 +11,7 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
   const generateHTML = (): string => {
     if (!resumeData) return '';
 
-    const { personalInfo, experience, skills, education } = resumeData;
+    const { personalInfo, experience, skills, education, militaryService } = resumeData;
 
     const experienceHTML = experience?.map(exp => `
       <div class="job">
@@ -40,7 +40,7 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
         <div class="degree">${edu.degree}</div>
         ${edu.field ? `<div class="degree">${edu.field}</div>` : ''}
         ${edu.location ? `<div class="education-location">${edu.location}</div>` : ''}
-        ${edu.dateRange ? `<div class="education-date">${edu.dateRange}</div>` : ''}
+        ${edu.dateRange && edu.dateRange !== '-' ? `<div class="education-date">${edu.dateRange}</div>` : ''}
       </div>
     `).join('') || '';
 
@@ -106,6 +106,16 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
         <div class="section-title">WORK EXPERIENCE</div>
         ${experienceHTML}
       ` : ''}
+      ${education && education.length > 0 ? `
+        <div class="section-title">EDUCATION</div>
+        ${educationHTML}
+      ` : ''}
+      ${militaryService && militaryService.trim().length > 0 ? `
+        <div style="margin-top: 15px;">
+          <div class="section-title">MILITARY SERVICE</div>
+          <p style="color: #555; font-size: 11px; line-height: 1.4;">${militaryService}</p>
+        </div>
+      ` : ''}
     </div>
     <div class="sidebar">
       <div class="sidebar-section">
@@ -116,12 +126,6 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
         <div class="sidebar-section">
           <div class="section-title">SKILLS</div>
           ${skillsHTML}
-        </div>
-      ` : ''}
-      ${education && education.length > 0 ? `
-        <div class="sidebar-section">
-          <div class="section-title">EDUCATION</div>
-          ${educationHTML}
         </div>
       ` : ''}
     </div>

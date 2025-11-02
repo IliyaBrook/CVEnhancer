@@ -382,7 +382,8 @@ const enhanceWithOllama = async (
 			personalInfo: !!combinedData.personalInfo,
 			education: combinedData.education.length,
 			skills: combinedData.skills.length,
-			experience: combinedData.experience.length
+			experience: combinedData.experience.length,
+			militaryService: combinedData.militaryService ? `"${combinedData.militaryService.substring(0, 50)}..."` : 'empty'
 		});
 		
 		// Deduplicate experience

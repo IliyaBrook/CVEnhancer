@@ -81,6 +81,9 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .degree { ${stylesToCss(styles.degree)} }
         .education-location { ${stylesToCss(styles.educationLocation)} }
         .education-date { ${stylesToCss(styles.educationDate)} }
+        
+        .military-section { ${stylesToCss(styles.militarySection)} }
+        .military-text { ${stylesToCss(styles.militaryText)} }
       `}</style>
 
       <div className="resume-container">
@@ -120,6 +123,28 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
             </>
           )}
 
+          {resumeData.education && resumeData.education.length > 0 && (
+            <>
+              <div className="section-title">EDUCATION</div>
+              {resumeData.education.map((edu, idx) => (
+                <div key={idx} className="education-item">
+                  <div className="university">{edu.university || edu.institution}</div>
+                  {edu.degree && <div className="degree">{edu.degree}</div>}
+                  {edu.field && <div className="degree">{edu.field}</div>}
+                  {edu.location && <div className="education-location">{edu.location}</div>}
+                  {edu.dateRange && edu.dateRange !== '-' && <div className="education-date">{edu.dateRange}</div>}
+                </div>
+              ))}
+            </>
+          )}
+
+          {resumeData.militaryService && resumeData.militaryService.trim().length > 0 && (
+            <div className="military-section">
+              <div className="section-title">MILITARY SERVICE</div>
+              <div className="military-text">{resumeData.militaryService}</div>
+            </div>
+          )}
+
         </div>
 
         <div className="sidebar">
@@ -157,20 +182,6 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
             </div>
           )}
 
-          {resumeData.education && resumeData.education.length > 0 && (
-            <div className="sidebar-section">
-              <div className="section-title-with-margin">EDUCATION</div>
-              {resumeData.education.map((edu, idx) => (
-                <div key={idx} className="education-item">
-                  <div className="university">{edu.university || edu.institution}</div>
-                  {edu.degree && <div className="degree">{edu.degree}</div>}
-                  {edu.field && <div className="degree">{edu.field}</div>}
-                  {edu.location && <div className="education-location">{edu.location}</div>}
-                  {edu.dateRange && <div className="education-date">{edu.dateRange}</div>}
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </div>
