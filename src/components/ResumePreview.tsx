@@ -38,7 +38,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .company-name { ${stylesToCss(styles.companyName)} display: inline; }
         .location { ${stylesToCss(styles.location)} display: inline; }
         .company-description { ${stylesToCss(styles.companyDescription)} }
-        .job-title-line { ${stylesToCss(styles.jobTitleLine)} align-items: center; }
+        .job-title-line { display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .job-title { ${stylesToCss(styles.jobTitle)} }
         .date-range { ${stylesToCss(styles.dateRange)} }
         

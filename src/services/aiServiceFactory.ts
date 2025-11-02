@@ -396,6 +396,21 @@ const enhanceWithOllama = async (
 				}
 			});
 			combinedData.experience = Array.from(uniqueExperience.values());
+			
+			// Sort by date (most recent first)
+			combinedData.experience.sort((a: any, b: any) => {
+				const getYearFromRange = (dateRange: string): number => {
+					if (!dateRange) return 0;
+					if (dateRange.toLowerCase().includes('present')) return 9999;
+					const match = dateRange.match(/(\d{4})/g);
+					if (!match || match.length === 0) return 0;
+					return parseInt(match[match.length - 1]);
+				};
+				
+				const yearA = getYearFromRange(a.dateRange);
+				const yearB = getYearFromRange(b.dateRange);
+				return yearB - yearA;
+			});
 		}
 		
 		// Deduplicate education
