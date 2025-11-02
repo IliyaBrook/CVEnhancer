@@ -8,7 +8,7 @@ interface ResumePDFDocumentProps {
 }
 
 export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData }) => {
-  const { personalInfo, experience, skills, education, certifications, previousExperience } = resumeData;
+  const { personalInfo, experience, skills, education } = resumeData;
 
   return (
     <Document>
@@ -49,22 +49,6 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
               ))}
             </View>
           )}
-
-          {previousExperience && previousExperience.length > 0 && (
-            <View style={styles.previousExperience}>
-              <Text style={styles.sectionTitle}>PREVIOUS EXPERIENCE</Text>
-              {previousExperience.map((prev, index) => (
-                <View key={index} style={styles.prevJob}>
-                  <View>
-                    <Text style={styles.prevJobTitle}>{prev.title}</Text>
-                    <Text>, </Text>
-                    <Text style={styles.prevJobCompany}>{prev.company}</Text>
-                  </View>
-                  <Text style={styles.prevJobDate}>{prev.dateRange}</Text>
-                </View>
-              ))}
-            </View>
-          )}
         </View>
 
         <View style={styles.sidebar}>
@@ -93,7 +77,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
                   {category.skills.map((skill, skillIndex) => (
                     <View key={skillIndex} style={styles.skillItem}>
                       <Text style={styles.skillBullet}>•</Text>
-                      <Text>{skill}</Text>
+                      <Text style={styles.skillText}>{skill}</Text>
                     </View>
                   ))}
                 </View>
@@ -116,15 +100,6 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
                     <Text style={styles.educationDate}>{edu.dateRange}</Text>
                   )}
                 </View>
-              ))}
-            </View>
-          )}
-
-          {certifications && certifications.length > 0 && (
-            <View style={styles.sidebarSection}>
-              <Text style={styles.sidebarSectionTitle}>OTHER</Text>
-              {certifications.map((cert, index) => (
-                <Text key={index} style={styles.certification}>{cert}</Text>
               ))}
             </View>
           )}

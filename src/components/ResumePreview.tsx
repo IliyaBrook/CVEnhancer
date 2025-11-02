@@ -42,10 +42,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .job-title { ${stylesToCss(styles.jobTitle)} }
         .date-range { ${stylesToCss(styles.dateRange)} }
         
-        .job-duties {
-          list-style: none;
-          padding-left: 0;
-        }
+        .job-duties { ${stylesToCss(styles.jobDutiesList)} }
         
         .job-duties li {
           position: relative;
@@ -72,18 +69,13 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
           margin-top: 25px;
         }
         
-        .contact-info {
-          list-style: none;
-        }
-        
+        .contact-info { ${stylesToCss(styles.contactInfoList)} }
         .contact-info li { ${stylesToCss(styles.contactInfo)} }
         
         .skill-category { ${stylesToCss(styles.skillCategory)} }
         .skill-category-title { ${stylesToCss(styles.skillCategoryTitle)} }
         
-        .skill-list {
-          list-style: none;
-        }
+        .skill-list { ${stylesToCss(styles.skillList)} }
         
         .skill-list li {
           ${stylesToCss(styles.skillItem)}
@@ -103,13 +95,6 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .degree { ${stylesToCss(styles.degree)} }
         .education-location { ${stylesToCss(styles.educationLocation)} }
         .education-date { ${stylesToCss(styles.educationDate)} }
-        .certification { ${stylesToCss(styles.certification)} }
-        
-        .previous-experience { ${stylesToCss(styles.previousExperience)} }
-        .prev-job { ${stylesToCss(styles.prevJob)} }
-        .prev-job-title { ${stylesToCss(styles.prevJobTitle)} }
-        .prev-job-company { ${stylesToCss(styles.prevJobCompany)} }
-        .prev-job-date { ${stylesToCss(styles.prevJobDate)} }
       `}</style>
 
       <div className="resume-container">
@@ -148,6 +133,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
               ))}
             </>
           )}
+
         </div>
 
         <div className="sidebar">
@@ -196,15 +182,6 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
                   {edu.location && <div className="education-location">{edu.location}</div>}
                   {edu.dateRange && <div className="education-date">{edu.dateRange}</div>}
                 </div>
-              ))}
-            </div>
-          )}
-
-          {resumeData.certifications && resumeData.certifications.length > 0 && (
-            <div className="sidebar-section">
-              <div className="section-title">OTHER</div>
-              {resumeData.certifications.map((cert, idx) => (
-                <div key={idx} className="certification">{cert}</div>
               ))}
             </div>
           )}

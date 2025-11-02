@@ -119,11 +119,6 @@ export const myFakeResumeData: ResumeData = {
 			]
 		}
 	],
-	certifications: [
-		"Hexlet Online Programming School - Full-Stack Development",
-		"John Bryce College - Cyber Security",
-		"ITC InterBit - Cisco Certified Network Associate (CCNA)"
-	],
 	projects: [],
 	education: [
 		{
@@ -149,18 +144,6 @@ export const myFakeResumeData: ResumeData = {
 			field: "",
 			location: "Tel Aviv, Hamerkaz",
 			dateRange: "Education"
-		}
-	],
-	previousExperience: [
-		{
-			title: "Junior Developer",
-			company: "StartupTech",
-			dateRange: "2015 - 2017"
-		},
-		{
-			title: "IT Support Specialist",
-			company: "TechCorp",
-			dateRange: "2013 - 2015"
 		}
 	]
 };
@@ -291,11 +274,6 @@ const fakeResumeData1: ResumeData = {
 			]
 		}
 	],
-	certifications: [
-		"CodeAcademy Online - Full-Stack Development",
-		"TechSkills Institute - Cyber Security",
-		"NetworkPro Training - Cisco Certified Network Associate (CCNA)"
-	],
 	projects: [],
 	education: [
 		{
@@ -321,18 +299,6 @@ const fakeResumeData1: ResumeData = {
 			field: "",
 			location: "San Francisco, CA",
 			dateRange: "Education"
-		}
-	],
-	previousExperience: [
-		{
-			title: "Junior Developer",
-			company: "WebDev Solutions",
-			dateRange: "2015 - 2017"
-		},
-		{
-			title: "Technical Support",
-			company: "IT Services Inc",
-			dateRange: "2013 - 2015"
 		}
 	]
 };

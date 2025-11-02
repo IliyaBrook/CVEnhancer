@@ -82,6 +82,10 @@ export const resumePdfStyles = StyleSheet.create({
 		color: '#666',
 		fontSize: 14,
 	},
+	jobDutiesList: {
+		listStyle: 'none',
+		paddingLeft: 0,
+	},
 	jobDuties: {
 		marginTop: 5,
 	},
@@ -111,6 +115,9 @@ export const resumePdfStyles = StyleSheet.create({
 		textTransform: 'uppercase',
 		letterSpacing: 1.5,
 	},
+	contactInfoList: {
+		listStyle: 'none',
+	},
 	contactInfo: {
 		marginBottom: 6,
 		color: '#555',
@@ -125,6 +132,9 @@ export const resumePdfStyles = StyleSheet.create({
 		fontSize: 13,
 		marginBottom: 6,
 	},
+	skillList: {
+		listStyle: 'none',
+	},
 	skillItem: {
 		flexDirection: 'row',
 		marginBottom: 3,
@@ -134,6 +144,9 @@ export const resumePdfStyles = StyleSheet.create({
 	skillBullet: {
 		marginRight: 5,
 		color: '#666',
+	},
+	skillText: {
+		flex: 1,
 	},
 	educationItem: {
 		marginBottom: 15,
@@ -156,28 +169,5 @@ export const resumePdfStyles = StyleSheet.create({
 	educationDate: {
 		color: '#555',
 		fontSize: 12,
-	},
-	certification: {
-		color: '#555',
-		fontSize: 12,
-		marginBottom: 5,
-	},
-	previousExperience: {
-		marginTop: 30,
-	},
-	prevJob: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		marginBottom: 6,
-		fontSize: 13,
-	},
-	prevJobTitle: {
-		color: '#333',
-	},
-	prevJobCompany: {
-		color: '#666',
-	},
-	prevJobDate: {
-		color: '#666',
 	},
 });
