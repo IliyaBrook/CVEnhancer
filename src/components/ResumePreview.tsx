@@ -105,28 +105,11 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .education-date { ${stylesToCss(styles.educationDate)} }
         .certification { ${stylesToCss(styles.certification)} }
         
-        .previous-experience {
-          margin-top: 30px;
-        }
-        
-        .prev-job {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 6px;
-          font-size: 13px;
-        }
-        
-        .prev-job-title {
-          color: #333;
-        }
-        
-        .prev-job-company {
-          color: #666;
-        }
-        
-        .prev-job-date {
-          color: #666;
-        }
+        .previous-experience { ${stylesToCss(styles.previousExperience)} }
+        .prev-job { ${stylesToCss(styles.prevJob)} }
+        .prev-job-title { ${stylesToCss(styles.prevJobTitle)} }
+        .prev-job-company { ${stylesToCss(styles.prevJobCompany)} }
+        .prev-job-date { ${stylesToCss(styles.prevJobDate)} }
       `}</style>
 
       <div className="resume-container">

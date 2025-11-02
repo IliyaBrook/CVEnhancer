@@ -162,4 +162,22 @@ export const resumePdfStyles = StyleSheet.create({
 		fontSize: 12,
 		marginBottom: 5,
 	},
+	previousExperience: {
+		marginTop: 30,
+	},
+	prevJob: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		marginBottom: 6,
+		fontSize: 13,
+	},
+	prevJobTitle: {
+		color: '#333',
+	},
+	prevJobCompany: {
+		color: '#666',
+	},
+	prevJobDate: {
+		color: '#666',
+	},
 });

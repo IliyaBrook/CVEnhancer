@@ -8,7 +8,7 @@ interface ResumePDFDocumentProps {
 }
 
 export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData }) => {
-  const { personalInfo, experience, skills, education, certifications } = resumeData;
+  const { personalInfo, experience, skills, education, certifications, previousExperience } = resumeData;
 
   return (
     <Document>
@@ -45,6 +45,22 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
                       ))}
                     </View>
                   )}
+                </View>
+              ))}
+            </View>
+          )}
+
+          {previousExperience && previousExperience.length > 0 && (
+            <View style={styles.previousExperience}>
+              <Text style={styles.sectionTitle}>PREVIOUS EXPERIENCE</Text>
+              {previousExperience.map((prev, index) => (
+                <View key={index} style={styles.prevJob}>
+                  <View>
+                    <Text style={styles.prevJobTitle}>{prev.title}</Text>
+                    <Text>, </Text>
+                    <Text style={styles.prevJobCompany}>{prev.company}</Text>
+                  </View>
+                  <Text style={styles.prevJobDate}>{prev.dateRange}</Text>
                 </View>
               ))}
             </View>

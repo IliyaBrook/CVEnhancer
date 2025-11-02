@@ -5,6 +5,7 @@ export interface ResumeData {
 	skills: SkillCategory[]
 	certifications?: string[]
 	projects?: Project[]
+	previousExperience?: PreviousExperience[]
 }
 
 export interface PersonalInfo {
@@ -46,4 +47,10 @@ export interface Project {
 	description: string
 	technologies: string[]
 	link?: string
+}
+
+export interface PreviousExperience {
+	title: string
+	company: string
+	dateRange: string
 }

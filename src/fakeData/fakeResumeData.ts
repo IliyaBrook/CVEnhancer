@@ -150,6 +150,18 @@ export const myFakeResumeData: ResumeData = {
 			location: "Tel Aviv, Hamerkaz",
 			dateRange: "Education"
 		}
+	],
+	previousExperience: [
+		{
+			title: "Junior Developer",
+			company: "StartupTech",
+			dateRange: "2015 - 2017"
+		},
+		{
+			title: "IT Support Specialist",
+			company: "TechCorp",
+			dateRange: "2013 - 2015"
+		}
 	]
 };
 
@@ -309,6 +321,18 @@ const fakeResumeData1: ResumeData = {
 			field: "",
 			location: "San Francisco, CA",
 			dateRange: "Education"
+		}
+	],
+	previousExperience: [
+		{
+			title: "Junior Developer",
+			company: "WebDev Solutions",
+			dateRange: "2015 - 2017"
+		},
+		{
+			title: "Technical Support",
+			company: "IT Services Inc",
+			dateRange: "2013 - 2015"
 		}
 	]
 };
