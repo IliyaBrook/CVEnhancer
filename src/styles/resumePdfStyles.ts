@@ -124,6 +124,10 @@ export const resumePdfStyles = StyleSheet.create({
 	sidebarSection: {
 		marginBottom: 25,
 	},
+	sidebarContactSection: {
+		marginBottom: 25,
+		lineHeight: 0.8
+	},
 	sidebarSectionTitle: {
 		fontSize: 13,
 		fontWeight: 'bold',

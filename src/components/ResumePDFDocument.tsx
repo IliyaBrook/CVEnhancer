@@ -52,7 +52,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
         </View>
 
         <View style={styles.sidebar}>
-          <View style={styles.sidebarSection}>
+          <View style={styles.sidebarContactSection}>
             <Text style={[styles.sectionTitle]}>CONTACT</Text>
             {personalInfo.location && (
               <Text style={styles.contactInfo}>{personalInfo.location}</Text>

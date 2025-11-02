@@ -56,6 +56,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         }
         
         .sidebar-section { ${stylesToCss(styles.sidebarSection)} }
+        .sidebar-contact-section { ${stylesToCss(styles.sidebarContactSection)} }
         
         .sidebar .section-title { ${stylesToCss(styles.sidebarSectionTitle)} }
         
@@ -125,7 +126,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         </div>
 
         <div className="sidebar">
-          <div className="sidebar-section">
+          <div className="sidebar-contact-section">
             <div className="section-title">CONTACT</div>
             <ul className="contact-info">
               {resumeData.personalInfo.location && (
