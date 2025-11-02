@@ -50,7 +50,7 @@ function App() {
       const enhanced = await enhanceResume(extractedText, config);
 
       console.log('=== Generated Resume Data ===');
-      console.log(JSON.stringify(enhanced, null, 2));
+      console.log(enhanced);
 
       setResumeData(enhanced);
       setStatus('completed');

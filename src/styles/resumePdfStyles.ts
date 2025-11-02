@@ -83,6 +83,11 @@ export const resumePdfStyles = StyleSheet.create({
   },
   jobTitle: {
     fontWeight: 'bold',
+    color: '#1d76b6',
+    fontSize: 11,
+  },
+  jobTitleSuffix: {
+    fontWeight: 'bold',
     color: '#333',
     fontSize: 11,
   },

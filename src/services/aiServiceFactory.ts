@@ -1,4 +1,4 @@
-import { AIProvider, AIConfig, ResumeData, OpenAIApiBody, ClaudeApiBody, OllamaApiBody } from '@/types';
+import { AIConfig, AIProvider, ClaudeApiBody, OllamaApiBody, OpenAIApiBody, ResumeData } from '@/types';
 import { claudeOptions, ollamaOptions, openaiOptions } from '@/config';
 
 const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI. Your task is to improve the given resume following these STRICT rules:
@@ -238,8 +238,6 @@ const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<
   const endpoint = config.ollamaEndpoint || 'http://localhost:11434';
 
   const ollamaRequest = async (prompt: string, stepName: string): Promise<any> => {
-    console.log(`\n=== ${stepName} - Starting ===`);
-
     const ollamaBody: OllamaApiBody = {
       model: config.model || 'llama2',
       prompt: `${prompt}\n\nResume text:\n${resumeText}\n\nJSON output:`,
@@ -262,32 +260,23 @@ const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<
     }
 
     const data = await response.json();
-    console.log(`${stepName} - Available keys:`, Object.keys(data));
-
     let jsonContent = '';
 
     if (data.response && typeof data.response === 'string') {
       jsonContent = data.response;
-      console.log(`${stepName} - Using 'response' field`);
     } else if (data.thinking && typeof data.thinking === 'string') {
       jsonContent = data.thinking;
-      console.log(`${stepName} - Using 'thinking' field`);
     } else if (data.message && typeof data.message === 'string') {
       jsonContent = data.message;
-      console.log(`${stepName} - Using 'message' field`);
     } else if (data.content && typeof data.content === 'string') {
       jsonContent = data.content;
-      console.log(`${stepName} - Using 'content' field`);
     }
 
     if (!jsonContent || jsonContent.trim().length === 0) {
       console.error(`${stepName} - Empty response. Data:`, data);
       throw new Error(`Ollama returned empty response in ${stepName}`);
     }
-
-    console.log(`${stepName} - Response preview:`, jsonContent.substring(0, 150));
     jsonContent = jsonContent.trim();
-
     const jsonStart = jsonContent.indexOf('{');
     if (jsonStart === -1) {
       console.error(`${stepName} - No JSON found:`, jsonContent.substring(0, 300));
@@ -312,12 +301,8 @@ const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<
     }
 
     jsonContent = jsonContent.substring(jsonStart, jsonEnd + 1);
-    console.log(`${stepName} - JSON length:`, jsonContent.length);
-
     try {
-      const parsed = JSON.parse(jsonContent);
-      console.log(`${stepName} - ✅ Parsed successfully. Keys:`, Object.keys(parsed));
-      return parsed;
+      return JSON.parse(jsonContent);
     } catch (parseError) {
       console.error(`${stepName} - ❌ Parse failed:`, jsonContent.substring(0, 300));
       throw new Error(`${stepName} parse error: ${parseError instanceof Error ? parseError.message : 'Unknown'}`);
@@ -325,17 +310,12 @@ const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<
   };
 
   try {
-    console.log('\n🚀 Starting Ollama 3-step enhancement...');
-
     const step1Data = await ollamaRequest(OLLAMA_STEP1_PROMPT, 'Step 1: Personal Info');
     await new Promise(resolve => setTimeout(resolve, 300));
 
     const step2Data = await ollamaRequest(OLLAMA_STEP2_PROMPT, 'Step 2: Education & Skills');
     await new Promise(resolve => setTimeout(resolve, 300));
-
     const step3Data = await ollamaRequest(OLLAMA_STEP3_PROMPT, 'Step 3: Work Experience');
-
-    console.log('\n✅ All 3 steps completed');
 
     const combinedData: ResumeData = {
       personalInfo: step1Data.personalInfo || {},
@@ -345,14 +325,6 @@ const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<
       projects: [],
       militaryService: step2Data.militaryService || '',
     };
-
-    console.log('Combined:', {
-      personalInfo: !!combinedData.personalInfo,
-      education: combinedData.education.length,
-      skills: combinedData.skills.length,
-      experience: combinedData.experience.length,
-      militaryService: combinedData.militaryService ? `"${combinedData.militaryService.substring(0, 50)}..."` : 'empty',
-    });
 
     if (combinedData.experience && Array.isArray(combinedData.experience)) {
       const uniqueExperience = new Map();
@@ -403,7 +375,7 @@ const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<
     const constrainedData = enforceResumeConstraints(combinedData);
 
     console.log('=== Generated Resume (Ollama) ===');
-    console.log(JSON.stringify(constrainedData, null, 2));
+    console.log(constrainedData);
 
     return constrainedData;
   } catch (error) {
