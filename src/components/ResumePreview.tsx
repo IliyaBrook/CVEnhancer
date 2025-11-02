@@ -46,7 +46,14 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         
         .job-duties li { ${stylesToCss(styles.jobDutyLi)} }
         
-        .job-duties li::before { ${stylesToCss(styles.bulletBefore)} }
+        .job-duties li::before {
+          content: "•";
+          position: absolute;
+          left: 0;
+          top: 0;
+          color: #1a4d8f;
+          font-weight: bold;
+        }
         
         .sidebar-section { ${stylesToCss(styles.sidebarSection)} }
         
@@ -64,7 +71,12 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         
         .skill-list li { ${stylesToCss(styles.skillItemLi)} }
         
-        .skill-list li::before { ${stylesToCss(styles.skillBulletBefore)} }
+        .skill-list li::before {
+          content: "•";
+          position: absolute;
+          left: 0;
+          color: #666;
+        }
         
         .education-item { ${stylesToCss(styles.educationItem)} }
         .university { ${stylesToCss(styles.university)} }

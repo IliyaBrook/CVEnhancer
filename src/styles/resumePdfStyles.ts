@@ -39,7 +39,7 @@ export const resumePdfStyles = StyleSheet.create({
 		fontWeight: 'bold',
 		color: '#1a4d8f',
 		marginBottom: 15,
-		marginTop: 25,
+		marginTop: 0,
 		textTransform: 'uppercase',
 		letterSpacing: 1.5,
 	},
