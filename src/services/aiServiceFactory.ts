@@ -76,7 +76,9 @@ RULES:
 - Military service: 1-2 sentences max if present, empty string if not
 - Output ONLY valid JSON. Start with { and end with }. No other text.`;
 
-const OLLAMA_STEP3_PROMPT = `Extract work experience from the resume. Output valid JSON without any markdown.
+const createOllamaStep3Prompt = (): string => {
+  const config = resumeAiConfig;
+  let prompt = `Extract work experience from the resume. Output valid JSON without any markdown.
 
 {
   "experience": [
@@ -91,10 +93,34 @@ const OLLAMA_STEP3_PROMPT = `Extract work experience from the resume. Output val
   ]
 }
 
-CRITICAL RULES:
-- Keep description concise (2-3 words recommended)
+CRITICAL RULES:`;
+
+  if (config?.experience) {
+    if (config.experience.maxJobs !== null && config.experience.maxJobs !== undefined) {
+      prompt += `\n- Include ONLY the ${config.experience.maxJobs} most recent and relevant jobs`;
+    }
+
+    if (config.experience.bulletPointsPerJob !== null && config.experience.bulletPointsPerJob !== undefined) {
+      prompt += `\n- Each job MUST have EXACTLY ${config.experience.bulletPointsPerJob} bullet points (duties)`;
+    }
+
+    if (config.experience.maxBulletLength !== null && config.experience.maxBulletLength !== undefined) {
+      prompt += `\n- Each bullet point MUST be maximum ${config.experience.maxBulletLength} characters`;
+    } else {
+      prompt += `\n- Bullet points should be concise but comprehensive`;
+    }
+
+    if (config.experience.exclude && Array.isArray(config.experience.exclude) && config.experience.exclude.length > 0) {
+      prompt += `\n- COMPLETELY SKIP jobs with these titles: ${config.experience.exclude.join(', ')}`;
+    }
+  }
+
+  prompt += `\n- Keep description concise (2-3 words recommended)
 - NO duplicates
 - Output ONLY valid JSON. Start with { and end with }. No other text.`;
+
+  return prompt;
+};
 
 const createValidationPrompt = (resumeData: ResumeData): string => {
   const config = resumeAiConfig;
@@ -125,7 +151,9 @@ ADDITIONAL CONFIGURATION CONSTRAINTS:`;
       }
 
       if (config.experience.maxBulletLength !== null && config.experience.maxBulletLength !== undefined) {
-        validationPrompt += `\n- Maximum ${config.experience.maxBulletLength} characters per bullet point`;
+        validationPrompt += `\n- STRICT: Each bullet point MUST be maximum ${config.experience.maxBulletLength} characters. Cut longer bullets.`;
+      } else {
+        validationPrompt += `\n- Bullet points can be any reasonable length (aim for 10-20 words)`;
       }
 
       if (
@@ -172,6 +200,11 @@ ADDITIONAL CONFIGURATION CONSTRAINTS:`;
 
   validationPrompt += `
 
+BEFORE VALIDATION:
+1. Count jobs in experience: should be ${config?.experience?.maxJobs || 'any'}
+2. Check for excluded titles: ${config?.experience?.exclude?.join(', ') || 'none'}
+3. Count bullets per job: should be ${config?.experience?.bulletPointsPerJob || 'any'}
+
 INPUT RESUME DATA:
 ${JSON.stringify(resumeData, null, 2)}
 
@@ -200,6 +233,15 @@ const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
   const config = resumeAiConfig;
 
   if (config?.experience && resumeData.experience) {
+    if (config.experience.exclude && Array.isArray(config.experience.exclude) && config.experience.exclude.length > 0) {
+      resumeData.experience = resumeData.experience.filter(job =>
+        !config.experience.exclude?.some(excludedTitle =>
+          job.title?.toLowerCase().includes(excludedTitle.toLowerCase()) ||
+          job.description?.toLowerCase().includes(excludedTitle.toLowerCase())
+        )
+      );
+    }
+
     const maxJobs = config.experience.maxJobs;
     if (maxJobs !== null && maxJobs !== undefined) {
       resumeData.experience = resumeData.experience.slice(0, maxJobs);
@@ -519,7 +561,8 @@ const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<
 
     const step2Data = await ollamaRequest(OLLAMA_STEP2_PROMPT, 'Step 2: Education & Skills');
     await new Promise(resolve => setTimeout(resolve, 300));
-    const step3Data = await ollamaRequest(OLLAMA_STEP3_PROMPT, 'Step 3: Work Experience');
+    const step3Prompt = createOllamaStep3Prompt();
+    const step3Data = await ollamaRequest(step3Prompt, 'Step 3: Work Experience');
 
     const combinedData: ResumeData = {
       personalInfo: step1Data.personalInfo || {},
