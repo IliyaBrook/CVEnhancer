@@ -21,7 +21,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
 
           {experience && experience.length > 0 && (
             <View>
-              <Text style={[styles.sectionTitle, styles.sectionTitleFirst]}>WORK EXPERIENCE</Text>
+              <Text style={styles.sectionTitle}>WORK EXPERIENCE</Text>
               {experience.map((exp, index) => (
                 <View key={index} style={styles.job}>
                   <View style={styles.companyInfo}>
@@ -53,7 +53,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
 
         <View style={styles.sidebar}>
           <View style={styles.sidebarSection}>
-            <Text style={styles.sidebarSectionTitle}>CONTACT</Text>
+            <Text style={[styles.sectionTitle]}>CONTACT</Text>
             {personalInfo.location && (
               <Text style={styles.contactInfo}>{personalInfo.location}</Text>
             )}
@@ -70,7 +70,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
 
           {skills && skills.length > 0 && (
             <View style={styles.sidebarSection}>
-              <Text style={styles.sidebarSectionTitle}>SKILLS</Text>
+              <Text style={[styles.sectionTitle, styles.sidebarSectionTitleNotFirst]}>SKILLS</Text>
               {skills.map((category, index) => (
                 <View key={index} style={styles.skillCategory}>
                   <Text style={styles.skillCategoryTitle}>{category.categoryTitle}</Text>
@@ -87,7 +87,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
 
           {education && education.length > 0 && (
             <View style={styles.sidebarSection}>
-              <Text style={styles.sidebarSectionTitle}>EDUCATION</Text>
+              <Text style={[styles.sectionTitle, styles.sidebarSectionTitleNotFirst]}>EDUCATION</Text>
               {education.map((edu, index) => (
                 <View key={index} style={styles.educationItem}>
                   <Text style={styles.university}>{edu.university || edu.institution}</Text>
