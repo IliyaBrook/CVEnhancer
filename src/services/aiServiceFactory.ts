@@ -1,11 +1,5 @@
-import {
-	AIProvider,
-	AIConfig,
-	ResumeData,
-	OpenAIApiBody,
-	ClaudeApiBody, OllamaApiBody
-} from '@/types';
-import {claudeOptions, ollamaOptions, openaiOptions} from '@/config';
+import { AIProvider, AIConfig, ResumeData, OpenAIApiBody, ClaudeApiBody, OllamaApiBody } from '@/types';
+import { claudeOptions, ollamaOptions, openaiOptions } from '@/config';
 
 const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI. Your task is to improve the given resume following these STRICT rules:
 
@@ -113,319 +107,307 @@ CRITICAL RULES:
 - Output ONLY valid JSON. Start with { and end with }. No other text.`;
 
 const extractJSON = (text: string): string => {
-	const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-	if (jsonMatch) {
-		return jsonMatch[1].trim();
-	}
-	
-	const braceStart = text.indexOf('{');
-	const braceEnd = text.lastIndexOf('}');
-	
-	if (braceStart !== -1 && braceEnd !== -1 && braceEnd > braceStart) {
-		return text.substring(braceStart, braceEnd + 1);
-	}
-	
-	return text.trim();
+  const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  if (jsonMatch) {
+    return jsonMatch[1].trim();
+  }
+
+  const braceStart = text.indexOf('{');
+  const braceEnd = text.lastIndexOf('}');
+
+  if (braceStart !== -1 && braceEnd !== -1 && braceEnd > braceStart) {
+    return text.substring(braceStart, braceEnd + 1);
+  }
+
+  return text.trim();
 };
 
 const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
-	const MAX_JOBS = 3;
-	const MAX_DUTIES_PER_JOB = 5;
-	const MAX_DUTY_LENGTH = 80;
-	const MAX_SKILLS_PER_CATEGORY = 5;
-	const MAX_DESCRIPTION_WORDS = 3;
-	
-	if (resumeData.experience && resumeData.experience.length > MAX_JOBS) {
-		resumeData.experience = resumeData.experience.slice(0, MAX_JOBS);
-	}
-	
-	if (resumeData.experience) {
-		resumeData.experience = resumeData.experience.map(job => ({
-			...job,
-			duties: job.duties.slice(0, MAX_DUTIES_PER_JOB).map(duty => {
-				if (duty.length > MAX_DUTY_LENGTH) {
-					return duty.substring(0, MAX_DUTY_LENGTH - 3) + '...';
-				}
-				return duty;
-			}),
-			description: job.description
-				? job.description.split(' ').slice(0, MAX_DESCRIPTION_WORDS).join(' ')
-				: job.description
-		}));
-	}
-	
-	if (resumeData.skills) {
-		resumeData.skills = resumeData.skills.map(category => ({
-			...category,
-			skills: category.skills.slice(0, MAX_SKILLS_PER_CATEGORY)
-		}));
-	}
-	
-	delete resumeData.projects;
-	
-	return resumeData;
+  const MAX_JOBS = 3;
+  const MAX_DUTIES_PER_JOB = 5;
+  const MAX_DUTY_LENGTH = 80;
+  const MAX_SKILLS_PER_CATEGORY = 5;
+  const MAX_DESCRIPTION_WORDS = 3;
+
+  if (resumeData.experience && resumeData.experience.length > MAX_JOBS) {
+    resumeData.experience = resumeData.experience.slice(0, MAX_JOBS);
+  }
+
+  if (resumeData.experience) {
+    resumeData.experience = resumeData.experience.map(job => ({
+      ...job,
+      duties: job.duties.slice(0, MAX_DUTIES_PER_JOB).map(duty => {
+        if (duty.length > MAX_DUTY_LENGTH) {
+          return duty.substring(0, MAX_DUTY_LENGTH - 3) + '...';
+        }
+        return duty;
+      }),
+      description: job.description
+        ? job.description.split(' ').slice(0, MAX_DESCRIPTION_WORDS).join(' ')
+        : job.description,
+    }));
+  }
+
+  if (resumeData.skills) {
+    resumeData.skills = resumeData.skills.map(category => ({
+      ...category,
+      skills: category.skills.slice(0, MAX_SKILLS_PER_CATEGORY),
+    }));
+  }
+
+  delete resumeData.projects;
+
+  return resumeData;
 };
 
-export const enhanceResume = async (
-	resumeText: string,
-	config: AIConfig
-): Promise<ResumeData> => {
-	switch (config.provider) {
-		case AIProvider.OPENAI:
-		case AIProvider.CHATGPT:
-			return enhanceWithOpenAI(resumeText, config);
-		case AIProvider.CLAUDE:
-			return enhanceWithClaude(resumeText, config);
-		case AIProvider.OLLAMA:
-			return enhanceWithOllama(resumeText, config);
-		default:
-			throw new Error(`Unsupported AI provider: ${config.provider}`);
-	}
+export const enhanceResume = async (resumeText: string, config: AIConfig): Promise<ResumeData> => {
+  switch (config.provider) {
+    case AIProvider.OPENAI:
+    case AIProvider.CHATGPT:
+      return enhanceWithOpenAI(resumeText, config);
+    case AIProvider.CLAUDE:
+      return enhanceWithClaude(resumeText, config);
+    case AIProvider.OLLAMA:
+      return enhanceWithOllama(resumeText, config);
+    default:
+      throw new Error(`Unsupported AI provider: ${config.provider}`);
+  }
 };
 
-const enhanceWithOpenAI = async (
-	resumeText: string,
-	config: AIConfig
-): Promise<ResumeData> => {
-	const openAiBody:OpenAIApiBody = {
-		model: config.model || 'gpt-4',
-		messages: [
-			{role: 'system', content: RESUME_ENHANCEMENT_PROMPT},
-			{role: 'user', content: `Original resume:\n\n${resumeText}`}
-		],
-		...openaiOptions
-	}
-	
-	const response = await fetch('https://api.openai.com/v1/chat/completions', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${config.apiKey}`
-		},
-		body: JSON.stringify(openAiBody)
-	});
-	
-	if (!response.ok) {
-		throw new Error(`OpenAI API error: ${response.statusText}`);
-	}
-	
-	const data = await response.json();
-	const content = extractJSON(data.choices[0].message.content);
-	const resumeData = JSON.parse(content);
-	return enforceResumeConstraints(resumeData);
+const enhanceWithOpenAI = async (resumeText: string, config: AIConfig): Promise<ResumeData> => {
+  const openAiBody: OpenAIApiBody = {
+    model: config.model || 'gpt-4',
+    messages: [
+      { role: 'system', content: RESUME_ENHANCEMENT_PROMPT },
+      { role: 'user', content: `Original resume:\n\n${resumeText}` },
+    ],
+    ...openaiOptions,
+  };
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${config.apiKey}`,
+    },
+    body: JSON.stringify(openAiBody),
+  });
+
+  if (!response.ok) {
+    throw new Error(`OpenAI API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const content = extractJSON(data.choices[0].message.content);
+  const resumeData = JSON.parse(content);
+  return enforceResumeConstraints(resumeData);
 };
 
-const enhanceWithClaude = async (
-	resumeText: string,
-	config: AIConfig
-): Promise<ResumeData> => {
-	const claudeBody:ClaudeApiBody = {
-		model: config.model || 'claude-3-sonnet-20240229',
-		messages: [
-			{
-				role: 'user',
-				content: `${RESUME_ENHANCEMENT_PROMPT}\n\nOriginal resume:\n\n${resumeText}`
-			}
-		],
-		...claudeOptions
-	}
-	const response = await fetch('https://api.anthropic.com/v1/messages', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'x-api-key': config.apiKey!,
-			'anthropic-version': '2023-06-01'
-		},
-		body: JSON.stringify(claudeBody)
-	});
-	
-	if (!response.ok) {
-		throw new Error(`Claude API error: ${response.statusText}`);
-	}
-	
-	const data = await response.json();
-	const contentText = extractJSON(data.content[0].text);
-	const resumeData = JSON.parse(contentText);
-	return enforceResumeConstraints(resumeData);
+const enhanceWithClaude = async (resumeText: string, config: AIConfig): Promise<ResumeData> => {
+  const claudeBody: ClaudeApiBody = {
+    model: config.model || 'claude-3-sonnet-20240229',
+    messages: [
+      {
+        role: 'user',
+        content: `${RESUME_ENHANCEMENT_PROMPT}\n\nOriginal resume:\n\n${resumeText}`,
+      },
+    ],
+    ...claudeOptions,
+  };
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': config.apiKey!,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify(claudeBody),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Claude API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const contentText = extractJSON(data.content[0].text);
+  const resumeData = JSON.parse(contentText);
+  return enforceResumeConstraints(resumeData);
 };
 
-const enhanceWithOllama = async (
-	resumeText: string,
-	config: AIConfig
-): Promise<ResumeData> => {
-	const endpoint = config.ollamaEndpoint || 'http://localhost:11434';
-	
-	const ollamaRequest = async (prompt: string, stepName: string): Promise<any> => {
-		console.log(`\n=== ${stepName} - Starting ===`);
-		
-		const ollamaBody: OllamaApiBody = {
-			model: config.model || 'llama2',
-			prompt: `${prompt}\n\nResume text:\n${resumeText}\n\nJSON output:`,
-			stream: false,
-			format: 'json',
-			options: ollamaOptions
-		};
-		
-		const response = await fetch(`${endpoint}/api/generate`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(ollamaBody)
-		});
-		
-		if (!response.ok) {
-			const errorText = await response.text();
-			throw new Error(`Ollama API error: ${response.statusText} - ${errorText}`);
-		}
-		
-		const data = await response.json();
-		console.log(`${stepName} - Available keys:`, Object.keys(data));
-		
-		let jsonContent = '';
-		
-		if (data.response && typeof data.response === 'string') {
-			jsonContent = data.response;
-			console.log(`${stepName} - Using 'response' field`);
-		} else if (data.thinking && typeof data.thinking === 'string') {
-			jsonContent = data.thinking;
-			console.log(`${stepName} - Using 'thinking' field`);
-		} else if (data.message && typeof data.message === 'string') {
-			jsonContent = data.message;
-			console.log(`${stepName} - Using 'message' field`);
-		} else if (data.content && typeof data.content === 'string') {
-			jsonContent = data.content;
-			console.log(`${stepName} - Using 'content' field`);
-		}
-		
-		if (!jsonContent || jsonContent.trim().length === 0) {
-			console.error(`${stepName} - Empty response. Data:`, data);
-			throw new Error(`Ollama returned empty response in ${stepName}`);
-		}
-		
-		console.log(`${stepName} - Response preview:`, jsonContent.substring(0, 150));
-		jsonContent = jsonContent.trim();
-		
-		const jsonStart = jsonContent.indexOf('{');
-		if (jsonStart === -1) {
-			console.error(`${stepName} - No JSON found:`, jsonContent.substring(0, 300));
-			throw new Error(`No JSON object in ${stepName}`);
-		}
-		
-		let braceCount = 0;
-		let jsonEnd = -1;
-		
-		for (let i = jsonStart; i < jsonContent.length; i++) {
-			if (jsonContent[i] === '{') braceCount++;
-			if (jsonContent[i] === '}') braceCount--;
-			
-			if (braceCount === 0) {
-				jsonEnd = i;
-				break;
-			}
-		}
-		
-		if (jsonEnd === -1) {
-			throw new Error(`Incomplete JSON in ${stepName}`);
-		}
-		
-		jsonContent = jsonContent.substring(jsonStart, jsonEnd + 1);
-		console.log(`${stepName} - JSON length:`, jsonContent.length);
-		
-		try {
-			const parsed = JSON.parse(jsonContent);
-			console.log(`${stepName} - ✅ Parsed successfully. Keys:`, Object.keys(parsed));
-			return parsed;
-		} catch (parseError) {
-			console.error(`${stepName} - ❌ Parse failed:`, jsonContent.substring(0, 300));
-			throw new Error(`${stepName} parse error: ${parseError instanceof Error ? parseError.message : 'Unknown'}`);
-		}
-	};
-	
-	try {
-		console.log('\n🚀 Starting Ollama 3-step enhancement...');
-		
-		const step1Data = await ollamaRequest(OLLAMA_STEP1_PROMPT, 'Step 1: Personal Info');
-		await new Promise(resolve => setTimeout(resolve, 300));
-		
-		const step2Data = await ollamaRequest(OLLAMA_STEP2_PROMPT, 'Step 2: Education & Skills');
-		await new Promise(resolve => setTimeout(resolve, 300));
-		
-		const step3Data = await ollamaRequest(OLLAMA_STEP3_PROMPT, 'Step 3: Work Experience');
-		
-		console.log('\n✅ All 3 steps completed');
-		
-		const combinedData: ResumeData = {
-			personalInfo: step1Data.personalInfo || {},
-			education: step2Data.education || [],
-			skills: step2Data.skills || [],
-			experience: step3Data.experience || [],
-			projects: [],
-			militaryService: step2Data.militaryService || ''
-		};
-		
-		console.log('Combined:', {
-			personalInfo: !!combinedData.personalInfo,
-			education: combinedData.education.length,
-			skills: combinedData.skills.length,
-			experience: combinedData.experience.length,
-			militaryService: combinedData.militaryService ? `"${combinedData.militaryService.substring(0, 50)}..."` : 'empty'
-		});
-		
-		// Deduplicate experience
-		if (combinedData.experience && Array.isArray(combinedData.experience)) {
-			const uniqueExperience = new Map();
-			combinedData.experience.forEach((job: any) => {
-				const key = `${job.company}-${job.title}-${job.dateRange}`;
-				if (!uniqueExperience.has(key)) {
-					uniqueExperience.set(key, job);
-				}
-			});
-			combinedData.experience = Array.from(uniqueExperience.values());
-			
-			// Sort by date (most recent first)
-			combinedData.experience.sort((a: any, b: any) => {
-				const getYearFromRange = (dateRange: string): number => {
-					if (!dateRange) return 0;
-					if (dateRange.toLowerCase().includes('present')) return 9999;
-					const match = dateRange.match(/(\d{4})/g);
-					if (!match || match.length === 0) return 0;
-					return parseInt(match[match.length - 1]);
-				};
-				
-				const yearA = getYearFromRange(a.dateRange);
-				const yearB = getYearFromRange(b.dateRange);
-				return yearB - yearA;
-			});
-		}
-		
-		// Deduplicate education
-		if (combinedData.education && Array.isArray(combinedData.education)) {
-			const uniqueEducation = new Map();
-			combinedData.education.forEach((edu: any) => {
-				const key = `${edu.institution}-${edu.degree}-${edu.field}`;
-				if (!uniqueEducation.has(key)) {
-					uniqueEducation.set(key, edu);
-				}
-			});
-			combinedData.education = Array.from(uniqueEducation.values());
-		}
-		
-		// Deduplicate skills
-		if (combinedData.skills && Array.isArray(combinedData.skills)) {
-			const uniqueSkills = new Map();
-			combinedData.skills.forEach((skillCat: any) => {
-				if (!uniqueSkills.has(skillCat.categoryTitle)) {
-					uniqueSkills.set(skillCat.categoryTitle, skillCat);
-				}
-			});
-			combinedData.skills = Array.from(uniqueSkills.values());
-		}
-		
-		return enforceResumeConstraints(combinedData);
-		
-	} catch (error) {
-		console.error('❌ Ollama error:', error);
-		throw error;
-	}
+const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<ResumeData> => {
+  const endpoint = config.ollamaEndpoint || 'http://localhost:11434';
+
+  const ollamaRequest = async (prompt: string, stepName: string): Promise<any> => {
+    console.log(`\n=== ${stepName} - Starting ===`);
+
+    const ollamaBody: OllamaApiBody = {
+      model: config.model || 'llama2',
+      prompt: `${prompt}\n\nResume text:\n${resumeText}\n\nJSON output:`,
+      stream: false,
+      format: 'json',
+      options: ollamaOptions,
+    };
+
+    const response = await fetch(`${endpoint}/api/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ollamaBody),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Ollama API error: ${response.statusText} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log(`${stepName} - Available keys:`, Object.keys(data));
+
+    let jsonContent = '';
+
+    if (data.response && typeof data.response === 'string') {
+      jsonContent = data.response;
+      console.log(`${stepName} - Using 'response' field`);
+    } else if (data.thinking && typeof data.thinking === 'string') {
+      jsonContent = data.thinking;
+      console.log(`${stepName} - Using 'thinking' field`);
+    } else if (data.message && typeof data.message === 'string') {
+      jsonContent = data.message;
+      console.log(`${stepName} - Using 'message' field`);
+    } else if (data.content && typeof data.content === 'string') {
+      jsonContent = data.content;
+      console.log(`${stepName} - Using 'content' field`);
+    }
+
+    if (!jsonContent || jsonContent.trim().length === 0) {
+      console.error(`${stepName} - Empty response. Data:`, data);
+      throw new Error(`Ollama returned empty response in ${stepName}`);
+    }
+
+    console.log(`${stepName} - Response preview:`, jsonContent.substring(0, 150));
+    jsonContent = jsonContent.trim();
+
+    const jsonStart = jsonContent.indexOf('{');
+    if (jsonStart === -1) {
+      console.error(`${stepName} - No JSON found:`, jsonContent.substring(0, 300));
+      throw new Error(`No JSON object in ${stepName}`);
+    }
+
+    let braceCount = 0;
+    let jsonEnd = -1;
+
+    for (let i = jsonStart; i < jsonContent.length; i++) {
+      if (jsonContent[i] === '{') braceCount++;
+      if (jsonContent[i] === '}') braceCount--;
+
+      if (braceCount === 0) {
+        jsonEnd = i;
+        break;
+      }
+    }
+
+    if (jsonEnd === -1) {
+      throw new Error(`Incomplete JSON in ${stepName}`);
+    }
+
+    jsonContent = jsonContent.substring(jsonStart, jsonEnd + 1);
+    console.log(`${stepName} - JSON length:`, jsonContent.length);
+
+    try {
+      const parsed = JSON.parse(jsonContent);
+      console.log(`${stepName} - ✅ Parsed successfully. Keys:`, Object.keys(parsed));
+      return parsed;
+    } catch (parseError) {
+      console.error(`${stepName} - ❌ Parse failed:`, jsonContent.substring(0, 300));
+      throw new Error(`${stepName} parse error: ${parseError instanceof Error ? parseError.message : 'Unknown'}`);
+    }
+  };
+
+  try {
+    console.log('\n🚀 Starting Ollama 3-step enhancement...');
+
+    const step1Data = await ollamaRequest(OLLAMA_STEP1_PROMPT, 'Step 1: Personal Info');
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    const step2Data = await ollamaRequest(OLLAMA_STEP2_PROMPT, 'Step 2: Education & Skills');
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    const step3Data = await ollamaRequest(OLLAMA_STEP3_PROMPT, 'Step 3: Work Experience');
+
+    console.log('\n✅ All 3 steps completed');
+
+    const combinedData: ResumeData = {
+      personalInfo: step1Data.personalInfo || {},
+      education: step2Data.education || [],
+      skills: step2Data.skills || [],
+      experience: step3Data.experience || [],
+      projects: [],
+      militaryService: step2Data.militaryService || '',
+    };
+
+    console.log('Combined:', {
+      personalInfo: !!combinedData.personalInfo,
+      education: combinedData.education.length,
+      skills: combinedData.skills.length,
+      experience: combinedData.experience.length,
+      militaryService: combinedData.militaryService ? `"${combinedData.militaryService.substring(0, 50)}..."` : 'empty',
+    });
+
+    if (combinedData.experience && Array.isArray(combinedData.experience)) {
+      const uniqueExperience = new Map();
+      combinedData.experience.forEach((job: any) => {
+        const key = `${job.company}-${job.title}-${job.dateRange}`;
+        if (!uniqueExperience.has(key)) {
+          uniqueExperience.set(key, job);
+        }
+      });
+      combinedData.experience = Array.from(uniqueExperience.values());
+
+      combinedData.experience.sort((a: any, b: any) => {
+        const getYearFromRange = (dateRange: string): number => {
+          if (!dateRange) return 0;
+          if (dateRange.toLowerCase().includes('present')) return 9999;
+          const match = dateRange.match(/(\d{4})/g);
+          if (!match || match.length === 0) return 0;
+          return parseInt(match[match.length - 1]);
+        };
+
+        const yearA = getYearFromRange(a.dateRange);
+        const yearB = getYearFromRange(b.dateRange);
+        return yearB - yearA;
+      });
+    }
+
+    if (combinedData.education && Array.isArray(combinedData.education)) {
+      const uniqueEducation = new Map();
+      combinedData.education.forEach((edu: any) => {
+        const key = `${edu.institution}-${edu.degree}-${edu.field}`;
+        if (!uniqueEducation.has(key)) {
+          uniqueEducation.set(key, edu);
+        }
+      });
+      combinedData.education = Array.from(uniqueEducation.values());
+    }
+
+    if (combinedData.skills && Array.isArray(combinedData.skills)) {
+      const uniqueSkills = new Map();
+      combinedData.skills.forEach((skillCat: any) => {
+        if (!uniqueSkills.has(skillCat.categoryTitle)) {
+          uniqueSkills.set(skillCat.categoryTitle, skillCat);
+        }
+      });
+      combinedData.skills = Array.from(uniqueSkills.values());
+    }
+
+    const constrainedData = enforceResumeConstraints(combinedData);
+
+    console.log('=== Generated Resume (Ollama) ===');
+    console.log(JSON.stringify(constrainedData, null, 2));
+
+    return constrainedData;
+  } catch (error) {
+    console.error('❌ Ollama error:', error);
+    throw error;
+  }
 };

@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import { AIProviderSettings, FileUploader, ResumePreview, ExportButtons, ProcessingStatus, PDFDebugViewer } from '@/components';
+import {
+  AIProviderSettings,
+  FileUploader,
+  ResumePreview,
+  ExportButtons,
+  ProcessingStatus,
+  PDFDebugViewer,
+} from '@/components';
 import { useAIConfig } from '@/hooks';
 import { parseFile } from '@/utils';
 import { enhanceResume } from '@/services';
@@ -41,6 +48,10 @@ function App() {
 
       setStatus('enhancing');
       const enhanced = await enhanceResume(extractedText, config);
+
+      console.log('=== Generated Resume Data ===');
+      console.log(JSON.stringify(enhanced, null, 2));
+
       setResumeData(enhanced);
       setStatus('completed');
     } catch (err) {
@@ -52,40 +63,28 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <header className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 mb-3">
-            CVEnhancer
-          </h1>
-          <p className="text-xl text-gray-600">
-            Upload any resume, download a better one
-          </p>
+      <div className="container mx-auto max-w-7xl px-4 py-8">
+        <header className="mb-12 text-center">
+          <h1 className="mb-3 text-5xl font-bold text-gray-900">CVEnhancer</h1>
+          <p className="text-xl text-gray-600">Upload any resume, download a better one</p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1 space-y-6">
-            <AIProviderSettings
-              config={config}
-              onConfigChange={updateConfig}
-            />
-            
-            <FileUploader
-              onFileSelect={handleFileSelect}
-            />
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="space-y-6 lg:col-span-1">
+            <AIProviderSettings config={config} onConfigChange={updateConfig} />
+
+            <FileUploader onFileSelect={handleFileSelect} />
 
             {error && (
-              <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
-                <p className="text-red-800 font-medium">{error}</p>
+              <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4">
+                <p className="font-medium text-red-800">{error}</p>
               </div>
             )}
 
             <ProcessingStatus status={status} />
 
             {resumeData && (
-              <ExportButtons 
-                resumeData={resumeData}
-                disabled={status === 'parsing' || status === 'enhancing'}
-              />
+              <ExportButtons resumeData={resumeData} disabled={status === 'parsing' || status === 'enhancing'} />
             )}
           </div>
 
@@ -96,9 +95,7 @@ function App() {
         </div>
 
         <footer className="mt-12 text-center text-gray-600">
-          <p className="text-sm">
-            Powered by AI | Built with React, TypeScript & Tailwind CSS
-          </p>
+          <p className="text-sm">Powered by AI | Built with React, TypeScript & Tailwind CSS</p>
         </footer>
       </div>
     </div>
