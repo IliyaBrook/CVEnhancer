@@ -18,7 +18,6 @@ export function stylesToCss(styles: Record<string, any>): string {
 		return str.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 	};
 	
-	// Форматируем значение
 	const formatValue = (key: string, value: any): string => {
 		if (typeof value === 'number') {
 			return unitlessProperties.has(key) ? String(value) : `${value}px`;

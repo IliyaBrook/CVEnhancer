@@ -128,9 +128,6 @@ const extractJSON = (text: string): string => {
 	return text.trim();
 };
 
-/**
- * Принудительно ограничивает данные резюме для размещения на одной странице
- */
 const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
 	const MAX_JOBS = 3;
 	const MAX_DUTIES_PER_JOB = 5;
@@ -138,31 +135,25 @@ const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
 	const MAX_SKILLS_PER_CATEGORY = 5;
 	const MAX_DESCRIPTION_WORDS = 3;
 	
-	// Ограничиваем количество работ
 	if (resumeData.experience && resumeData.experience.length > MAX_JOBS) {
 		resumeData.experience = resumeData.experience.slice(0, MAX_JOBS);
 	}
 	
-	// Ограничиваем duties для каждой работы
 	if (resumeData.experience) {
 		resumeData.experience = resumeData.experience.map(job => ({
 			...job,
-			// Ограничиваем количество duties
 			duties: job.duties.slice(0, MAX_DUTIES_PER_JOB).map(duty => {
-				// Обрезаем слишком длинные duties
 				if (duty.length > MAX_DUTY_LENGTH) {
 					return duty.substring(0, MAX_DUTY_LENGTH - 3) + '...';
 				}
 				return duty;
 			}),
-			// Ограничиваем описание компании до 3 слов
-			description: job.description 
+			description: job.description
 				? job.description.split(' ').slice(0, MAX_DESCRIPTION_WORDS).join(' ')
 				: job.description
 		}));
 	}
 	
-	// Ограничиваем количество навыков в каждой категории
 	if (resumeData.skills) {
 		resumeData.skills = resumeData.skills.map(category => ({
 			...category,
@@ -170,7 +161,6 @@ const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
 		}));
 	}
 	
-	// Удаляем projects если они есть (для экономии места)
 	delete resumeData.projects;
 	
 	return resumeData;
@@ -265,7 +255,6 @@ const enhanceWithOllama = async (
 ): Promise<ResumeData> => {
 	const endpoint = config.ollamaEndpoint || 'http://localhost:11434';
 	
-	// Вспомогательная функция для запроса к Ollama
 	const ollamaRequest = async (prompt: string, stepName: string): Promise<any> => {
 		console.log(`\n=== ${stepName} - Starting ===`);
 		
@@ -293,7 +282,6 @@ const enhanceWithOllama = async (
 		const data = await response.json();
 		console.log(`${stepName} - Available keys:`, Object.keys(data));
 		
-		// Ollama может возвращать ответ в разных полях в зависимости от модели
 		let jsonContent = '';
 		
 		if (data.response && typeof data.response === 'string') {
@@ -318,7 +306,6 @@ const enhanceWithOllama = async (
 		console.log(`${stepName} - Response preview:`, jsonContent.substring(0, 150));
 		jsonContent = jsonContent.trim();
 		
-		// Извлекаем первый валидный JSON объект
 		const jsonStart = jsonContent.indexOf('{');
 		if (jsonStart === -1) {
 			console.error(`${stepName} - No JSON found:`, jsonContent.substring(0, 300));
@@ -368,7 +355,6 @@ const enhanceWithOllama = async (
 		
 		console.log('\n✅ All 3 steps completed');
 		
-		// Объединяем результаты
 		const combinedData: ResumeData = {
 			personalInfo: step1Data.personalInfo || {},
 			education: step2Data.education || [],

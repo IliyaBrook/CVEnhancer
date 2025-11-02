@@ -123,8 +123,8 @@ export const resumePdfStyles = StyleSheet.create({
 	bullet: {
 		color: '#1a4d8f',
 		fontWeight: 'bold',
-		marginRight: 4, // уменьшено с 5
-		fontSize: 10, // добавлено для меньшего буллета
+		marginRight: 4,
+		fontSize: 10,
 	},
 	dutyText: {
 		flex: 1,
@@ -177,9 +177,9 @@ export const resumePdfStyles = StyleSheet.create({
 		color: '#666',
 	},
 	skillBullet: {
-		marginRight: 4, // уменьшено с 5
+		marginRight: 4,
 		color: '#666',
-		fontSize: 9, // добавлено
+		fontSize: 9,
 	},
 	skillText: {
 		flex: 1,
@@ -207,7 +207,6 @@ export const resumePdfStyles = StyleSheet.create({
 		color: '#555',
 		fontSize: 10, // уменьшено с 12
 	},
-	// Стили для Education в основной части
 	educationSection: {
 		marginTop: 15,
 	},
