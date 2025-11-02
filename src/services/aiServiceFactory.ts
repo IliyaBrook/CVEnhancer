@@ -33,6 +33,7 @@ CONTENT RULES:
 4. Keep skills list focused - maximum 4-5 skills per category
 5. DO NOT invent or add any information not present in the original resume
 6. If experience section is too long, keep only the most recent 2-3 positions
+7. Include military service if present (1-2 sentences max)
 
 OUTPUT FORMAT:
 Return ONLY a valid JSON object (no markdown, no code blocks) matching the ResumeData type:
@@ -40,6 +41,7 @@ Return ONLY a valid JSON object (no markdown, no code blocks) matching the Resum
 - experience (array of jobs with company, location, description [max 3 words], title, dateRange, duties [max 5 items, each max 60 chars])
 - education (array with institution, university, degree, field, location, dateRange)
 - skills (array of skill categories with categoryTitle and skills array [max 5 skills per category])
+- militaryService (string, 1-2 sentences if present, empty string if not)
 - projects (optional - only if highly relevant)
 
 CRITICAL: Output ONLY valid JSON. Be concise. One page maximum.`;
@@ -59,7 +61,7 @@ const OLLAMA_STEP1_PROMPT = `Extract ONLY basic information from the resume. Out
 
 CRITICAL: Output ONLY valid JSON. Start with { and end with }. No other text.`;
 
-const OLLAMA_STEP2_PROMPT = `Extract education and skills from the resume. Output valid JSON without any markdown.
+const OLLAMA_STEP2_PROMPT = `Extract education, skills, and military service from the resume. Output valid JSON without any markdown.
 
 {
   "education": [
@@ -77,12 +79,14 @@ const OLLAMA_STEP2_PROMPT = `Extract education and skills from the resume. Outpu
       "categoryTitle": "string (e.g., Programming Languages)",
       "skills": ["skill1", "skill2", "skill3", "skill4", "skill5"]
     }
-  ]
+  ],
+  "militaryService": "string or empty (brief description if present)"
 }
 
 RULES:
 - Maximum 5 skills per category
 - Maximum 7 skill categories total
+- Military service: 1-2 sentences max if present, empty string if not
 - Output ONLY valid JSON. Start with { and end with }. No other text.`;
 
 const OLLAMA_STEP3_PROMPT = `Extract work experience from the resume. Be EXTREMELY concise. Output valid JSON without any markdown.
@@ -370,7 +374,8 @@ const enhanceWithOllama = async (
 			education: step2Data.education || [],
 			skills: step2Data.skills || [],
 			experience: step3Data.experience || [],
-			projects: []
+			projects: [],
+			militaryService: step2Data.militaryService || ''
 		};
 		
 		console.log('Combined:', {

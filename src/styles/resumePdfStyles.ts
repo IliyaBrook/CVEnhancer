@@ -207,4 +207,45 @@ export const resumePdfStyles = StyleSheet.create({
 		color: '#555',
 		fontSize: 10, // уменьшено с 12
 	},
+	// Стили для Education в основной части
+	educationSection: {
+		marginTop: 15,
+	},
+	educationItemMain: {
+		marginBottom: 10,
+		minPresenceAhead: 12,
+	},
+	educationHeader: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		marginBottom: 4,
+	},
+	universityMain: {
+		fontWeight: 'bold',
+		color: '#333',
+		fontSize: 12,
+	},
+	degreeMain: {
+		color: '#555',
+		fontSize: 11,
+		marginBottom: 2,
+	},
+	educationLocationMain: {
+		color: '#666',
+		fontSize: 10,
+		fontStyle: 'italic',
+	},
+	educationDateMain: {
+		color: '#666',
+		fontSize: 11,
+	},
+	// Стили для Military Service
+	militarySection: {
+		marginTop: 15,
+	},
+	militaryText: {
+		color: '#555',
+		fontSize: 11,
+		lineHeight: 1.4,
+	},
 });

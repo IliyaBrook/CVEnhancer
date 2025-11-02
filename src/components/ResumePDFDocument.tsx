@@ -8,7 +8,7 @@ interface ResumePDFDocumentProps {
 }
 
 export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData }) => {
-  const { personalInfo, experience, skills, education } = resumeData;
+  const { personalInfo, experience, skills, education, militaryService } = resumeData;
 
   return (
     <Document>
@@ -49,6 +49,34 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
               ))}
             </View>
           )}
+
+          {education && education.length > 0 && (
+            <View style={styles.educationSection}>
+              <Text style={styles.sectionTitle}>EDUCATION</Text>
+              {education.map((edu, index) => (
+                <View key={index} style={styles.educationItemMain}>
+                  <View style={styles.educationHeader}>
+                    <Text style={styles.universityMain}>{edu.university || edu.institution}</Text>
+                    {edu.dateRange && edu.dateRange !== '-' && (
+                      <Text style={styles.educationDateMain}>{edu.dateRange}</Text>
+                    )}
+                  </View>
+                  {edu.degree && <Text style={styles.degreeMain}>{edu.degree}</Text>}
+                  {edu.field && <Text style={styles.degreeMain}>{edu.field}</Text>}
+                  {edu.location && (
+                    <Text style={styles.educationLocationMain}>{edu.location}</Text>
+                  )}
+                </View>
+              ))}
+            </View>
+          )}
+
+          {militaryService && militaryService.trim().length > 0 && (
+            <View style={styles.militarySection}>
+              <Text style={styles.sectionTitle}>MILITARY SERVICE</Text>
+              <Text style={styles.militaryText}>{militaryService}</Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.sidebar}>
@@ -80,25 +108,6 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
                       <Text style={styles.skillText}>{skill}</Text>
                     </View>
                   ))}
-                </View>
-              ))}
-            </View>
-          )}
-
-          {education && education.length > 0 && (
-            <View style={styles.sidebarSection}>
-              <Text style={styles.sectionTitleWithMargin}>EDUCATION</Text>
-              {education.map((edu, index) => (
-                <View key={index} style={styles.educationItem}>
-                  <Text style={styles.university}>{edu.university || edu.institution}</Text>
-                  {edu.degree && <Text style={styles.degree}>{edu.degree}</Text>}
-                  {edu.field && <Text style={styles.degree}>{edu.field}</Text>}
-                  {edu.location && (
-                    <Text style={styles.educationLocation}>{edu.location}</Text>
-                  )}
-                  {edu.dateRange && (
-                    <Text style={styles.educationDate}>{edu.dateRange}</Text>
-                  )}
                 </View>
               ))}
             </View>
