@@ -5,36 +5,31 @@ const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI.
 
 CRITICAL CONSTRAINTS:
 1. Resume MUST fit on ONE page - be extremely concise
-2. Each job duty must be ONE line maximum (50-60 characters)
-3. Maximum 4-5 bullet points per job
-4. Maximum 3 job positions in experience section
-5. Remove ALL redundant or repetitive information
+2. Remove ALL redundant or repetitive information
 
 FORMATTING RULES:
 1. Fix all spelling and grammar errors
 2. Use ATS-optimized formatting with clear section headers
 3. Include only: name, email, phone, location, LinkedIn profile in contact info
-4. Use short, impactful bullet points for achievements
-5. Quantify ONLY the most important achievements (not every single one)
+4. Use impactful bullet points for achievements
+5. Quantify important achievements where applicable
 6. Emphasize technical skills and keywords
 7. Remove objective statements and verbose descriptions
-8. Keep job descriptions to 2-3 words maximum (e.g., "Full Stack Developer")
+8. Keep job descriptions concise (2-3 words recommended, e.g., "Full Stack Developer")
 
 CONTENT RULES:
-1. Prioritize most recent and relevant experience only
-2. Combine similar responsibilities into one concise bullet point
+1. Prioritize most recent and relevant experience
+2. Combine similar responsibilities into concise bullet points
 3. Remove duplicated skills across categories
-4. Keep skills list focused - maximum 4-5 skills per category
-5. DO NOT invent or add any information not present in the original resume
-6. If experience section is too long, keep only the most recent 2-3 positions
-7. Include military service if present (1-2 sentences max)
+4. DO NOT invent or add any information not present in the original resume
+5. Include military service if present (1-2 sentences max)
 
 OUTPUT FORMAT:
 Return ONLY a valid JSON object (no markdown, no code blocks) matching the ResumeData type:
 - personalInfo (name, title, email, phone, location, linkedin)
-- experience (array of jobs with company, location, description [max 3 words], title, dateRange, duties [max 5 items, each max 60 chars])
+- experience (array of jobs with company, location, description, title, dateRange, duties)
 - education (array with institution, university, degree, field, location, dateRange)
-- skills (array of skill categories with categoryTitle and skills array [max 5 skills per category])
+- skills (array of skill categories with categoryTitle and skills array)
 - militaryService (string, 1-2 sentences if present, empty string if not)
 - projects (optional - only if highly relevant)
 
@@ -71,38 +66,33 @@ const OLLAMA_STEP2_PROMPT = `Extract education, skills, and military service fro
   "skills": [
     {
       "categoryTitle": "string (e.g., Programming Languages)",
-      "skills": ["skill1", "skill2", "skill3", "skill4", "skill5"]
+      "skills": ["skill1", "skill2", "..."]
     }
   ],
   "militaryService": "string or empty (brief description if present)"
 }
 
 RULES:
-- Maximum 5 skills per category
-- Maximum 7 skill categories total
 - Military service: 1-2 sentences max if present, empty string if not
 - Output ONLY valid JSON. Start with { and end with }. No other text.`;
 
-const OLLAMA_STEP3_PROMPT = `Extract work experience from the resume. Be EXTREMELY concise. Output valid JSON without any markdown.
+const OLLAMA_STEP3_PROMPT = `Extract work experience from the resume. Output valid JSON without any markdown.
 
 {
   "experience": [
     {
       "company": "string",
       "location": "string",
-      "description": "2-3 words max",
+      "description": "brief description (2-3 words recommended)",
       "title": "string",
       "dateRange": "string",
-      "duties": ["duty1 (max 60 chars)", "duty2", "duty3", "duty4", "duty5"]
+      "duties": ["duty1", "duty2", "..."]
     }
   ]
 }
 
 CRITICAL RULES:
-- Maximum 3 companies
-- Maximum 5 duties per company
-- Each duty maximum 60 characters
-- Description maximum 3 words
+- Keep description concise (2-3 words recommended)
 - NO duplicates
 - Output ONLY valid JSON. Start with { and end with }. No other text.`;
 
@@ -207,36 +197,58 @@ const extractJSON = (text: string): string => {
 };
 
 const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
-  const MAX_JOBS = 3;
-  const MAX_DUTIES_PER_JOB = 5;
-  const MAX_DUTY_LENGTH = 80;
-  const MAX_SKILLS_PER_CATEGORY = 5;
-  const MAX_DESCRIPTION_WORDS = 3;
+  const config = resumeAiConfig;
 
-  if (resumeData.experience && resumeData.experience.length > MAX_JOBS) {
-    resumeData.experience = resumeData.experience.slice(0, MAX_JOBS);
+  if (config?.experience && resumeData.experience) {
+    const maxJobs = config.experience.maxJobs;
+    if (maxJobs !== null && maxJobs !== undefined) {
+      resumeData.experience = resumeData.experience.slice(0, maxJobs);
+    }
+
+    const bulletPointsPerJob = config.experience.bulletPointsPerJob;
+    const maxBulletLength = config.experience.maxBulletLength;
+
+    resumeData.experience = resumeData.experience.map(job => {
+      const updatedJob = { ...job };
+
+      if (bulletPointsPerJob !== null && bulletPointsPerJob !== undefined && job.duties) {
+        updatedJob.duties = job.duties.slice(0, bulletPointsPerJob);
+      }
+
+      if (maxBulletLength !== null && maxBulletLength !== undefined && updatedJob.duties) {
+        updatedJob.duties = updatedJob.duties.map(duty => {
+          if (duty && duty.length > maxBulletLength) {
+            return duty.substring(0, maxBulletLength - 3) + '...';
+          }
+          return duty;
+        });
+      }
+
+      return updatedJob;
+    });
   }
 
-  if (resumeData.experience) {
-    resumeData.experience = resumeData.experience.map(job => ({
-      ...job,
-      duties: job.duties.slice(0, MAX_DUTIES_PER_JOB).map(duty => {
-        if (duty.length > MAX_DUTY_LENGTH) {
-          return duty.substring(0, MAX_DUTY_LENGTH - 3) + '...';
-        }
-        return duty;
-      }),
-      description: job.description
-        ? job.description.split(' ').slice(0, MAX_DESCRIPTION_WORDS).join(' ')
-        : job.description,
-    }));
+  if (config?.skills && resumeData.skills) {
+    const categoriesLimit = config.skills.categoriesLimit;
+    const skillsPerCategory = config.skills.skillsPerCategory;
+
+    if (categoriesLimit !== null && categoriesLimit !== undefined) {
+      resumeData.skills = resumeData.skills.slice(0, categoriesLimit);
+    }
+
+    if (skillsPerCategory !== null && skillsPerCategory !== undefined) {
+      resumeData.skills = resumeData.skills.map(category => ({
+        ...category,
+        skills: category.skills ? category.skills.slice(0, skillsPerCategory) : [],
+      }));
+    }
   }
 
-  if (resumeData.skills) {
-    resumeData.skills = resumeData.skills.map(category => ({
-      ...category,
-      skills: category.skills.slice(0, MAX_SKILLS_PER_CATEGORY),
-    }));
+  if (config?.education && resumeData.education) {
+    const maxEntries = config.education.maxEntries;
+    if (maxEntries !== null && maxEntries !== undefined) {
+      resumeData.education = resumeData.education.slice(0, maxEntries);
+    }
   }
 
   delete resumeData.projects;
