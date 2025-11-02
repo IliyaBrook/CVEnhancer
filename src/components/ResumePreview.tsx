@@ -31,7 +31,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .name { ${stylesToCss(styles.name)} }
         .title { ${stylesToCss(styles.titleText)} }
         .section-title { ${stylesToCss(styles.sectionTitle)} }
-        .section-title:first-child { ${stylesToCss(styles.sectionTitleFirst)} }
+        .section-title-with-margin { ${stylesToCss(styles.sectionTitleWithMargin)} }
         
         .job { ${stylesToCss(styles.job)} }
         .company-info { ${stylesToCss(styles.companyInfo)} }
@@ -58,9 +58,6 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .sidebar-section { ${stylesToCss(styles.sidebarSection)} }
         .sidebar-contact-section { ${stylesToCss(styles.sidebarContactSection)} }
         
-        .sidebar .section-title { ${stylesToCss(styles.sidebarSectionTitle)} }
-        
-        .sidebar .section-title:not(:first-child) { ${stylesToCss(styles.sidebarSectionTitleNotFirst)} }
         
         .contact-info { ${stylesToCss(styles.contactInfoList)} }
         .contact-info li { ${stylesToCss(styles.contactInfo)} }
@@ -146,7 +143,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
 
           {resumeData.skills && resumeData.skills.length > 0 && (
             <div className="sidebar-section">
-              <div className="section-title">SKILLS</div>
+              <div className="section-title-with-margin">SKILLS</div>
               {resumeData.skills.map((category, idx) => (
                 <div key={idx} className="skill-category">
                   <div className="skill-category-title">{category.categoryTitle}</div>
@@ -162,7 +159,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
 
           {resumeData.education && resumeData.education.length > 0 && (
             <div className="sidebar-section">
-              <div className="section-title">EDUCATION</div>
+              <div className="section-title-with-margin">EDUCATION</div>
               {resumeData.education.map((edu, idx) => (
                 <div key={idx} className="education-item">
                   <div className="university">{edu.university || edu.institution}</div>

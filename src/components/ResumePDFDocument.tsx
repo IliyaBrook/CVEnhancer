@@ -53,7 +53,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
 
         <View style={styles.sidebar}>
           <View style={styles.sidebarContactSection}>
-            <Text style={[styles.sectionTitle]}>CONTACT</Text>
+            <Text style={styles.sectionTitle}>CONTACT</Text>
             {personalInfo.location && (
               <Text style={styles.contactInfo}>{personalInfo.location}</Text>
             )}
@@ -70,7 +70,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
 
           {skills && skills.length > 0 && (
             <View style={styles.sidebarSection}>
-              <Text style={[styles.sectionTitle, styles.sidebarSectionTitleNotFirst]}>SKILLS</Text>
+              <Text style={styles.sectionTitleWithMargin}>SKILLS</Text>
               {skills.map((category, index) => (
                 <View key={index} style={styles.skillCategory}>
                   <Text style={styles.skillCategoryTitle}>{category.categoryTitle}</Text>
@@ -87,7 +87,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
 
           {education && education.length > 0 && (
             <View style={styles.sidebarSection}>
-              <Text style={[styles.sectionTitle, styles.sidebarSectionTitleNotFirst]}>EDUCATION</Text>
+              <Text style={styles.sectionTitleWithMargin}>EDUCATION</Text>
               {education.map((edu, index) => (
                 <View key={index} style={styles.educationItem}>
                   <Text style={styles.university}>{edu.university || edu.institution}</Text>

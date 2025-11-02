@@ -43,8 +43,14 @@ export const resumePdfStyles = StyleSheet.create({
 		textTransform: 'uppercase',
 		letterSpacing: 1.5,
 	},
-	sectionTitleFirst: {
+	sectionTitleWithMargin: {
+		fontSize: 14,
+		fontWeight: 'bold',
+		color: '#1a4d8f',
+		marginBottom: 10,
 		marginTop: 0,
+		textTransform: 'uppercase',
+		letterSpacing: 1.5,
 	},
 	job: {
 		marginBottom: 20,
@@ -127,17 +133,6 @@ export const resumePdfStyles = StyleSheet.create({
 	sidebarContactSection: {
 		marginBottom: 25,
 		lineHeight: 0.8
-	},
-	sidebarSectionTitle: {
-		fontSize: 13,
-		fontWeight: 'bold',
-		color: '#1a4d8f',
-		marginBottom: 12,
-		textTransform: 'uppercase',
-		letterSpacing: 1.5,
-	},
-	sidebarSectionTitleNotFirst: {
-		marginTop: 25,
 	},
 	contactInfoList: {
 		listStyle: 'none',
