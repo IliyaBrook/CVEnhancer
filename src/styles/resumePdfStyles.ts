@@ -20,6 +20,7 @@ export const resumePdfStyles = StyleSheet.create({
 	},
 	header: {
 		marginBottom: 30,
+		fontWeight: 'bold',
 	},
 	name: {
 		fontSize: 36,
