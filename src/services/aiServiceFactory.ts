@@ -372,12 +372,7 @@ const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<
       combinedData.skills = Array.from(uniqueSkills.values());
     }
 
-    const constrainedData = enforceResumeConstraints(combinedData);
-
-    console.log('=== Generated Resume (Ollama) ===');
-    console.log(constrainedData);
-
-    return constrainedData;
+    return enforceResumeConstraints(combinedData);
   } catch (error) {
     console.error('❌ Ollama error:', error);
     throw error;

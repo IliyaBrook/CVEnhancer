@@ -1,306 +1,263 @@
 import { ResumeData } from '@/types';
 
 export const myFakeResumeData: ResumeData = {
-	personalInfo: {
-		name: "Iliya Brook",
-		title: "Full stack web developer",
-		email: "iliyabrook1987@gmail.com",
-		phone: "0549303336",
-		location: "Tel-Aviv",
-		linkedin: "linkedin.com/in/iliya-brook"
-	},
-	experience: [
-		{
-			company: "Progeeks LTD",
-			location: "Tel Aviv, Hamerkaz",
-			title: "Full Stack Developer",
-			dateRange: "2021 - 2024",
-			duties: [
-				"Develop custom full-stack web applications for clients across e-commerce, healthcare, and education sectors using React, Node.js, and MongoDB",
-				"Design and implement RESTful APIs with Express.js and PostgreSQL, improving data retrieval efficiency and enabling seamless frontend-backend communication",
-				"Build responsive, mobile-first user interfaces using Tailwind CSS, Bootstrap and JavaScript, ensuring cross-browser compatibility",
-				"Integrate third-party APIs including Stripe payment processing, SendGrid, and Google Maps, extending application functionality",
-				"Collaborate with clients using Agile methodologies, delivering projects on schedule with clear communication and documentation",
-				"Built and maintained enterprise-level web applications using React, Node.js, and MongoDB, managing complex business workflows and data operations",
-				"Developed RESTful APIs with Express.js and PostgreSQL handling 500,000+ daily requests, implementing database indexing and query optimization strategies",
-				"Implemented CI/CD pipelines using Docker, Kubernetes, and AWS, reducing deployment time from 2 hours to 15 minutes",
-				"Optimized internal CRM system by refactoring database queries, reducing report generation time from 45 seconds to 8 seconds",
-				"Created custom WhatsApp Business API integration using Node.js and Twilio, reducing manual messaging by 85%",
-				"Developed time tracking application with React and Node.js, saving $3,600 annually in licensing costs",
-				"Refactored legacy jQuery codebase to Redux architecture, reducing bug reports by 40% and page load times by 35%",
-				"Collaborated with cross-functional teams following Scrum methodology, participating in daily standups and sprint planning",
-				"Maintained application uptime above 99.5% through AWS CloudWatch monitoring and automated alerting"
-			]
-		},
-		{
-			company: "Bezeq LTD",
-			location: "Tel Aviv, Hamerkaz",
-			title: "Network Support Engineer",
-			dateRange: "2017 - 2021",
-			duties: [
-				"Key Projects: WhatsApp Business Integration for Contract Signing & Customer Notifications",
-				"Node.js | Express | WhatsApp Business API | Twilio | MongoDB | GCP Storage | Webhooks",
-				"Designed custom WhatsApp Business API integration enabling automated contract delivery, digital signature collection, and real-time customer notifications for call center operations. Replaced expensive third-party service while improving customer response rates by 73%",
-				"Built webhook-based notification system for order confirmations, appointment reminders, and contract status updates, reducing manual messaging workload by 85%",
-				"Implemented secure document handling with GCP Storage, automated follow-ups for pending signatures, and flexible message templates with intelligent scheduling for mass communication campaigns",
-				"Enterprise CRM System for Call Center & Sales Operations",
-				"React | Redux | Node.js | Express | PostgreSQL | MongoDB | WebSockets | GCP | Docker | Kubernetes",
-				"Architected comprehensive enterprise CRM platform managing call center operations, sales workflows, and administration across multiple departments. Implemented real-time dashboards with WebSockets for live call tracking and sales pipeline visualization, plus advanced analytics module with custom reporting that reduced report generation time by 82%",
-				"Built role-based access control, automated task assignment, and customer communication tracking",
-				"Optimized PostgreSQL queries with indexing and performance tuning, improving system response time from 3.2s to 0.4s",
-				"Deployed on Google Cloud Platform using Kubernetes (GKE) and Docker containers, achieving 99.7% uptime"
-			]
-		},
-		{
-			company: "Upwork",
-			location: "Remote",
-			title: "Full Stack Developer (Freelance)",
-			dateRange: "2024 - Present",
-			duties: [
-				"Develop custom full-stack web applications for clients across e-commerce, healthcare, and education sectors using React, Node.js, and MongoDB",
-				"Design and implement RESTful APIs with Express.js and PostgreSQL, improving data retrieval efficiency and enabling seamless frontend-backend communication",
-				"Build responsive, mobile-first user interfaces using Tailwind CSS, Bootstrap and JavaScript, ensuring cross-browser compatibility",
-				"Integrate third-party APIs including Stripe payment processing, SendGrid, and Google Maps, extending application functionality",
-				"Collaborate with clients using Agile methodologies, delivering projects on schedule with clear communication and documentation",
-				"Built and maintained enterprise-level web applications using React, Node.js, and MongoDB, managing complex business workflows and data operations",
-				"Developed RESTful APIs with Express.js and PostgreSQL handling 500,000+ daily requests, implementing database indexing and query optimization strategies",
-				"Implemented CI/CD pipelines using Docker, Kubernetes, and AWS, reducing deployment time from 2 hours to 15 minutes",
-				"Optimized internal CRM system by refactoring database queries, reducing report generation time from 45 seconds to 8 seconds",
-				"Created custom WhatsApp Business API integration using Node.js and Twilio, reducing manual messaging by 85%",
-				"Developed time tracking application with React and Node.js, saving $3,600 annually in licensing costs",
-				"Refactored legacy jQuery codebase to Redux architecture, reducing bug reports by 40% and page load times by 35%",
-				"Collaborated with cross-functional teams following Scrum methodology, participating in daily standups and sprint planning",
-				"Maintained application uptime above 99.5% through AWS CloudWatch monitoring and automated alerting"
-			]
-		}
-	],
-	skills: [
-		{
-			title: "Programming Languages",
-			categoryTitle: "Programming Languages",
-			skills: ["JavaScript (ES6+), TypeScript, Python, Go, HTML5, CSS3/SCSS, SQL"]
-		},
-		{
-			title: "Backend Technologies",
-			categoryTitle: "Backend Technologies",
-			skills: ["Node.js, Express.js, NestJS, GraphQL, RESTful APIs, LangGraph, WebSockets"]
-		},
-		{
-			title: "Frontend Technologies",
-			categoryTitle: "Frontend Technologies",
-			skills: ["React, Redux, Svelte, Tailwind CSS, Bootstrap, Apollo GraphQL, Responsive Design"]
-		},
-		{
-			title: "Databases",
-			categoryTitle: "Databases",
-			skills: ["MongoDB, PostgreSQL, MySQL"]
-		},
-		{
-			title: "Development Practices",
-			categoryTitle: "Development Practices",
-			skills: ["Code Review, Version Control, API Design, Documentation, Performance Optimization"]
-		},
-		{
-			title: "Cloud & DevOps",
-			categoryTitle: "Cloud & DevOps",
-			skills: ["AWS, GCP, Docker, Kubernetes (GKE), CI/CD, Git/GitHub"]
-		},
-		{
-			title: "Operating Systems",
-			categoryTitle: "Operating Systems",
-			skills: ["Linux, Windows"]
-		},
-		{
-			title: "Military Service",
-			categoryTitle: "Military Service",
-			skills: [
-				"Completed 3 years of full military service in the Navy, reaching the rank of Staff Sergeant. Served as a medic and",
-				"led an ambulance team."
-			]
-		}
-	],
-	projects: [],
-	education: [
-		{
-			institution: "Hexlet Online Programming School",
-			university: "",
-			degree: "Certificate",
-			field: "Full-Stack Development",
-			location: "Tel Aviv, Hamerkaz",
-			dateRange: "Education"
-		},
-		{
-			institution: "John Bryce College",
-			university: "",
-			degree: "Certificate",
-			field: "Cyber Security",
-			location: "Tel Aviv, Hamerkaz",
-			dateRange: "Education"
-		},
-		{
-			institution: "ITC InterBit",
-			university: "",
-			degree: "Cisco Certified Network Associate (CCNA)",
-			field: "",
-			location: "Tel Aviv, Hamerkaz",
-			dateRange: "Education"
-		}
-	]
+  personalInfo: {
+    name: 'Iliya Brook',
+    title: 'Full stack web developer',
+    email: 'iliyabrook1987@gmail.com',
+    phone: '0549303336',
+    location: 'Tel-Aviv',
+    linkedin: 'linkedin.com/in/iliya-brook',
+  },
+  education: [
+    {
+      institution: 'Hexlet Online Programming School',
+      university: '',
+      degree: 'Full-Stack Development',
+      field: '',
+      location: '',
+      dateRange: '-',
+    },
+    {
+      institution: 'John Bryce College',
+      university: '',
+      degree: 'Cyber Security',
+      field: '',
+      location: '',
+      dateRange: '-',
+    },
+    {
+      institution: 'ITC InterBit',
+      university: '',
+      degree: 'Cisco Certified Network Associate (CCNA)',
+      field: '',
+      location: '',
+      dateRange: '-',
+    },
+  ],
+  skills: [
+    {
+      categoryTitle: 'Programming Languages',
+      skills: ['JavaScript (ES6+)', 'TypeScript', 'Python', 'Go', 'HTML5'],
+    },
+    {
+      categoryTitle: 'Backend Technologies',
+      skills: ['Node.js', 'Express.js', 'NestJS', 'GraphQL', 'RESTful APIs'],
+    },
+    {
+      categoryTitle: 'Frontend Technologies',
+      skills: ['React', 'Redux', 'Svelte', 'Tailwind CSS', 'Bootstrap'],
+    },
+    {
+      categoryTitle: 'Databases',
+      skills: ['MongoDB', 'PostgreSQL', 'MySQL'],
+    },
+    {
+      categoryTitle: 'Development Practices',
+      skills: ['Code Review', 'Version Control', 'API Design', 'Documentation', 'Performance Optimization'],
+    },
+    {
+      categoryTitle: 'Cloud & DevOps',
+      skills: ['AWS', 'GCP', 'Docker', 'Kubernetes (GKE)', 'CI/CD'],
+    },
+    {
+      categoryTitle: 'Operating Systems',
+      skills: ['Linux', 'Windows'],
+    },
+  ],
+  experience: [
+    {
+      company: 'Upwork, Fiverr',
+      location: 'Remote',
+      description: 'Freelance Development',
+      title: 'Full Stack Developer (Freelance)',
+      dateRange: '2024 - Present',
+      duties: [
+        'Built custom web applications for clients',
+        'Developed RESTful APIs with Express.js',
+        'Integrated third-party APIs for functionality',
+        'Collaborated using Agile methodologies',
+        'Maintained application uptime above 99.5%',
+      ],
+    },
+    {
+      company: 'Progeeks LTD',
+      location: 'Tel Aviv, Hamerkaz',
+      description: 'Full Stack Development',
+      title: 'Full Stack Developer',
+      dateRange: '2021 - 2024',
+      duties: [
+        'Developed RESTful APIs with Express.js',
+        'Built responsive UIs with Tailwind CSS',
+        'Integrated Stripe payment processing',
+        'Optimized database queries for performance',
+        'Implemented CI/CD pipelines with Docker',
+      ],
+    },
+    {
+      company: 'Bezeq LTD',
+      location: 'Tel Aviv, Hamerkaz',
+      description: 'Network Support',
+      title: 'Network Support Engineer',
+      dateRange: '2017 - 2021',
+      duties: [
+        'Designed WhatsApp Business API integration',
+        'Architected enterprise CRM platform',
+        'Optimized PostgreSQL queries for speed',
+        'Deployed on Google Cloud Platform',
+        'Automated network monitoring with Python',
+      ],
+    },
+  ],
+  militaryService:
+    'Completed 3 years of full military service in the Navy, reaching the rank of Staff Sergeant. Served as a medic and led an ambulance team.',
 };
 
 // noinspection JSUnusedLocalSymbols
 // @ts-ignore
 const fakeResumeData1: ResumeData = {
-	personalInfo: {
-		name: "Alex Morrison",
-		title: "Full stack web developer",
-		email: "alex.morrison.dev@example.com",
-		phone: "555-0123",
-		location: "San Francisco",
-		linkedin: "linkedin.com/in/alex-morrison-dev"
-	},
-	experience: [
-		{
-			company: "TechSolutions Inc",
-			location: "San Francisco, CA",
-			title: "Full Stack Developer",
-			dateRange: "2021 - 2024",
-			duties: [
-				"Develop custom full-stack web applications for clients across e-commerce, healthcare, and education sectors using React, Node.js, and MongoDB",
-				"Design and implement RESTful APIs with Express.js and PostgreSQL, improving data retrieval efficiency and enabling seamless frontend-backend communication",
-				"Build responsive, mobile-first user interfaces using Tailwind CSS, Bootstrap and JavaScript, ensuring cross-browser compatibility",
-				"Integrate third-party APIs including Stripe payment processing, SendGrid, and Google Maps, extending application functionality",
-				"Collaborate with clients using Agile methodologies, delivering projects on schedule with clear communication and documentation",
-				"Built and maintained enterprise-level web applications using React, Node.js, and MongoDB, managing complex business workflows and data operations",
-				"Developed RESTful APIs with Express.js and PostgreSQL handling 500,000+ daily requests, implementing database indexing and query optimization strategies",
-				"Implemented CI/CD pipelines using Docker, Kubernetes, and AWS, reducing deployment time from 2 hours to 15 minutes",
-				"Optimized internal CRM system by refactoring database queries, reducing report generation time from 45 seconds to 8 seconds",
-				"Created custom Slack Bot integration using Node.js and Webhooks, reducing manual notifications by 85%",
-				"Developed task management application with React and Node.js, saving $3,600 annually in licensing costs",
-				"Refactored legacy jQuery codebase to Redux architecture, reducing bug reports by 40% and page load times by 35%",
-				"Collaborated with cross-functional teams following Scrum methodology, participating in daily standups and sprint planning",
-				"Maintained application uptime above 99.5% through AWS CloudWatch monitoring and automated alerting"
-			]
-		},
-		{
-			company: "GlobalTel Communications",
-			location: "San Francisco, CA",
-			title: "Network Support Engineer",
-			dateRange: "2017 - 2021",
-			duties: [
-				"Key Projects: Automated SMS Platform for Contract Signing & Customer Notifications",
-				"Node.js | Express | Twilio API | SMS Gateway | MongoDB | AWS S3 | Webhooks",
-				"Designed custom SMS notification platform enabling automated contract delivery, digital signature collection, and real-time customer notifications for call center operations. Replaced expensive third-party service while improving customer response rates by 73%",
-				"Built webhook-based notification system for order confirmations, appointment reminders, and contract status updates, reducing manual messaging workload by 85%",
-				"Implemented secure document handling with AWS S3, automated follow-ups for pending signatures, and flexible message templates with intelligent scheduling for mass communication campaigns",
-				"Enterprise CRM System for Call Center & Sales Operations",
-				"React | Redux | Node.js | Express | PostgreSQL | MongoDB | WebSockets | AWS | Docker | Kubernetes",
-				"Architected comprehensive enterprise CRM platform managing call center operations, sales workflows, and administration across multiple departments. Implemented real-time dashboards with WebSockets for live call tracking and sales pipeline visualization, plus advanced analytics module with custom reporting that reduced report generation time by 82%",
-				"Built role-based access control, automated task assignment, and customer communication tracking",
-				"Optimized PostgreSQL queries with indexing and performance tuning, improving system response time from 3.2s to 0.4s",
-				"Deployed on Amazon Web Services using Kubernetes (EKS) and Docker containers, achieving 99.7% uptime"
-			]
-		},
-		{
-			company: "Freelance Platforms",
-			location: "Remote",
-			title: "Full Stack Developer (Freelance)",
-			dateRange: "2024 - Present",
-			duties: [
-				"Develop custom full-stack web applications for clients across e-commerce, healthcare, and education sectors using React, Node.js, and MongoDB",
-				"Design and implement RESTful APIs with Express.js and PostgreSQL, improving data retrieval efficiency and enabling seamless frontend-backend communication",
-				"Build responsive, mobile-first user interfaces using Tailwind CSS, Bootstrap and JavaScript, ensuring cross-browser compatibility",
-				"Integrate third-party APIs including Stripe payment processing, SendGrid, and Google Maps, extending application functionality",
-				"Collaborate with clients using Agile methodologies, delivering projects on schedule with clear communication and documentation",
-				"Built and maintained enterprise-level web applications using React, Node.js, and MongoDB, managing complex business workflows and data operations",
-				"Developed RESTful APIs with Express.js and PostgreSQL handling 500,000+ daily requests, implementing database indexing and query optimization strategies",
-				"Implemented CI/CD pipelines using Docker, Kubernetes, and AWS, reducing deployment time from 2 hours to 15 minutes",
-				"Optimized internal CRM system by refactoring database queries, reducing report generation time from 45 seconds to 8 seconds",
-				"Created custom notification system using Node.js and Twilio, reducing manual messaging by 85%",
-				"Developed time tracking application with React and Node.js, saving $3,600 annually in licensing costs",
-				"Refactored legacy jQuery codebase to Redux architecture, reducing bug reports by 40% and page load times by 35%",
-				"Collaborated with cross-functional teams following Scrum methodology, participating in daily standups and sprint planning",
-				"Maintained application uptime above 99.5% through AWS CloudWatch monitoring and automated alerting"
-			]
-		}
-	],
-	skills: [
-		{
-			title: "Programming Languages",
-			categoryTitle: "Programming Languages",
-			skills: ["JavaScript (ES6+), TypeScript, Python, Go, HTML5, CSS3/SCSS, SQL"]
-		},
-		{
-			title: "Backend Technologies",
-			categoryTitle: "Backend Technologies",
-			skills: ["Node.js, Express.js, NestJS, GraphQL, RESTful APIs, LangGraph, WebSockets"]
-		},
-		{
-			title: "Frontend Technologies",
-			categoryTitle: "Frontend Technologies",
-			skills: ["React, Redux, Svelte, Tailwind CSS, Bootstrap, Apollo GraphQL, Responsive Design"]
-		},
-		{
-			title: "Databases",
-			categoryTitle: "Databases",
-			skills: ["MongoDB, PostgreSQL, MySQL"]
-		},
-		{
-			title: "Development Practices",
-			categoryTitle: "Development Practices",
-			skills: ["Code Review, Version Control, API Design, Documentation, Performance Optimization"]
-		},
-		{
-			title: "Cloud & DevOps",
-			categoryTitle: "Cloud & DevOps",
-			skills: ["AWS, GCP, Docker, Kubernetes (EKS), CI/CD, Git/GitHub"]
-		},
-		{
-			title: "Operating Systems",
-			categoryTitle: "Operating Systems",
-			skills: ["Linux, Windows"]
-		},
-		{
-			title: "Military Service",
-			categoryTitle: "Military Service",
-			skills: [
-				"Completed 3 years of full military service in the Coast Guard, reaching the rank of Staff Sergeant. Served as a communications specialist and led a technical support team.",
-				"Optimized TCP/IP and L2/L3 protocols across network for 15% perf. & 20% reliability.",
-				"Used Linux for system security, automating patching with Bash to cut vulnerabilities by 25%.",
-				"Developed Python scripts for network monitoring, proactively resolving 95% of server issues.",
-				"Implemented automated solutions using Bash, cutting routine network tasks by 40% for critical projects.",
-				"Maintained 99.99% uptime with swift issue resolution; enhanced network security using Firewalls.",
-				"Configured and maintained enterprise-grade VPN solutions, securing remote access and network integrity."
-			]
-		}
-	],
-	projects: [],
-	education: [
-		{
-			institution: "CodeAcademy Online",
-			university: "",
-			degree: "Certificate",
-			field: "Full-Stack Development",
-			location: "San Francisco, CA",
-			dateRange: "Education"
-		},
-		{
-			institution: "TechSkills Institute",
-			university: "",
-			degree: "Certificate",
-			field: "Cyber Security",
-			location: "San Francisco, CA",
-			dateRange: "Education"
-		},
-		{
-			institution: "NetworkPro Training",
-			university: "",
-			degree: "Cisco Certified Network Associate (CCNA)",
-			field: "",
-			location: "San Francisco, CA",
-			dateRange: "Education"
-		}
-	]
+  personalInfo: {
+    name: 'Alex Morrison',
+    title: 'Full stack web developer',
+    email: 'alex.morrison.dev@example.com',
+    phone: '555-0123',
+    location: 'San Francisco',
+    linkedin: 'linkedin.com/in/alex-morrison-dev',
+  },
+  experience: [
+    {
+      company: 'TechSolutions Inc',
+      location: 'San Francisco, CA',
+      title: 'Full Stack Developer',
+      dateRange: '2021 - 2024',
+      duties: [
+        'Develop custom full-stack web applications for clients across e-commerce, healthcare, and education sectors using React, Node.js, and MongoDB',
+        'Design and implement RESTful APIs with Express.js and PostgreSQL, improving data retrieval efficiency and enabling seamless frontend-backend communication',
+        'Build responsive, mobile-first user interfaces using Tailwind CSS, Bootstrap and JavaScript, ensuring cross-browser compatibility',
+        'Integrate third-party APIs including Stripe payment processing, SendGrid, and Google Maps, extending application functionality',
+        'Collaborate with clients using Agile methodologies, delivering projects on schedule with clear communication and documentation',
+        'Built and maintained enterprise-level web applications using React, Node.js, and MongoDB, managing complex business workflows and data operations',
+        'Developed RESTful APIs with Express.js and PostgreSQL handling 500,000+ daily requests, implementing database indexing and query optimization strategies',
+        'Implemented CI/CD pipelines using Docker, Kubernetes, and AWS, reducing deployment time from 2 hours to 15 minutes',
+        'Optimized internal CRM system by refactoring database queries, reducing report generation time from 45 seconds to 8 seconds',
+        'Created custom Slack Bot integration using Node.js and Webhooks, reducing manual notifications by 85%',
+        'Developed task management application with React and Node.js, saving $3,600 annually in licensing costs',
+        'Refactored legacy jQuery codebase to Redux architecture, reducing bug reports by 40% and page load times by 35%',
+        'Collaborated with cross-functional teams following Scrum methodology, participating in daily standups and sprint planning',
+        'Maintained application uptime above 99.5% through AWS CloudWatch monitoring and automated alerting',
+      ],
+    },
+    {
+      company: 'GlobalTel Communications',
+      location: 'San Francisco, CA',
+      title: 'Network Support Engineer',
+      dateRange: '2017 - 2021',
+      duties: [
+        'Key Projects: Automated SMS Platform for Contract Signing & Customer Notifications',
+        'Node.js | Express | Twilio API | SMS Gateway | MongoDB | AWS S3 | Webhooks',
+        'Designed custom SMS notification platform enabling automated contract delivery, digital signature collection, and real-time customer notifications for call center operations. Replaced expensive third-party service while improving customer response rates by 73%',
+        'Built webhook-based notification system for order confirmations, appointment reminders, and contract status updates, reducing manual messaging workload by 85%',
+        'Implemented secure document handling with AWS S3, automated follow-ups for pending signatures, and flexible message templates with intelligent scheduling for mass communication campaigns',
+        'Enterprise CRM System for Call Center & Sales Operations',
+        'React | Redux | Node.js | Express | PostgreSQL | MongoDB | WebSockets | AWS | Docker | Kubernetes',
+        'Architected comprehensive enterprise CRM platform managing call center operations, sales workflows, and administration across multiple departments. Implemented real-time dashboards with WebSockets for live call tracking and sales pipeline visualization, plus advanced analytics module with custom reporting that reduced report generation time by 82%',
+        'Built role-based access control, automated task assignment, and customer communication tracking',
+        'Optimized PostgreSQL queries with indexing and performance tuning, improving system response time from 3.2s to 0.4s',
+        'Deployed on Amazon Web Services using Kubernetes (EKS) and Docker containers, achieving 99.7% uptime',
+      ],
+    },
+    {
+      company: 'Freelance Platforms',
+      location: 'Remote',
+      title: 'Full Stack Developer (Freelance)',
+      dateRange: '2024 - Present',
+      duties: [
+        'Develop custom full-stack web applications for clients across e-commerce, healthcare, and education sectors using React, Node.js, and MongoDB',
+        'Design and implement RESTful APIs with Express.js and PostgreSQL, improving data retrieval efficiency and enabling seamless frontend-backend communication',
+        'Build responsive, mobile-first user interfaces using Tailwind CSS, Bootstrap and JavaScript, ensuring cross-browser compatibility',
+        'Integrate third-party APIs including Stripe payment processing, SendGrid, and Google Maps, extending application functionality',
+        'Collaborate with clients using Agile methodologies, delivering projects on schedule with clear communication and documentation',
+        'Built and maintained enterprise-level web applications using React, Node.js, and MongoDB, managing complex business workflows and data operations',
+        'Developed RESTful APIs with Express.js and PostgreSQL handling 500,000+ daily requests, implementing database indexing and query optimization strategies',
+        'Implemented CI/CD pipelines using Docker, Kubernetes, and AWS, reducing deployment time from 2 hours to 15 minutes',
+        'Optimized internal CRM system by refactoring database queries, reducing report generation time from 45 seconds to 8 seconds',
+        'Created custom notification system using Node.js and Twilio, reducing manual messaging by 85%',
+        'Developed time tracking application with React and Node.js, saving $3,600 annually in licensing costs',
+        'Refactored legacy jQuery codebase to Redux architecture, reducing bug reports by 40% and page load times by 35%',
+        'Collaborated with cross-functional teams following Scrum methodology, participating in daily standups and sprint planning',
+        'Maintained application uptime above 99.5% through AWS CloudWatch monitoring and automated alerting',
+      ],
+    },
+  ],
+  skills: [
+    {
+      categoryTitle: 'Programming Languages',
+      skills: ['JavaScript (ES6+), TypeScript, Python, Go, HTML5, CSS3/SCSS, SQL'],
+    },
+    {
+      categoryTitle: 'Backend Technologies',
+      skills: ['Node.js, Express.js, NestJS, GraphQL, RESTful APIs, LangGraph, WebSockets'],
+    },
+    {
+      categoryTitle: 'Frontend Technologies',
+      skills: ['React, Redux, Svelte, Tailwind CSS, Bootstrap, Apollo GraphQL, Responsive Design'],
+    },
+    {
+      categoryTitle: 'Databases',
+      skills: ['MongoDB, PostgreSQL, MySQL'],
+    },
+    {
+      categoryTitle: 'Development Practices',
+      skills: ['Code Review, Version Control, API Design, Documentation, Performance Optimization'],
+    },
+    {
+      categoryTitle: 'Cloud & DevOps',
+      skills: ['AWS, GCP, Docker, Kubernetes (EKS), CI/CD, Git/GitHub'],
+    },
+    {
+      categoryTitle: 'Operating Systems',
+      skills: ['Linux, Windows'],
+    },
+    {
+      categoryTitle: 'Military Service',
+      skills: [
+        'Completed 3 years of full military service in the Coast Guard, reaching the rank of Staff Sergeant. Served as a communications specialist and led a technical support team.',
+        'Optimized TCP/IP and L2/L3 protocols across network for 15% perf. & 20% reliability.',
+        'Used Linux for system security, automating patching with Bash to cut vulnerabilities by 25%.',
+        'Developed Python scripts for network monitoring, proactively resolving 95% of server issues.',
+        'Implemented automated solutions using Bash, cutting routine network tasks by 40% for critical projects.',
+        'Maintained 99.99% uptime with swift issue resolution; enhanced network security using Firewalls.',
+        'Configured and maintained enterprise-grade VPN solutions, securing remote access and network integrity.',
+      ],
+    },
+  ],
+  projects: [],
+  education: [
+    {
+      institution: 'CodeAcademy Online',
+      university: '',
+      degree: 'Certificate',
+      field: 'Full-Stack Development',
+      location: 'San Francisco, CA',
+      dateRange: 'Education',
+    },
+    {
+      institution: 'TechSkills Institute',
+      university: '',
+      degree: 'Certificate',
+      field: 'Cyber Security',
+      location: 'San Francisco, CA',
+      dateRange: 'Education',
+    },
+    {
+      institution: 'NetworkPro Training',
+      university: '',
+      degree: 'Cisco Certified Network Associate (CCNA)',
+      field: '',
+      location: 'San Francisco, CA',
+      dateRange: 'Education',
+    },
+  ],
 };
 
 export const fakeResumeData: ResumeData = myFakeResumeData;

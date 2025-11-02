@@ -13,28 +13,40 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
 
     const { personalInfo, experience, skills, education, militaryService } = resumeData;
 
-    const experienceHTML = experience?.map(exp => `
+    const experienceHTML =
+      experience
+        ?.map(
+          exp => `
       <div class="job">
         <div class="company-info">
           <span class="company-name">${exp.company}</span>, <span class="location">${exp.location || ''}</span>
         </div>
-        ${exp.description ? `<div class="company-description">${exp.description}</div>` : ''}
         <div class="job-title-line">
           <span class="job-title">${exp.title}</span>
           <span class="date-range">${exp.dateRange}</span>
         </div>
         ${exp.duties ? `<ul class="job-duties">${exp.duties.map(d => `<li>${d}</li>`).join('')}</ul>` : ''}
       </div>
-    `).join('') || '';
+    `
+        )
+        .join('') || '';
 
-    const skillsHTML = skills?.map(category => `
+    const skillsHTML =
+      skills
+        ?.map(
+          category => `
       <div class="skill-category">
         <div class="skill-category-title">${category.title}:</div>
         <ul class="skill-list">${category.skills.map(s => `<li>${s}</li>`).join('')}</ul>
       </div>
-    `).join('') || '';
+    `
+        )
+        .join('') || '';
 
-    const educationHTML = education?.map(edu => `
+    const educationHTML =
+      education
+        ?.map(
+          edu => `
       <div class="education-item">
         <div class="university">${edu.institution}</div>
         <div class="degree">${edu.degree}</div>
@@ -42,14 +54,14 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
         ${edu.location ? `<div class="education-location">${edu.location}</div>` : ''}
         ${edu.dateRange && edu.dateRange !== '-' ? `<div class="education-date">${edu.dateRange}</div>` : ''}
       </div>
-    `).join('') || '';
+    `
+        )
+        .join('') || '';
 
-    const contactHTML = [
-      personalInfo.location,
-      personalInfo.phone,
-      personalInfo.email,
-      personalInfo.linkedin
-    ].filter(Boolean).map(item => `<li>${item}</li>`).join('');
+    const contactHTML = [personalInfo.location, personalInfo.phone, personalInfo.email, personalInfo.linkedin]
+      .filter(Boolean)
+      .map(item => `<li>${item}</li>`)
+      .join('');
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -72,7 +84,6 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
     .company-info { margin-bottom: 8px; }
     .company-name { font-weight: bold; color: #333; display: inline; }
     .location { color: #666; font-style: italic; display: inline; }
-    .company-description { color: #666; font-style: italic; font-size: 13px; margin-bottom: 6px; }
     .job-title-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .job-title { font-weight: bold; color: #333; }
     .date-range { color: #666; font-size: 14px; }
@@ -102,32 +113,48 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
         <h1 class="name">${personalInfo.name}</h1>
         ${personalInfo.title ? `<div class="title">${personalInfo.title}</div>` : ''}
       </div>
-      ${experience && experience.length > 0 ? `
+      ${
+        experience && experience.length > 0
+          ? `
         <div class="section-title">WORK EXPERIENCE</div>
         ${experienceHTML}
-      ` : ''}
-      ${education && education.length > 0 ? `
+      `
+          : ''
+      }
+      ${
+        education && education.length > 0
+          ? `
         <div class="section-title">EDUCATION</div>
         ${educationHTML}
-      ` : ''}
-      ${militaryService && militaryService.trim().length > 0 ? `
+      `
+          : ''
+      }
+      ${
+        militaryService && militaryService.trim().length > 0
+          ? `
         <div style="margin-top: 15px;">
           <div class="section-title">MILITARY SERVICE</div>
           <p style="color: #555; font-size: 11px; line-height: 1.4;">${militaryService}</p>
         </div>
-      ` : ''}
+      `
+          : ''
+      }
     </div>
     <div class="sidebar">
       <div class="sidebar-section">
         <div class="section-title">CONTACT</div>
         <ul class="contact-info">${contactHTML}</ul>
       </div>
-      ${skills && skills.length > 0 ? `
+      ${
+        skills && skills.length > 0
+          ? `
         <div class="sidebar-section">
           <div class="section-title">SKILLS</div>
           ${skillsHTML}
         </div>
-      ` : ''}
+      `
+          : ''
+      }
     </div>
   </div>
 </body>
@@ -161,14 +188,14 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
       <button
         onClick={handleDownloadPDF}
         disabled={disabled || !resumeData}
-        className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        className="flex-1 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
       >
         Download as PDF
       </button>
       <button
         onClick={handleCopyHTML}
         disabled={disabled || !resumeData}
-        className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        className="flex-1 rounded-lg bg-green-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-400"
       >
         Copy as HTML
       </button>

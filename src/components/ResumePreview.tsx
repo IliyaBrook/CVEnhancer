@@ -1,7 +1,7 @@
 import React from 'react';
-import type {ResumeData} from '@/types';
-import {resumePdfStyles as styles} from '@/styles';
-import {stylesToCss} from '@/utils';
+import type { ResumeData } from '@/types';
+import { resumePdfStyles as styles } from '@/styles';
+import { stylesToCss } from '@/utils';
 
 interface ResumePreviewProps {
   resumeData: ResumeData | null;
@@ -10,19 +10,17 @@ interface ResumePreviewProps {
 export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
   if (!resumeData) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Resume Preview</h2>
-        <p className="text-gray-500 text-center py-12">
-          Upload and process a resume to see the preview
-        </p>
+      <div className="rounded-lg bg-white p-6 shadow-md">
+        <h2 className="mb-4 text-2xl font-bold text-gray-800">Resume Preview</h2>
+        <p className="py-12 text-center text-gray-500">Upload and process a resume to see the preview</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Resume Preview</h2>
-      
+    <div className="rounded-lg bg-white p-6 shadow-md">
+      <h2 className="mb-4 text-2xl font-bold text-gray-800">Resume Preview</h2>
+
       <style>{`
         .resume-container { ${stylesToCss(styles.page)} }
         .main-content { ${stylesToCss(styles.mainContent)} }
@@ -37,7 +35,6 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .company-info { ${stylesToCss(styles.companyInfo)} }
         .company-name { ${stylesToCss(styles.companyName)} display: inline; }
         .location { ${stylesToCss(styles.location)} display: inline; }
-        .company-description { ${stylesToCss(styles.companyDescription)} }
         .job-title-line { display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .job-title { ${stylesToCss(styles.jobTitle)} }
         .date-range { ${stylesToCss(styles.dateRange)} }
@@ -90,9 +87,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         <div className="main-content">
           <div className="header">
             <h1 className="name">{resumeData.personalInfo.name}</h1>
-            {resumeData.personalInfo.title && (
-              <div className="title">{resumeData.personalInfo.title}</div>
-            )}
+            {resumeData.personalInfo.title && <div className="title">{resumeData.personalInfo.title}</div>}
           </div>
 
           {resumeData.experience && resumeData.experience.length > 0 && (
@@ -102,11 +97,12 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
                 <div key={idx} className="job">
                   <div className="company-info">
                     <span className="company-name">{exp.company}</span>
-                    {exp.location && <>, <span className="location">{exp.location}</span></>}
+                    {exp.location && (
+                      <>
+                        , <span className="location">{exp.location}</span>
+                      </>
+                    )}
                   </div>
-                  {exp.description && (
-                    <div className="company-description">{exp.description}</div>
-                  )}
                   <div className="job-title-line">
                     <span className="job-title">{exp.title}</span>
                     <span className="date-range">{exp.dateRange}</span>
@@ -144,25 +140,16 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
               <div className="military-text">{resumeData.militaryService}</div>
             </div>
           )}
-
         </div>
 
         <div className="sidebar">
           <div className="sidebar-contact-section">
             <div className="section-title">CONTACT</div>
             <ul className="contact-info">
-              {resumeData.personalInfo.location && (
-                <li>{resumeData.personalInfo.location}</li>
-              )}
-              {resumeData.personalInfo.phone && (
-                <li>{resumeData.personalInfo.phone}</li>
-              )}
-              {resumeData.personalInfo.email && (
-                <li>{resumeData.personalInfo.email}</li>
-              )}
-              {resumeData.personalInfo.linkedin && (
-                <li>{resumeData.personalInfo.linkedin}</li>
-              )}
+              {resumeData.personalInfo.location && <li>{resumeData.personalInfo.location}</li>}
+              {resumeData.personalInfo.phone && <li>{resumeData.personalInfo.phone}</li>}
+              {resumeData.personalInfo.email && <li>{resumeData.personalInfo.email}</li>}
+              {resumeData.personalInfo.linkedin && <li>{resumeData.personalInfo.linkedin}</li>}
             </ul>
           </div>
 
@@ -181,7 +168,6 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
               ))}
             </div>
           )}
-
         </div>
       </div>
     </div>
