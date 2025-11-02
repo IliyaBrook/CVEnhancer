@@ -89,12 +89,28 @@ export const resumePdfStyles = StyleSheet.create({
 	jobDuties: {
 		marginTop: 5,
 	},
+	jobDutyLi: {
+		position: 'relative',
+		paddingLeft: 15,
+		marginBottom: 5,
+		fontSize: 14,
+		color: '#333',
+		lineHeight: 1.35,
+	},
 	jobDuty: {
 		flexDirection: 'row',
 		marginBottom: 5,
 		fontSize: 14,
 		color: '#333',
 		lineHeight: 1.35,
+	},
+	bulletBefore: {
+		content: '•',
+		position: 'absolute',
+		left: 0,
+		top: 0,
+		color: '#1a4d8f',
+		fontWeight: 'bold',
 	},
 	bullet: {
 		color: '#1a4d8f',
@@ -114,6 +130,9 @@ export const resumePdfStyles = StyleSheet.create({
 		marginBottom: 12,
 		textTransform: 'uppercase',
 		letterSpacing: 1.5,
+	},
+	sidebarSectionTitleNotFirst: {
+		marginTop: 25,
 	},
 	contactInfoList: {
 		listStyle: 'none',
@@ -135,11 +154,24 @@ export const resumePdfStyles = StyleSheet.create({
 	skillList: {
 		listStyle: 'none',
 	},
+	skillItemLi: {
+		position: 'relative',
+		paddingLeft: 10,
+		marginBottom: 3,
+		fontSize: 12,
+		color: '#555',
+	},
 	skillItem: {
 		flexDirection: 'row',
 		marginBottom: 3,
 		fontSize: 12,
 		color: '#555',
+	},
+	skillBulletBefore: {
+		content: '•',
+		position: 'absolute',
+		left: 0,
+		color: '#666',
 	},
 	skillBullet: {
 		marginRight: 5,

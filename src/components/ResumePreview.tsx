@@ -1,7 +1,7 @@
 import React from 'react';
-import type { ResumeData } from '@/types';
-import { resumePdfStyles as styles } from '@/styles';
-import { stylesToCss } from '@/utils';
+import type {ResumeData} from '@/types';
+import {resumePdfStyles as styles} from '@/styles';
+import {stylesToCss} from '@/utils';
 
 interface ResumePreviewProps {
   resumeData: ResumeData | null;
@@ -44,30 +44,15 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         
         .job-duties { ${stylesToCss(styles.jobDutiesList)} }
         
-        .job-duties li {
-          position: relative;
-          padding-left: 15px;
-          ${stylesToCss(styles.jobDuty)}
-        }
+        .job-duties li { ${stylesToCss(styles.jobDutyLi)} }
         
-        .job-duties li::before {
-          content: "•";
-          ${stylesToCss(styles.bullet)}
-          position: absolute;
-          left: 0;
-          top: 0;
-        }
+        .job-duties li::before { ${stylesToCss(styles.bulletBefore)} }
         
         .sidebar-section { ${stylesToCss(styles.sidebarSection)} }
         
-        .sidebar .section-title {
-          ${stylesToCss(styles.sidebarSectionTitle)}
-          margin-top: 0;
-        }
+        .sidebar .section-title { ${stylesToCss(styles.sidebarSectionTitle)} }
         
-        .sidebar .section-title:not(:first-child) {
-          margin-top: 25px;
-        }
+        .sidebar .section-title:not(:first-child) { ${stylesToCss(styles.sidebarSectionTitleNotFirst)} }
         
         .contact-info { ${stylesToCss(styles.contactInfoList)} }
         .contact-info li { ${stylesToCss(styles.contactInfo)} }
@@ -77,18 +62,9 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         
         .skill-list { ${stylesToCss(styles.skillList)} }
         
-        .skill-list li {
-          ${stylesToCss(styles.skillItem)}
-          position: relative;
-          padding-left: 10px;
-        }
+        .skill-list li { ${stylesToCss(styles.skillItemLi)} }
         
-        .skill-list li::before {
-          content: "•";
-          ${stylesToCss(styles.skillBullet)}
-          position: absolute;
-          left: 0;
-        }
+        .skill-list li::before { ${stylesToCss(styles.skillBulletBefore)} }
         
         .education-item { ${stylesToCss(styles.educationItem)} }
         .university { ${stylesToCss(styles.university)} }
