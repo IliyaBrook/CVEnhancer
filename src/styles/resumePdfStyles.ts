@@ -30,10 +30,10 @@ export const resumePdfStyles = StyleSheet.create({
     marginBottom: 3,
     letterSpacing: 0.3,
   },
-  titleText: {
+  title: {
     fontSize: 13,
     color: '#555',
-    marginBottom: 12,
+    marginBottom: 5,
   },
   sectionTitle: {
     fontSize: 12,

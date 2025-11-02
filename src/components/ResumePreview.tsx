@@ -27,7 +27,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .sidebar { ${stylesToCss(styles.sidebar)} }
         .header { ${stylesToCss(styles.header)} }
         .name { ${stylesToCss(styles.name)} }
-        .title { ${stylesToCss(styles.titleText)} }
+        .title { ${stylesToCss(styles.title)} }
         .section-title { ${stylesToCss(styles.sectionTitle)} }
         .section-title-with-margin { ${stylesToCss(styles.sectionTitleWithMargin)} }
         
