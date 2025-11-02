@@ -33,49 +33,14 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .section-title { ${stylesToCss(styles.sectionTitle)} }
         .section-title:first-child { ${stylesToCss(styles.sectionTitleFirst)} }
         
-        .job {
-          margin-bottom: 20px;
-        }
-        
-        .company-info {
-          margin-bottom: 8px;
-        }
-        
-        .company-name {
-          font-weight: bold;
-          color: #333;
-          display: inline;
-        }
-        
-        .location {
-          color: #666;
-          font-style: italic;
-          display: inline;
-        }
-        
-        .company-description {
-          color: #666;
-          font-style: italic;
-          font-size: 13px;
-          margin-bottom: 6px;
-        }
-        
-        .job-title-line {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 8px;
-        }
-        
-        .job-title {
-          font-weight: bold;
-          color: #333;
-        }
-        
-        .date-range {
-          color: #666;
-          font-size: 14px;
-        }
+        .job { ${stylesToCss(styles.job)} }
+        .company-info { ${stylesToCss(styles.companyInfo)} }
+        .company-name { ${stylesToCss(styles.companyName)} display: inline; }
+        .location { ${stylesToCss(styles.location)} display: inline; }
+        .company-description { ${stylesToCss(styles.companyDescription)} }
+        .job-title-line { ${stylesToCss(styles.jobTitleLine)} align-items: center; }
+        .job-title { ${stylesToCss(styles.jobTitle)} }
+        .date-range { ${stylesToCss(styles.dateRange)} }
         
         .job-duties {
           list-style: none;
@@ -85,29 +50,21 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .job-duties li {
           position: relative;
           padding-left: 15px;
-          margin-bottom: 5px;
-          color: #333;
-          line-height: 1.35;
-          font-size: 14px;
+          ${stylesToCss(styles.jobDuty)}
         }
         
         .job-duties li::before {
           content: "•";
-          color: #1a4d8f;
+          ${stylesToCss(styles.bullet)}
           position: absolute;
           left: 0;
           top: 0;
-          font-weight: bold;
         }
         
-        .sidebar-section {
-          margin-bottom: 25px;
-        }
+        .sidebar-section { ${stylesToCss(styles.sidebarSection)} }
         
         .sidebar .section-title {
-          font-size: 13px;
-          color: #1a4d8f;
-          margin-bottom: 12px;
+          ${stylesToCss(styles.sidebarSectionTitle)}
           margin-top: 0;
         }
         
@@ -119,74 +76,34 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
           list-style: none;
         }
         
-        .contact-info li {
-          margin-bottom: 6px;
-          color: #555;
-          font-size: 13px;
-        }
+        .contact-info li { ${stylesToCss(styles.contactInfo)} }
         
-        .skill-category {
-          margin-bottom: 15px;
-        }
-        
-        .skill-category-title {
-          font-weight: bold;
-          color: #333;
-          font-size: 13px;
-          margin-bottom: 6px;
-        }
+        .skill-category { ${stylesToCss(styles.skillCategory)} }
+        .skill-category-title { ${stylesToCss(styles.skillCategoryTitle)} }
         
         .skill-list {
           list-style: none;
         }
         
         .skill-list li {
-          color: #555;
-          font-size: 12px;
-          margin-bottom: 3px;
+          ${stylesToCss(styles.skillItem)}
           position: relative;
           padding-left: 10px;
         }
         
         .skill-list li::before {
           content: "•";
+          ${stylesToCss(styles.skillBullet)}
           position: absolute;
           left: 0;
-          color: #666;
         }
         
-        .education-item {
-          margin-bottom: 15px;
-        }
-        
-        .university {
-          font-weight: bold;
-          color: #333;
-          font-size: 13px;
-        }
-        
-        .degree {
-          color: #555;
-          font-size: 12px;
-          margin-bottom: 3px;
-        }
-        
-        .education-location {
-          color: #555;
-          font-size: 12px;
-          font-style: italic;
-        }
-        
-        .education-date {
-          color: #555;
-          font-size: 12px;
-        }
-        
-        .certification {
-          color: #555;
-          font-size: 12px;
-          margin-bottom: 5px;
-        }
+        .education-item { ${stylesToCss(styles.educationItem)} }
+        .university { ${stylesToCss(styles.university)} }
+        .degree { ${stylesToCss(styles.degree)} }
+        .education-location { ${stylesToCss(styles.educationLocation)} }
+        .education-date { ${stylesToCss(styles.educationDate)} }
+        .certification { ${stylesToCss(styles.certification)} }
         
         .previous-experience {
           margin-top: 30px;
