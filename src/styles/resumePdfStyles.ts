@@ -8,6 +8,7 @@ export const resumePdfStyles = StyleSheet.create({
     boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
     fontFamily: 'Helvetica',
     color: '#333',
+    hyphenationFactor: 0,
   },
   mainContent: {
     flex: 2,

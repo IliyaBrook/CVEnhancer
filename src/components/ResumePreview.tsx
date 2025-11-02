@@ -22,7 +22,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
       <h2 className="mb-4 text-2xl font-bold text-gray-800">Resume Preview</h2>
 
       <style>{`
-        .resume-container { ${stylesToCss(styles.page)} }
+        .resume-container { ${stylesToCss(styles.page)} hyphens: none; }
         .main-content { ${stylesToCss(styles.mainContent)} }
         .sidebar { ${stylesToCss(styles.sidebar)} }
         .header { ${stylesToCss(styles.header)} }
