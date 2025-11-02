@@ -25,3 +25,5 @@ lerna-debug.log*
 *.sln
 *.sw?
 tmp
+# private json data for testing and debugging
+src/fakeData/json_data/*_private.json
