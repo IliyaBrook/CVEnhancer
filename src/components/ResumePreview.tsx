@@ -32,6 +32,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .section-title-with-margin { ${stylesToCss(styles.sectionTitleWithMargin)} }
         
         .job { ${stylesToCss(styles.job)} }
+        .last-job-element { ${stylesToCss(styles.lastJobElement)} }
         .company-info { ${stylesToCss(styles.companyInfo)} }
         .company-name { ${stylesToCss(styles.companyName)} display: inline; }
         .location { ${stylesToCss(styles.location)} display: inline; }
@@ -55,7 +56,6 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         .sidebar-section { ${stylesToCss(styles.sidebarSection)} }
         .sidebar-contact-section { ${stylesToCss(styles.sidebarContactSection)} }
         
-        
         .contact-info { ${stylesToCss(styles.contactInfoList)} }
         .contact-info li { ${stylesToCss(styles.contactInfo)} }
         
@@ -72,7 +72,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
           left: 0;
           color: #666;
         }
-        
+        .education-section-title { ${stylesToCss(styles.educationSectionTitle)} }
         .education-item { ${stylesToCss(styles.educationItem)} }
         .university { ${stylesToCss(styles.university)} }
         .degree { ${stylesToCss(styles.degree)} }
@@ -95,7 +95,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
             <>
               <div className="section-title">WORK EXPERIENCE</div>
               {resumeData.experience.map((exp, idx) => (
-                <div key={idx} className="job">
+                <div key={idx} className={resumeData.experience.length - 1 === idx ? 'job last-job-element' : 'job'}>
                   <div className="company-info">
                     <span className="company-name">{exp.company}</span>
                     {exp.location && (
@@ -122,7 +122,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
 
           {resumeData.education && resumeData.education.length > 0 && (
             <>
-              <div className="section-title">EDUCATION</div>
+              <div className="section-title education-section-title">EDUCATION</div>
               {resumeData.education.map((edu, idx) => (
                 <div key={idx} className="education-item">
                   <div className="university">{edu.university || edu.institution}</div>

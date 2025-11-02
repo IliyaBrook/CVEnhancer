@@ -57,6 +57,9 @@ export const resumePdfStyles = StyleSheet.create({
     marginBottom: 12,
     minPresenceAhead: 24,
   },
+  lastJobElement: {
+    marginBottom: 5,
+  },
   companyInfo: {
     marginBottom: 5,
     flexDirection: 'row',
@@ -190,8 +193,11 @@ export const resumePdfStyles = StyleSheet.create({
   skillText: {
     flex: 1,
   },
+  educationSectionTitle: {
+    marginBottom: 5,
+  },
   educationItem: {
-    marginBottom: 10,
+    marginBottom: 5,
     minPresenceAhead: 12,
   },
   university: {
@@ -244,7 +250,6 @@ export const resumePdfStyles = StyleSheet.create({
     color: '#666',
     fontSize: 11,
   },
-
   militarySection: {
     marginTop: 15,
   },

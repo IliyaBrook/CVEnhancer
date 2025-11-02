@@ -23,7 +23,10 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
             <View>
               <Text style={styles.sectionTitle}>WORK EXPERIENCE</Text>
               {experience.map((exp, index) => (
-                <View key={index} style={styles.job}>
+                <View
+                  key={index}
+                  style={experience.length - 1 === index ? [styles.job, styles.lastJobElement] : styles.job}
+                >
                   <View style={styles.companyInfo} wrap={false}>
                     <Text style={styles.companyName}>{exp.company}</Text>
                     {exp.location && <Text style={styles.location}>, {exp.location}</Text>}
@@ -50,7 +53,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
 
           {education && education.length > 0 && (
             <View style={styles.educationSection}>
-              <Text style={styles.sectionTitle}>EDUCATION</Text>
+              <Text style={[styles.sectionTitle, styles.educationSectionTitle]}>EDUCATION</Text>
               {education.map((edu, index) => (
                 <View key={index} style={styles.educationItemMain}>
                   <View style={styles.educationHeader}>
