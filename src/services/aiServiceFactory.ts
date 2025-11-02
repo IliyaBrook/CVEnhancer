@@ -1,5 +1,5 @@
 import { AIConfig, AIProvider, ClaudeApiBody, OllamaApiBody, OpenAIApiBody, ResumeData } from '@/types';
-import { claudeOptions, ollamaOptions, openaiOptions } from '@/config';
+import { claudeOptions, ollamaOptions, openaiOptions, resumeAiConfig } from '@/config';
 
 const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI. Your task is to improve the given resume following these STRICT rules:
 
@@ -106,6 +106,79 @@ CRITICAL RULES:
 - NO duplicates
 - Output ONLY valid JSON. Start with { and end with }. No other text.`;
 
+const createValidationPrompt = (resumeData: ResumeData): string => {
+  const config = resumeAiConfig;
+  const hasConfig = config && Object.keys(config).length > 0;
+  
+  let validationPrompt = `You are a resume quality validator. Review the following resume data and fix any issues. Output ONLY valid JSON.
+
+CRITICAL VALIDATION RULES:
+1. Check for duplicate duties across different jobs - each duty MUST be unique
+2. Ensure no two jobs have identical descriptions or bullet points
+3. Remove any redundant or repetitive information
+4. Verify all dates are properly formatted
+5. Check that all required fields are present and valid
+6. Ensure consistency in formatting and style`;
+
+  if (hasConfig) {
+    validationPrompt += `
+
+ADDITIONAL CONFIGURATION CONSTRAINTS:`;
+
+    if (config.experience) {
+      validationPrompt += `
+- Maximum ${config.experience.maxJobs} jobs in experience section
+- Maximum ${config.experience.bulletPointsPerJob} bullet points per job
+- Maximum ${config.experience.maxBulletLength} characters per bullet point`;
+      
+      if (config.experience.exclude && config.experience.exclude.length > 0) {
+        validationPrompt += `
+- COMPLETELY REMOVE jobs with these titles from experience section: ${config.experience.exclude.join(', ')}`;
+      }
+      
+      if (config.experience.requireActionVerbs) {
+        validationPrompt += `
+- Each bullet point MUST start with a strong action verb`;
+      }
+      
+      if (config.experience.avoidDuplicatePoints) {
+        validationPrompt += `
+- Strictly avoid any duplicate or similar bullet points across all jobs`;
+      }
+    }
+
+    if (config.skills) {
+      validationPrompt += `
+- Maximum ${config.skills.categoriesLimit} skill categories
+- Maximum ${config.skills.skillsPerCategory} skills per category`;
+    }
+
+    if (config.education) {
+      validationPrompt += `
+- Maximum ${config.education.maxEntries} education entries`;
+      
+      if (config.education.exclude && config.education.exclude.length > 0) {
+        validationPrompt += `
+- COMPLETELY REMOVE education entries containing these degrees/certifications: ${config.education.exclude.join(', ')}`;
+      }
+      
+      if (!config.education.showDates) {
+        validationPrompt += `
+- Remove dates from education entries (set dateRange to empty string or "-")`;
+      }
+    }
+  }
+
+  validationPrompt += `
+
+INPUT RESUME DATA:
+${JSON.stringify(resumeData, null, 2)}
+
+OUTPUT: Return the corrected resume data as valid JSON matching the exact ResumeData structure. Fix all issues found.`;
+
+  return validationPrompt;
+};
+
 const extractJSON = (text: string): string => {
   const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
   if (jsonMatch) {
@@ -174,6 +247,108 @@ export const enhanceResume = async (resumeText: string, config: AIConfig): Promi
   }
 };
 
+const validateResumeWithAI = async (
+  resumeData: ResumeData,
+  config: AIConfig,
+  provider: AIProvider
+): Promise<ResumeData> => {
+  const validationPrompt = createValidationPrompt(resumeData);
+
+  switch (provider) {
+    case AIProvider.OPENAI:
+    case AIProvider.CHATGPT: {
+      const openAiBody: OpenAIApiBody = {
+        model: config.model || 'gpt-4',
+        messages: [
+          { role: 'system', content: 'You are a resume validation expert.' },
+          { role: 'user', content: validationPrompt },
+        ],
+        ...openaiOptions,
+      };
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${config.apiKey}`,
+        },
+        body: JSON.stringify(openAiBody),
+      });
+
+      if (!response.ok) {
+        throw new Error(`OpenAI validation error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const content = extractJSON(data.choices[0].message.content);
+      return JSON.parse(content);
+    }
+
+    case AIProvider.CLAUDE: {
+      const claudeBody: ClaudeApiBody = {
+        model: config.model || 'claude-3-sonnet-20240229',
+        messages: [
+          {
+            role: 'user',
+            content: validationPrompt,
+          },
+        ],
+        ...claudeOptions,
+      };
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': config.apiKey!,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify(claudeBody),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Claude validation error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const contentText = extractJSON(data.content[0].text);
+      return JSON.parse(contentText);
+    }
+
+    case AIProvider.OLLAMA: {
+      const endpoint = config.ollamaEndpoint || 'http://localhost:11434';
+      const ollamaBody: OllamaApiBody = {
+        model: config.model || 'llama2',
+        prompt: validationPrompt,
+        stream: false,
+        format: 'json',
+        options: ollamaOptions,
+      };
+
+      const response = await fetch(`${endpoint}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(ollamaBody),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Ollama validation error: ${response.statusText} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      let jsonContent = data.response || data.thinking || data.message || data.content || '';
+      jsonContent = extractJSON(jsonContent);
+      return JSON.parse(jsonContent);
+    }
+
+    default:
+      return resumeData;
+  }
+};
+
 const enhanceWithOpenAI = async (resumeText: string, config: AIConfig): Promise<ResumeData> => {
   const openAiBody: OpenAIApiBody = {
     model: config.model || 'gpt-4',
@@ -199,7 +374,10 @@ const enhanceWithOpenAI = async (resumeText: string, config: AIConfig): Promise<
 
   const data = await response.json();
   const content = extractJSON(data.choices[0].message.content);
-  const resumeData = JSON.parse(content);
+  let resumeData = JSON.parse(content);
+  resumeData = enforceResumeConstraints(resumeData);
+  
+  resumeData = await validateResumeWithAI(resumeData, config, AIProvider.OPENAI);
   return enforceResumeConstraints(resumeData);
 };
 
@@ -230,7 +408,10 @@ const enhanceWithClaude = async (resumeText: string, config: AIConfig): Promise<
 
   const data = await response.json();
   const contentText = extractJSON(data.content[0].text);
-  const resumeData = JSON.parse(contentText);
+  let resumeData = JSON.parse(contentText);
+  resumeData = enforceResumeConstraints(resumeData);
+  
+  resumeData = await validateResumeWithAI(resumeData, config, AIProvider.CLAUDE);
   return enforceResumeConstraints(resumeData);
 };
 
@@ -372,7 +553,12 @@ const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<
       combinedData.skills = Array.from(uniqueSkills.values());
     }
 
-    return enforceResumeConstraints(combinedData);
+    let finalData = enforceResumeConstraints(combinedData);
+    
+    await new Promise(resolve => setTimeout(resolve, 300));
+    finalData = await validateResumeWithAI(finalData, config, AIProvider.OLLAMA);
+    
+    return enforceResumeConstraints(finalData);
   } catch (error) {
     console.error('❌ Ollama error:', error);
     throw error;
