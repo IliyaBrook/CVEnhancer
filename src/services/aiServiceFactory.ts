@@ -24,10 +24,20 @@ const RESUME_JSON_SCHEMA = {
         email: { type: "string" },
         phone: { type: "string" },
         location: { type: "string" },
-        linkedin: { type: "string" },
-        github: { type: "string" }
+        linkedin: {
+          anyOf: [
+            { type: "string" },
+            { type: "null" }
+          ]
+        },
+        github: {
+          anyOf: [
+            { type: "string" },
+            { type: "null" }
+          ]
+        }
       },
-      required: ["name", "title", "email", "phone", "location"],
+      required: ["name", "title", "email", "phone", "location", "linkedin", "github"],
       additionalProperties: false
     },
     experience: {
@@ -45,7 +55,7 @@ const RESUME_JSON_SCHEMA = {
             items: { type: "string" }
           }
         },
-        required: ["company", "location", "title", "dateRange", "duties"],
+        required: ["company", "location", "description", "title", "dateRange", "duties"],
         additionalProperties: false
       }
     },
@@ -57,11 +67,16 @@ const RESUME_JSON_SCHEMA = {
           institution: { type: "string" },
           university: { type: "string" },
           degree: { type: "string" },
-          field: { type: "string" },
+          field: {
+            anyOf: [
+              { type: "string" },
+              { type: "null" }
+            ]
+          },
           location: { type: "string" },
           dateRange: { type: "string" }
         },
-        required: ["institution", "university", "degree", "location", "dateRange"],
+        required: ["institution", "university", "degree", "field", "location", "dateRange"],
         additionalProperties: false
       }
     },
@@ -199,8 +214,8 @@ Return ONLY valid JSON matching this structure:
     "email": "string",
     "phone": "string",
     "location": "string",
-    "linkedin": "string (optional)",
-    "github": "string (optional)"
+    "linkedin": "string or null (use null if not found)",
+    "github": "string or null (use null if not found)"
   },
   "experience": [{
     "company": "string",
@@ -214,7 +229,7 @@ Return ONLY valid JSON matching this structure:
     "institution": "string",
     "university": "string",
     "degree": "string",
-    "field": "string",
+    "field": "string or null (use null if not found)",
     "location": "string",
     "dateRange": "string"
   }],
@@ -224,6 +239,8 @@ Return ONLY valid JSON matching this structure:
   }],
   "militaryService": "string (1-2 sentences or empty)"
 }
+
+IMPORTANT: Use null for optional fields (linkedin, github, field) if they are not found in the resume.
 </output_format>
 </instructions>`;
 };
