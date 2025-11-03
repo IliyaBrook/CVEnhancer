@@ -67,7 +67,7 @@ export const resumePdfStyles = StyleSheet.create({
   companyName: {
     fontWeight: 'bold',
     color: '#333',
-    fontSize: 12,
+    fontSize: 10,
   },
   location: {
     color: '#666',

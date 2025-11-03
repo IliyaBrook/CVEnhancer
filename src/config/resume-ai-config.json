@@ -17,6 +17,11 @@
   "education": {
     "maxEntries": 3,
     "exclude": ["CCNA"],
-    "showDates": false
+    "showDates": false,
+    "placement": "main-content"
+  },
+
+  "pdf": {
+    "singlePageExport": false
   }
 }

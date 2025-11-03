@@ -16,6 +16,10 @@ export const ResumeSettingsModal: React.FC<ResumeSettingsModalProps> = ({ isOpen
   useEffect(() => {
     const loadedConfig = loadResumeConfig();
     if (loadedConfig) {
+      // Ensure pdf settings exist for backward compatibility
+      if (!loadedConfig.pdf) {
+        loadedConfig.pdf = { singlePageExport: false };
+      }
       setConfig(loadedConfig);
     }
   }, [isOpen]);
@@ -313,21 +317,41 @@ export const ResumeSettingsModal: React.FC<ResumeSettingsModalProps> = ({ isOpen
               <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Education Settings</h3>
             </div>
 
-            <div className="mb-6">
-              <label className="block text-sm font-semibold text-gray-700 mb-2.5 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                Max Entries
-              </label>
-              <input
-                type="number"
-                min="1"
-                value={config.education.maxEntries}
-                onChange={(e) => setConfig({
-                  ...config,
-                  education: { ...config.education, maxEntries: parseInt(e.target.value) || 1 }
-                })}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-white hover:border-blue-300 font-medium text-gray-900"
-              />
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2.5 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                  Max Entries
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={config.education.maxEntries}
+                  onChange={(e) => setConfig({
+                    ...config,
+                    education: { ...config.education, maxEntries: parseInt(e.target.value) || 1 }
+                  })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-white hover:border-blue-300 font-medium text-gray-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2.5 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                  Placement
+                </label>
+                <select
+                  value={config.education.placement}
+                  onChange={(e) => setConfig({
+                    ...config,
+                    education: { ...config.education, placement: e.target.value as 'main-content' | 'sidebar' }
+                  })}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-white hover:border-blue-300 cursor-pointer font-medium text-gray-900"
+                >
+                  <option value="main-content">Main Content (Left)</option>
+                  <option value="sidebar">Sidebar (Right)</option>
+                </select>
+              </div>
             </div>
 
             <div className="mb-6">
@@ -389,6 +413,35 @@ export const ResumeSettingsModal: React.FC<ResumeSettingsModalProps> = ({ isOpen
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center gap-2 mb-6">
+              <div className="p-2 bg-gradient-to-br from-rose-100 to-red-100 rounded-lg">
+                <svg className="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold bg-gradient-to-r from-rose-600 to-red-600 bg-clip-text text-transparent">PDF Export Settings</h3>
+            </div>
+
+            <div>
+              <label className="flex items-center gap-3 p-3 rounded-xl hover:bg-rose-50 transition-colors cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={config.pdf.singlePageExport}
+                  onChange={(e) => setConfig({
+                    ...config,
+                    pdf: { ...config.pdf, singlePageExport: e.target.checked }
+                  })}
+                  className="w-5 h-5 rounded-lg text-rose-600 focus:ring-4 focus:ring-rose-500/20 border-2 border-gray-300 cursor-pointer transition-all"
+                />
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-gray-700 group-hover:text-rose-700 transition-colors">Single Page Export</span>
+                  <span className="text-xs text-gray-500 mt-0.5">Export PDF as one continuous page without page breaks</span>
+                </div>
+              </label>
             </div>
           </div>
         </div>

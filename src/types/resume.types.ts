@@ -65,5 +65,9 @@ export interface ResumeConfig {
     maxEntries: number;
     exclude: string[];
     showDates: boolean;
+    placement: 'main-content' | 'sidebar';
+  };
+  pdf: {
+    singlePageExport: boolean;
   };
 }
