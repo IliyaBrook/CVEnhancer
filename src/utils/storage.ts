@@ -2,6 +2,7 @@ import type { AIConfig, ResumeConfig } from '@/types';
 
 const STORAGE_KEY = 'cvenhancer_config';
 const RESUME_CONFIG_KEY = 'cvenhancer_resume_config';
+const JOB_TITLE_KEY = 'cvenhancer_job_title';
 
 export const saveConfig = (config: AIConfig): void => {
   try {
@@ -56,5 +57,23 @@ export const clearResumeConfig = (): void => {
     localStorage.removeItem(RESUME_CONFIG_KEY);
   } catch (error) {
     console.error('Failed to clear resume configuration:', error);
+  }
+};
+
+export const saveJobTitle = (jobTitle: string): void => {
+  try {
+    localStorage.setItem(JOB_TITLE_KEY, jobTitle);
+  } catch (error) {
+    console.error('Failed to save job title:', error);
+  }
+};
+
+export const loadJobTitle = (): string => {
+  try {
+    const stored = localStorage.getItem(JOB_TITLE_KEY);
+    return stored || '';
+  } catch (error) {
+    console.error('Failed to load job title:', error);
+    return '';
   }
 };

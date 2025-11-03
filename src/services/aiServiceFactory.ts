@@ -86,24 +86,32 @@ const RESUME_JSON_SCHEMA = {
   additionalProperties: false
 };
 
-const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI.
+const createResumeEnhancementPrompt = (jobTitle?: string): string => {
+  const jobContext = jobTitle
+    ? `\n<job_context>\nThe candidate's profession/job title is: ${jobTitle}\nUse this context to better understand and enhance the resume content.\n</job_context>\n`
+    : '';
+
+  return `You are a professional resume enhancement AI.
 
 <instructions>
 <critical_constraints>
 - Resume MUST fit on ONE page - be extremely concise
 - Remove ALL redundant or repetitive information
-- DO NOT invent or add any information not present in the original resume
+- CRITICAL: Extract ONLY information that exists in the provided resume
+- DO NOT invent, fabricate, or add any information not present in the original resume
+- DO NOT make assumptions about job duties or experience that aren't explicitly stated
+- If information is missing, leave the field empty rather than inventing data
 </critical_constraints>
-
+${jobContext}
 <formatting_rules>
 - Fix all spelling and grammar errors
 - Use ATS-optimized formatting with clear section headers
 - Contact info: name, email, phone, location, LinkedIn profile only
 - Use impactful bullet points for achievements
 - Quantify achievements where applicable
-- Emphasize technical skills and keywords
+- Emphasize relevant skills and keywords for the profession
 - Remove objective statements and verbose descriptions
-- Keep job descriptions concise (2-3 words, e.g., "Full Stack Developer")
+- Keep job descriptions concise (2-3 words based on actual role)
 </formatting_rules>
 
 <content_rules>
@@ -111,6 +119,7 @@ const RESUME_ENHANCEMENT_PROMPT = `You are a professional resume enhancement AI.
 - Combine similar responsibilities into concise bullet points
 - Remove duplicated skills across categories
 - Include military service if present (1-2 sentences max, otherwise empty string)
+- Respect the actual profession - do not transform a sales role into a tech role or vice versa
 </content_rules>
 
 <output_format>
@@ -149,17 +158,24 @@ Return ONLY valid JSON matching this structure:
 }
 </output_format>
 </instructions>`;
+};
 
-const OLLAMA_STEP1_PROMPT = `Extract personal information, education, and skills from the resume.
+const createOllamaStep1Prompt = (jobTitle?: string): string => {
+  const jobContext = jobTitle
+    ? `\n<job_context>\nThe candidate's profession is: ${jobTitle}\n</job_context>\n`
+    : '';
+
+  return `Extract personal information, education, and skills from the resume.
 
 <instructions>
 <rules>
-- Extract only what exists in the resume
+- CRITICAL: Extract ONLY what exists in the resume
+- DO NOT invent or fabricate any information
 - Military service: 1-2 sentences max if present, otherwise empty string
 - Return valid JSON only - start with { and end with }
 - No markdown, no code blocks, no extra text
 </rules>
-
+${jobContext}
 <output_structure>
 {
   "personalInfo": {
@@ -187,10 +203,14 @@ const OLLAMA_STEP1_PROMPT = `Extract personal information, education, and skills
 }
 </output_structure>
 </instructions>`;
+};
 
-const createOllamaStep2Prompt = (): string => {
+const createOllamaStep2Prompt = (jobTitle?: string): string => {
   const config = getResumeConfig();
   const constraints: string[] = [];
+
+  constraints.push('CRITICAL: Extract ONLY work experience that exists in the resume');
+  constraints.push('DO NOT invent or fabricate any job positions or duties');
 
   if (config?.experience) {
     if (config.experience.maxJobs !== null && config.experience.maxJobs !== undefined) {
@@ -210,16 +230,20 @@ const createOllamaStep2Prompt = (): string => {
     }
   }
 
+  const jobContext = jobTitle
+    ? `\n<job_context>\nThe candidate's profession is: ${jobTitle}\nExtract experience relevant to this field.\n</job_context>\n`
+    : '';
+
   return `Extract work experience from the resume.
 
 <instructions>
 <constraints>
-${constraints.length > 0 ? constraints.map(c => `- ${c}`).join('\n') : '- Extract all relevant experience'}
-- Description: 2-3 words only (e.g., "Software Engineer")
+${constraints.map(c => `- ${c}`).join('\n')}
+- Description: 2-3 words only based on actual role
 - No duplicate duties
 - Return valid JSON only - start with { and end with }
 </constraints>
-
+${jobContext}
 <output_structure>
 {
   "experience": [{
@@ -396,31 +420,41 @@ const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
   return resumeData;
 };
 
-export const enhanceResume = async (resumeText: string, config: AIConfig): Promise<ResumeData> => {
+export const enhanceResume = async (
+  resumeText: string,
+  config: AIConfig,
+  jobTitle?: string
+): Promise<ResumeData> => {
   switch (config.provider) {
     case AIProvider.OPENAI:
     case AIProvider.CHATGPT:
-      return enhanceWithOpenAI(resumeText, config);
+      return enhanceWithOpenAI(resumeText, config, jobTitle);
     case AIProvider.CLAUDE:
-      return enhanceWithClaude(resumeText, config);
+      return enhanceWithClaude(resumeText, config, jobTitle);
     case AIProvider.OLLAMA:
-      return enhanceWithOllama(resumeText, config);
+      return enhanceWithOllama(resumeText, config, jobTitle);
     default:
       throw new Error(`Unsupported AI provider: ${config.provider}`);
   }
 };
 
-const enhanceWithOpenAI = async (resumeText: string, config: AIConfig): Promise<ResumeData> => {
+const enhanceWithOpenAI = async (
+  resumeText: string,
+  config: AIConfig,
+  jobTitle?: string
+): Promise<ResumeData> => {
+  const prompt = createResumeEnhancementPrompt(jobTitle);
+
   const openAiBody: OpenAIApiBody = {
     model: config.model || 'gpt-4o-2024-08-06', // Need this version for structured output
     messages: [
       {
         role: 'system',
-        content: 'You are a professional resume enhancement AI. Return only valid JSON matching the provided schema.'
+        content: 'You are a professional resume enhancement AI. Extract ONLY information from the provided resume. Do not invent or fabricate any data. Return only valid JSON matching the provided schema.'
       },
       {
         role: 'user',
-        content: `${RESUME_ENHANCEMENT_PROMPT}\n\n<resume>\n${resumeText}\n</resume>`
+        content: `${prompt}\n\n<resume>\n${resumeText}\n</resume>`
       },
     ],
     response_format: {
@@ -453,13 +487,19 @@ const enhanceWithOpenAI = async (resumeText: string, config: AIConfig): Promise<
   return enforceResumeConstraints(resumeData);
 };
 
-const enhanceWithClaude = async (resumeText: string, config: AIConfig): Promise<ResumeData> => {
+const enhanceWithClaude = async (
+  resumeText: string,
+  config: AIConfig,
+  jobTitle?: string
+): Promise<ResumeData> => {
+  const prompt = createResumeEnhancementPrompt(jobTitle);
+
   const claudeBody: ClaudeApiBody = {
     model: config.model || 'claude-3-5-sonnet-20241022',
     messages: [
       {
         role: 'user',
-        content: `${RESUME_ENHANCEMENT_PROMPT}\n\n<resume>\n${resumeText}\n</resume>\n\nOutput valid JSON:`
+        content: `${prompt}\n\n<resume>\n${resumeText}\n</resume>\n\nOutput valid JSON:`
       },
       {
         role: 'assistant',
@@ -490,7 +530,11 @@ const enhanceWithClaude = async (resumeText: string, config: AIConfig): Promise<
   return enforceResumeConstraints(resumeData);
 };
 
-const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<ResumeData> => {
+const enhanceWithOllama = async (
+  resumeText: string,
+  config: AIConfig,
+  jobTitle?: string
+): Promise<ResumeData> => {
   const endpoint = config.ollamaEndpoint || 'http://localhost:11434';
 
   // Ollama request with retry logic
@@ -542,11 +586,12 @@ const enhanceWithOllama = async (resumeText: string, config: AIConfig): Promise<
 
   try {
     // Step 1: Get personal info, education, skills, and military service
-    const step1Data = await ollamaRequest(OLLAMA_STEP1_PROMPT, 'Step 1: Personal Info & Education');
+    const step1Prompt = createOllamaStep1Prompt(jobTitle);
+    const step1Data = await ollamaRequest(step1Prompt, 'Step 1: Personal Info & Education');
     await new Promise(resolve => setTimeout(resolve, 300));
 
     // Step 2: Get work experience
-    const step2Prompt = createOllamaStep2Prompt();
+    const step2Prompt = createOllamaStep2Prompt(jobTitle);
     const step2Data = await ollamaRequest(step2Prompt, 'Step 2: Work Experience');
 
     // Combine data

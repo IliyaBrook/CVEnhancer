@@ -27,7 +27,7 @@ function App() {
     }
   }, []);
 
-  const handleFileSelect = async (file: File, fileType: SupportedFileType) => {
+  const handleFileSelect = async (file: File, fileType: SupportedFileType, jobTitle?: string) => {
     setStatus('parsing');
     setError('');
 
@@ -47,7 +47,7 @@ function App() {
       }
 
       setStatus('enhancing');
-      const enhanced = await enhanceResume(extractedText, config);
+      const enhanced = await enhanceResume(extractedText, config, jobTitle);
 
       console.log('=== Generated Resume Data ===');
       console.log(enhanced);

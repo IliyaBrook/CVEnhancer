@@ -300,14 +300,14 @@ When `VITE_DEBUG=true`, the application enters development mode with the followi
    
    export const fakeResumeData: ResumeData = myCustomData; // Use your data
    ```
-    **Enable debug mode** and test your changes
+   **Enable debug mode** and test your changes
    
    **Why `*_private.json`?**
 	
 	- Files matching `*_private.json` are gitignored
 	- Prevents accidentally committing personal resume data
-   - Safe for testing with real information
-   
+	- Safe for testing with real information
+
 4. **Use Cases for Debug Mode**
 	
 	- **Frontend Development**: Iterate on UI without API costs
@@ -424,7 +424,7 @@ VITE_CLAUDE_TEMPERATURE=0.5
 2. **Configure in CVEnhancer:**
 	- Select "Claude (Anthropic)" as provider
 	- Paste your API key
-	- Recommended models: `claude-3-5-sonnet-20241022`, `claude-3-opus-20240229`, `claude-3-haiku-20240307`
+	- Recommended models: `claude-4-5`, `claude-3-opus-20240229`, `claude-3-haiku-20240307`
 
 ### Ollama (Local)
 
@@ -436,9 +436,9 @@ VITE_CLAUDE_TEMPERATURE=0.5
 2. **Pull a Model:**
 
 ```bash
-# Recommended models for resume enhancement:
-ollama pull qwen3:8b
-ollama pull qwen3:4b
+# Recommended models with vision for better results:
+ollama pull qwen3-vl:8b
+ollama pull qwen3-vl:4b
 ```
 
 3. **Configure in CVEnhancer:**
