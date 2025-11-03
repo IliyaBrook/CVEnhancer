@@ -36,7 +36,7 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
         ?.map(
           category => `
       <div class="skill-category">
-        <div class="skill-category-title">${category.title}:</div>
+        <div class="skill-category-title">${category.categoryTitle}:</div>
         <ul class="skill-list">${category.skills.map(s => `<li>${s}</li>`).join('')}</ul>
       </div>
     `

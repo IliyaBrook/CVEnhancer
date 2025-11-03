@@ -11,7 +11,16 @@ export interface OpenAIOptions {
   top_logprobs?: number;
   n?: number;
   stream?: boolean;
-  response_format?: { type: 'text' | 'json_object' | 'json_schema' };
+  response_format?:
+    | { type: 'text' | 'json_object' }
+    | {
+        type: 'json_schema';
+        json_schema: {
+          name: string;
+          strict?: boolean;
+          schema: Record<string, any>;
+        };
+      };
   user?: string;
 }
 
