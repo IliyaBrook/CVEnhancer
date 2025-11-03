@@ -46,3 +46,24 @@ export interface Project {
   technologies: string[];
   link?: string;
 }
+
+export interface ResumeConfig {
+  experience: {
+    maxJobs: number;
+    bulletPointsPerJob: number;
+    maxBulletLength: number | null;
+    requireActionVerbs: boolean;
+    metricsLevel: 'low' | 'moderate' | 'high';
+    exclude: string[];
+    avoidDuplicatePoints: boolean;
+  };
+  skills: {
+    categoriesLimit: number;
+    skillsPerCategory: number;
+  };
+  education: {
+    maxEntries: number;
+    exclude: string[];
+    showDates: boolean;
+  };
+}
