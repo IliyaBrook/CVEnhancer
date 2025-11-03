@@ -1,79 +1,137 @@
-# CVEnhancer
+<div align="center">
 
-**Upload any resume, download a better one**
+# 🚀 CVEnhancer
 
-CVEnhancer is an AI-powered web application that transforms your resume into a professional, polished document. Upload your resume in various formats, and let AI enhance it with optimized content, better formatting, and professional presentation.
+### Upload any resume, download a better one
 
----
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-Custom_MIT-green?style=for-the-badge)](./LICENSE)
 
-## Table of Contents
+**CVEnhancer is an AI-powered web application that transforms your resume into a professional, polished document. Upload
+your resume in various formats, and let AI enhance it with optimized content, better formatting, and professional
+presentation.**
 
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Environment Configuration](#environment-configuration)
-- [Usage](#usage)
-- [Security Notice](#security-notice)
-- [AI Provider Setup](#ai-provider-setup)
-- [Resume Settings](#resume-settings)
-- [Development](#development)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [Author](#author)
-- [License](#license)
+[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Documentation](#-table-of-contents)
+
+</div>
 
 ---
 
-## Features
+## 📸 Application Preview
 
-### Core Functionality
-- **Multi-Format Support**: Upload resumes in PDF, DOCX, or TXT formats
-- **AI-Powered Enhancement**: Leverage OpenAI GPT, Anthropic Claude, or local Ollama models
-- **Real-time Preview**: See your enhanced resume instantly in a modern, professional layout
-- **Multiple Export Formats**: Download as PDF or DOCX with professional formatting
-- **Persistent Settings**: All configurations saved to browser localStorage
+<div align="center">
 
-### AI Provider Options
-- **OpenAI** - GPT-4 and other OpenAI models
-- **ChatGPT** - ChatGPT API integration
-- **Claude** - Anthropic's Claude models (Sonnet, Opus, Haiku)
-- **Ollama** - Local LLM support (Llama, Mistral, and other open-source models)
+![CVEnhancer Application](./public/app_view_example.png)
 
-### Customization Options
+*AI-powered resume enhancement with real-time preview and multiple export formats*
+
+</div>
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/IliyaBrook/CVEnhancer.git
+cd CVEnhancer
+
+# 2. Install dependencies
+npm install
+
+# 3. Set up environment
+cp .env.example .env
+# Edit .env with your AI provider API key
+
+# 4. Start the development server
+npm run dev
+
+# 5. Open http://localhost:3000
+```
+
+**That's it!** Upload your resume, select an AI provider, and watch it transform.
+
+---
+
+## 📋 Table of Contents
+
+- [✨ Features](#-features)
+- [🛠️ Technologies Used](#️-technologies-used)
+- [⚙️ Installation](#️-installation)
+- [🔧 Environment Configuration](#-environment-configuration)
+- [🎯 Usage](#-usage)
+- [🔒 Security Notice](#-security-notice)
+- [🤖 AI Provider Setup](#-ai-provider-setup)
+- [⚙️ Resume Settings](#️-resume-settings)
+- [💻 Development](#-development)
+- [📁 Project Structure](#-project-structure)
+- [🤝 Contributing](#-contributing)
+- [👤 Author](#-author)
+- [📄 License](#-license)
+
+---
+
+## ✨ Features
+
+### 🎯 Core Functionality
+
+- 📄 **Multi-Format Support**: Upload resumes in PDF, DOCX, or TXT formats
+- 🤖 **AI-Powered Enhancement**: Leverage OpenAI GPT, Anthropic Claude, or local Ollama models
+- ⚡ **Real-time Preview**: See your enhanced resume instantly in a modern, professional layout
+- 💾 **Multiple Export Formats**: Download as PDF or DOCX with professional formatting
+- 🔄 **Persistent Settings**: All configurations saved to browser localStorage
+
+### 🤖 AI Provider Options
+
+| Provider    | Models                | Privacy        |
+| ----------- | --------------------- | -------------- |
+| **OpenAI**  | GPT-4, GPT-3.5        | Cloud-based    |
+| **ChatGPT** | ChatGPT API           | Cloud-based    |
+| **Claude**  | Sonnet, Opus, Haiku   | Cloud-based    |
+| **Ollama**  | Llama, Mistral, Gemma | **100% Local** |
+
+### 🎨 Customization Options
+
 - **Experience Settings**
-  - Configure maximum number of jobs to display
-  - Set bullet points per job (with customizable length limits)
-  - Choose metrics level (low, moderate, high)
-  - Require action verbs in descriptions
-  - Avoid duplicate points across experiences
-  - Exclude specific job titles
+	- Configure maximum number of jobs to display
+	- Set bullet points per job (with customizable length limits)
+	- Choose metrics level (low, moderate, high)
+	- Require action verbs in descriptions
+	- Avoid duplicate points across experiences
+	- Exclude specific job titles
 
 - **Skills Organization**
-  - Set categories limit
-  - Configure skills per category
-  - Automatic categorization and prioritization
+	- Set categories limit
+	- Configure skills per category
+	- Automatic categorization and prioritization
 
 - **Education Configuration**
-  - Control maximum number of education entries
-  - Toggle date visibility
-  - Exclude specific education items
+	- Control maximum number of education entries
+	- Toggle date visibility
+	- Exclude specific education items
 
 ---
 
-## Technologies Used
+## 🛠️ Technologies Used
 
 ### Frontend Stack
+
 - **React 19** - Modern UI library with latest features
 - **TypeScript** - Type-safe JavaScript development
 - **Vite 7** - Lightning-fast build tool and dev server
 - **Tailwind CSS 3.4** - Utility-first CSS framework
 
 ### AI Integration
+
 - **@anthropic-ai/sdk** - Official Anthropic Claude SDK
 - **openai** - Official OpenAI API client
 - **Ollama** - Local LLM inference (via REST API)
 
 ### Document Processing
+
 - **@react-pdf/renderer** - React-based PDF generation
 - **jsPDF** - Client-side PDF creation library
 - **pdfjs-dist** - PDF parsing and text extraction
@@ -81,27 +139,31 @@ CVEnhancer is an AI-powered web application that transforms your resume into a p
 - **html2canvas** - HTML to canvas/image conversion
 
 ### Development Tools
+
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
 - **TypeScript** - Static type checking
 
 ---
 
-## Installation
+## ⚙️ Installation
 
 ### Prerequisites
+
 - **Node.js 18+** and npm/yarn/pnpm
 - **AI API Key** (for OpenAI or Claude) OR **Ollama installed locally**
 
 ### Quick Start
 
 1. **Clone the repository:**
+
 ```bash
 git clone https://github.com/IliyaBrook/CVEnhancer.git
 cd CVEnhancer
 ```
 
 2. **Install dependencies:**
+
 ```bash
 npm install
 # or
@@ -111,12 +173,15 @@ pnpm install
 ```
 
 3. **Configure environment variables:**
+
 ```bash
 cp .env.example .env
 ```
+
 Edit `.env` file with your preferred settings (see [Environment Configuration](#environment-configuration) below).
 
 4. **Start the development server:**
+
 ```bash
 npm run dev
 # or
@@ -126,6 +191,7 @@ pnpm dev
 ```
 
 5. **Open your browser:**
+
 ```
 http://localhost:3000
 ```
@@ -134,13 +200,15 @@ The application will be available at port **3000** as configured in `vite.config
 
 ---
 
-## Environment Configuration
+## 🔧 Environment Configuration
 
 ### Setting Up Environment Variables
 
-CVEnhancer uses environment variables to configure AI model parameters. These settings control the behavior and output quality of each AI provider.
+CVEnhancer uses environment variables to configure AI model parameters. These settings control the behavior and output
+quality of each AI provider.
 
 1. Copy the example environment file:
+
 ```bash
 cp .env.example .env
 ```
@@ -161,7 +229,9 @@ VITE_OPENAI_PRESENCE_PENALTY=1.0      # Encourages topic diversity (0.0-2.0)
 ```
 
 **Explanation:**
-- `TEMPERATURE`: Controls randomness. Lower values (0.3-0.5) = more focused/deterministic. Higher values (0.8-1.0) = more creative/varied.
+
+- `TEMPERATURE`: Controls randomness. Lower values (0.3-0.5) = more focused/deterministic. Higher values (0.8-1.0) =
+  more creative/varied.
 - `TOP_P`: Alternative to temperature. Lower = more focused on likely tokens.
 - `MAX_TOKENS`: Maximum length of the AI response.
 - `FREQUENCY_PENALTY`: Penalizes tokens based on frequency in the text. Reduces repetitive phrases.
@@ -178,8 +248,10 @@ VITE_CLAUDE_TOP_K=20                  # Limits vocabulary to top K tokens
 ```
 
 **Explanation:**
+
 - `TEMPERATURE`: Similar to OpenAI but range is 0.0-1.0
-- `TOP_K`: Limits the model to consider only the top K most likely tokens at each step. Lower values = more focused output.
+- `TOP_K`: Limits the model to consider only the top K most likely tokens at each step. Lower values = more focused
+  output.
 
 #### Ollama Configuration
 
@@ -194,6 +266,7 @@ VITE_OLLAMA_PRESENCE_PENALTY=1.5      # Encourages topic diversity
 ```
 
 **Explanation:**
+
 - `REPEAT_PENALTY`: Values > 1.0 discourage repetition. Higher values = stronger penalty.
 - `PRESENCE_PENALTY`: Similar to OpenAI, encourages the model to explore new topics.
 
@@ -209,21 +282,21 @@ VITE_DEBUG=false                      # Set to 'true' to enable debug mode
 When `VITE_DEBUG=true`, the application enters development mode with the following capabilities:
 
 1. **Instant Preview with Fake Data**
-   - Automatically loads sample resume data from `src/fakeData/json_data/fakeResumeData.json`
-   - Bypasses AI API calls entirely - no API keys needed
-   - Instantly displays resume preview without file upload
-   - Perfect for UI/UX development and testing
+	- Automatically loads sample resume data from `src/fakeData/json_data/fakeResumeData.json`
+	- Bypasses AI API calls entirely - no API keys needed
+	- Instantly displays resume preview without file upload
+	- Perfect for UI/UX development and testing
 
 2. **Console Logging for AI Responses**
-   - Every AI-generated response is logged to browser console
-   - Located in `src/App.tsx:52-53`
-   - Format: `console.log('=== Generated Resume Data ===')` followed by the full JSON object
-   - Use browser DevTools (F12) → Console tab to view and copy
+	- Every AI-generated response is logged to browser console
+	- Located in `src/App.tsx:52-53`
+	- Format: `console.log('=== Generated Resume Data ===')` followed by the full JSON object
+	- Use browser DevTools (F12) → Console tab to view and copy
 
 3. **Custom Test Data Workflow**
-
+   
    **To create your own test data:**
-
+   
    a. **Generate a resume with AI** (disable debug mode first)
    b. **Copy the console output** - The entire JSON object from browser console
    c. **Create a private JSON file**: `src/fakeData/json_data/[filename]_private.json`
@@ -234,27 +307,28 @@ When `VITE_DEBUG=true`, the application enters development mode with the followi
    // src/fakeData/fakeResumeData.ts
    import fakeResumeDataExample from './json_data/fakeResumeData.json';
    import myCustomData from './json_data/myResume_private.json'; // Your file
-
+   
    export const fakeResumeData: ResumeData = myCustomData; // Use your data
    ```
    g. **Enable debug mode** and test your changes
-
+   
    **Why `*_private.json`?**
-   - Files matching `*_private.json` are gitignored
-   - Prevents accidentally committing personal resume data
-   - Safe for testing with real information
+	- Files matching `*_private.json` are gitignored
+	- Prevents accidentally committing personal resume data
+	- Safe for testing with real information
 
 4. **Use Cases for Debug Mode**
-   - **Frontend Development**: Iterate on UI without API costs
-   - **PDF Layout Testing**: Test different resume lengths and formats
-   - **Edge Case Testing**: Create resumes with unusual data (very long names, many jobs, etc.)
-   - **Localization Testing**: Test with different languages or character sets
-   - **Performance Testing**: Measure rendering time with large datasets
-   - **Demo Presentations**: Show the app without needing API keys
+	- **Frontend Development**: Iterate on UI without API costs
+	- **PDF Layout Testing**: Test different resume lengths and formats
+	- **Edge Case Testing**: Create resumes with unusual data (very long names, many jobs, etc.)
+	- **Localization Testing**: Test with different languages or character sets
+	- **Performance Testing**: Measure rendering time with large datasets
+	- **Demo Presentations**: Show the app without needing API keys
 
 ### Recommended Settings by Use Case
 
 #### For Professional Resumes (Recommended)
+
 ```bash
 VITE_OPENAI_TEMPERATURE=0.7
 VITE_CLAUDE_TEMPERATURE=0.7
@@ -262,12 +336,14 @@ VITE_OLLAMA_TEMPERATURE=0.3
 ```
 
 #### For Creative Industries
+
 ```bash
 VITE_OPENAI_TEMPERATURE=0.9
 VITE_CLAUDE_TEMPERATURE=0.8
 ```
 
 #### For Technical/Engineering Roles
+
 ```bash
 VITE_OPENAI_TEMPERATURE=0.5
 VITE_CLAUDE_TEMPERATURE=0.5
@@ -275,44 +351,45 @@ VITE_CLAUDE_TEMPERATURE=0.5
 
 ---
 
-## Usage
+## 🎯 Usage
 
 ### Quick Start Guide
 
 1. **Configure AI Provider**
-   - Select your preferred AI provider from the dropdown (OpenAI, ChatGPT, Claude, or Ollama)
-   - Enter your API key (not required for Ollama)
-   - Optionally specify a model name (defaults to recommended model)
-   - Click "Save Settings"
+	- Select your preferred AI provider from the dropdown (OpenAI, ChatGPT, Claude, or Ollama)
+	- Enter your API key (not required for Ollama)
+	- Optionally specify a model name (defaults to recommended model)
+	- Click "Save Settings"
 
 2. **Upload Your Resume**
-   - Click the upload area or drag and drop your resume file
-   - Supported formats: PDF, DOCX, TXT
-   - The file will be automatically parsed
+	- Click the upload area or drag and drop your resume file
+	- Supported formats: PDF, DOCX, TXT
+	- The file will be automatically parsed
 
 3. **AI Enhancement**
-   - The application automatically sends your resume to the selected AI provider
-   - Processing typically takes 10-30 seconds depending on the provider and resume length
-   - Watch the real-time preview as it's being processed
+	- The application automatically sends your resume to the selected AI provider
+	- Processing typically takes 10-30 seconds depending on the provider and resume length
+	- Watch the real-time preview as it's being processed
 
 4. **Customize Settings** (Optional)
-   - Click the settings gear icon (⚙️) next to "AI Provider Settings"
-   - Adjust experience, skills, and education parameters
-   - Changes are immediately saved to browser storage
+	- Click the settings gear icon (⚙️) next to "AI Provider Settings"
+	- Adjust experience, skills, and education parameters
+	- Changes are immediately saved to browser storage
 
 5. **Export Your Enhanced Resume**
-   - Click "Download as PDF" for a print-ready document
-   - Or click "Download as DOCX" for an editable Word document
+	- Click "Download as PDF" for a print-ready document
+	- Or click "Download as DOCX" for an editable Word document
 
 ---
 
-## Security Notice
+## 🔒 Security Notice
 
 ### API Keys Storage
 
 **IMPORTANT:** CVEnhancer stores your AI provider settings, including API keys, in your browser's **localStorage**.
 
 #### What This Means:
+
 - ✅ **Your API keys are stored locally** in your browser, not on any server
 - ✅ **No data is transmitted to CVEnhancer servers** - all processing happens client-side or directly with AI providers
 - ⚠️ **API keys are stored in plain text** in localStorage
@@ -320,6 +397,7 @@ VITE_CLAUDE_TEMPERATURE=0.5
 - ⚠️ **Keys persist** until you manually clear them or clear browser data
 
 #### Best Practices:
+
 1. **Do not use this application on shared or public computers**
 2. **Clear your API keys after use** by changing providers or clearing browser localStorage
 3. **Use API keys with usage limits** to prevent abuse if compromised
@@ -327,15 +405,17 @@ VITE_CLAUDE_TEMPERATURE=0.5
 5. **Regularly rotate your API keys** for better security
 
 #### How Data is Stored:
+
 ```javascript
 localStorage.setItem('cvenhancer_config', JSON.stringify({
-  provider: 'openai',
-  apiKey: 'your-api-key-here',
-  model: 'gpt-4'
+	provider: 'openai',
+	apiKey: 'your-api-key-here',
+	model: 'gpt-4'
 }));
 ```
 
 #### To Clear Stored Data:
+
 ```javascript
 // In browser console:
 localStorage.removeItem('cvenhancer_config');
@@ -346,79 +426,65 @@ Or simply clear browser data in your browser settings.
 
 ---
 
-## AI Provider Setup
+## 🤖 AI Provider Setup
 
 ### OpenAI / ChatGPT
 
 1. **Get your API Key:**
-   - Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-   - Sign in or create an account
-   - Navigate to "API Keys"
-   - Click "Create new secret key"
-   - Copy the key (starts with `sk-`)
-
+	- Visit [OpenAI Platform](https://platform.openai.com/api-keys)
+	- Sign in or create an account
+	- Navigate to "API Keys"
+	- Click "Create new secret key"
+	- Copy the key (starts with `sk-`)
 2. **Configure in CVEnhancer:**
-   - Select "OpenAI" or "ChatGPT" as provider
-   - Paste your API key
-   - Recommended models: `gpt-4o-2024-08-06`, `gpt-4`, `gpt-3.5-turbo`
-
-3. **Pricing:**
-   - GPT-4: ~$0.03-0.06 per resume
-   - GPT-3.5-turbo: ~$0.002-0.004 per resume
+	- Select "OpenAI" or "ChatGPT" as provider
+	- Paste your API key
+	- Recommended models: `gpt-4o-2024-08-06`, `gpt-4`, `gpt-3.5-turbo`
 
 ### Anthropic Claude
 
 1. **Get your API Key:**
-   - Visit [Anthropic Console](https://console.anthropic.com/settings/keys)
-   - Sign in or create an account
-   - Navigate to "API Keys"
-   - Click "Create Key"
-   - Copy the key (starts with `sk-ant-`)
-
+	- Visit [Anthropic Console](https://console.anthropic.com/settings/keys)
+	- Sign in or create an account
+	- Navigate to "API Keys"
+	- Click "Create Key"
+	- Copy the key (starts with `sk-ant-`)
 2. **Configure in CVEnhancer:**
-   - Select "Claude (Anthropic)" as provider
-   - Paste your API key
-   - Recommended models: `claude-3-5-sonnet-20241022`, `claude-3-opus-20240229`, `claude-3-haiku-20240307`
-
-3. **Pricing:**
-   - Claude Sonnet: ~$0.03-0.06 per resume
-   - Claude Haiku: ~$0.003-0.006 per resume
+	- Select "Claude (Anthropic)" as provider
+	- Paste your API key
+	- Recommended models: `claude-3-5-sonnet-20241022`, `claude-3-opus-20240229`, `claude-3-haiku-20240307`
 
 ### Ollama (Local)
 
 1. **Install Ollama:**
-   - Visit [Ollama.ai](https://ollama.ai/)
-   - Download for your operating system
-   - Install and start Ollama
+	- Visit [Ollama.ai](https://ollama.ai/)
+	- Download for your operating system
+	- Install and start Ollama
 
 2. **Pull a Model:**
+
 ```bash
 # Recommended models for resume enhancement:
-ollama pull llama3:8b
-ollama pull mistral:7b
-ollama pull gemma2:9b
-
-# For better quality (requires more resources):
-ollama pull llama3:70b
-ollama pull mixtral:8x7b
+ollama pull qwen3:8b
+ollama pull qwen3:4b
 ```
 
 3. **Configure in CVEnhancer:**
-   - Select "Ollama (Local)" as provider
-   - Endpoint: `http://localhost:11434` (default)
-   - Select your downloaded model from the dropdown
-   - No API key required
+	- Select "Ollama (Local)" as provider
+	- Endpoint: `http://localhost:11434` (default)
+	- Select your downloaded model from the dropdown
+	- No API key required
 
 4. **Benefits:**
-   - ✅ Completely free
-   - ✅ Privacy - no data leaves your machine
-   - ✅ No internet required (after model download)
-   - ⚠️ Requires GPU for good performance
-   - ⚠️ Quality may vary compared to GPT-4/Claude
+	- ✅ Completely free
+	- ✅ Privacy - no data leaves your machine
+	- ✅ No internet required (after model download)
+	- ⚠️ Requires GPU for good performance
+	- ⚠️ Quality may vary compared to GPT-4/Claude
 
 ---
 
-## Resume Settings
+## ⚙️ Resume Settings
 
 The Resume Settings modal (accessible via ⚙️ button) allows you to customize how your resume is enhanced.
 
@@ -426,17 +492,18 @@ The Resume Settings modal (accessible via ⚙️ button) allows you to customize
 
 Located in `src/components/ResumeSettingsModal.tsx:98-257`
 
-| Setting | Description | Default | Range/Options |
-|---------|-------------|---------|---------------|
-| **Max Jobs** | Maximum number of work experiences to include | 2 | 1-10 |
-| **Bullet Points per Job** | Number of achievement points per position | 5 | 1-10 |
-| **Max Bullet Length** | Character limit for each bullet point | None | Any number or blank |
-| **Require Action Verbs** | Ensures each bullet starts with a strong action verb | ✓ Enabled | Checkbox |
-| **Metrics Level** | Emphasis on quantifiable achievements | Moderate | Low, Moderate, High |
-| **Avoid Duplicate Points** | Prevents similar achievements across roles | ✓ Enabled | Checkbox |
-| **Exclude Jobs** | List of job titles to omit | ["Network Support Engineer"] | Text list |
+| Setting                    | Description                                          | Default                      | Range/Options       |
+|----------------------------|------------------------------------------------------|------------------------------|---------------------|
+| **Max Jobs**               | Maximum number of work experiences to include        | 2                            | 1-10                |
+| **Bullet Points per Job**  | Number of achievement points per position            | 5                            | 1-10                |
+| **Max Bullet Length**      | Character limit for each bullet point                | None                         | Any number or blank |
+| **Require Action Verbs**   | Ensures each bullet starts with a strong action verb | ✓ Enabled                    | Checkbox            |
+| **Metrics Level**          | Emphasis on quantifiable achievements                | Moderate                     | Low, Moderate, High |
+| **Avoid Duplicate Points** | Prevents similar achievements across roles           | ✓ Enabled                    | Checkbox            |
+| **Exclude Jobs**           | List of job titles to omit                           | ["Network Support Engineer"] | Text list           |
 
 **How it Works:**
+
 - The AI receives instructions based on these settings
 - Constraints are enforced both in the AI prompt and post-processing
 - See `src/services/aiServiceFactory.ts:330-397` for enforcement logic
@@ -445,24 +512,35 @@ Located in `src/components/ResumeSettingsModal.tsx:98-257`
 
 Located in `src/components/ResumeSettingsModal.tsx:259-304`
 
-| Setting | Description | Default | Range |
-|---------|-------------|---------|-------|
-| **Categories Limit** | Maximum number of skill categories | 7 | 1-15 |
-| **Skills per Category** | Maximum skills to show in each category | 8 | 1-20 |
+| Setting                 | Description                             | Default | Range |
+|-------------------------|-----------------------------------------|---------|-------|
+| **Categories Limit**    | Maximum number of skill categories      | 7       | 1-15  |
+| **Skills per Category** | Maximum skills to show in each category | 8       | 1-20  |
 
 **Example Output:**
+
 ```json
 {
-  "skills": [
-    {
-      "categoryTitle": "Programming Languages",
-      "skills": ["JavaScript", "TypeScript", "Python", ...]
-    },
-    {
-      "categoryTitle": "Frameworks & Libraries",
-      "skills": ["React", "Node.js", "Express", ...]
-    }
-  ]
+	"skills": [
+		{
+			"categoryTitle": "Programming Languages",
+			"skills": [
+				"JavaScript",
+				"TypeScript",
+				"Python",
+				...
+			]
+		},
+		{
+			"categoryTitle": "Frameworks & Libraries",
+			"skills": [
+				"React",
+				"Node.js",
+				"Express",
+				...
+			]
+		}
+	]
 }
 ```
 
@@ -470,13 +548,14 @@ Located in `src/components/ResumeSettingsModal.tsx:259-304`
 
 Located in `src/components/ResumeSettingsModal.tsx:306-393`
 
-| Setting | Description | Default | Range/Options |
-|---------|-------------|---------|---------------|
-| **Max Entries** | Maximum number of education records | 3 | 1-10 |
-| **Show Dates** | Toggle date visibility | ✗ Disabled | Checkbox |
-| **Exclude Education** | List of education items to omit | ["CCNA"] | Text list |
+| Setting               | Description                         | Default    | Range/Options |
+|-----------------------|-------------------------------------|------------|---------------|
+| **Max Entries**       | Maximum number of education records | 3          | 1-10          |
+| **Show Dates**        | Toggle date visibility              | ✗ Disabled | Checkbox      |
+| **Exclude Education** | List of education items to omit     | ["CCNA"]   | Text list     |
 
 **Use Cases:**
+
 - Hide dates if you have older degrees you want to de-emphasize
 - Exclude certifications that are outdated or no longer relevant
 - Limit entries to most relevant/recent education
@@ -486,18 +565,18 @@ Located in `src/components/ResumeSettingsModal.tsx:306-393`
 Settings are stored in two locations:
 
 1. **Default Configuration** - `src/config/resume-ai-config.json`
-   - Loaded on first use
-   - Can be modified to change default settings
+	- Loaded on first use
+	- Can be modified to change default settings
 
 2. **User Configuration** - Browser localStorage
-   - Key: `cvenhancer_resume_config`
-   - Overrides default settings
-   - Persists across sessions
-   - See `src/utils/storage.ts:34-52`
+	- Key: `cvenhancer_resume_config`
+	- Overrides default settings
+	- Persists across sessions
+	- See `src/utils/storage.ts:34-52`
 
 ---
 
-## Development
+## 💻 Development
 
 ### Available Scripts
 
@@ -599,18 +678,22 @@ CVEnhancer/
 ### Key Files Explained
 
 #### `src/services/aiServiceFactory.ts`
+
 The heart of the AI integration. Handles:
+
 - Resume enhancement prompts for each AI provider
 - API calls with retry logic
 - JSON extraction from AI responses
 - Enforcement of resume constraints (max jobs, bullet points, etc.)
 - Provider-specific implementations:
-  - OpenAI: Uses structured output with JSON schema
-  - Claude: Uses prompt prefilling for reliable JSON
-  - Ollama: Two-step process (personal info + experience separately)
+	- OpenAI: Uses structured output with JSON schema
+	- Claude: Uses prompt prefilling for reliable JSON
+	- Ollama: Two-step process (personal info + experience separately)
 
 #### `src/components/ResumeSettingsModal.tsx`
+
 Complete settings interface with:
+
 - Experience configuration (jobs, bullet points, metrics)
 - Skills configuration (categories, skills per category)
 - Education configuration (entries, date visibility)
@@ -618,26 +701,34 @@ Complete settings interface with:
 - Real-time saving to localStorage
 
 #### `src/utils/storage.ts`
+
 localStorage abstraction layer:
+
 - `saveConfig()` / `loadConfig()` - AI provider settings
 - `saveResumeConfig()` / `loadResumeConfig()` - Resume enhancement settings
 - Error handling for localStorage access issues
 
 #### `src/hooks/useAIConfig.ts`
+
 React hook for AI configuration state management:
+
 - Loads configuration from localStorage on mount
 - Provides `updateConfig()` to save changes
 - Automatically syncs with localStorage
 
 #### `src/config/env.ts`
+
 Environment variable parsing with:
+
 - Type-safe getters (`getEnvString`, `getEnvNumber`, `getEnvBoolean`)
 - Default values for optional variables
 - Validation with helpful error messages
 - Exports for OpenAI, Claude, and Ollama options
 
 #### `src/fakeData/fakeResumeData.ts`
+
 Debug mode data management:
+
 - Imports sample resume data from JSON files
 - Default: `fakeResumeData.json` (example resume)
 - Can be switched to custom `*_private.json` files for testing
@@ -647,43 +738,45 @@ Debug mode data management:
 ### Development Tips
 
 1. **Debug Mode**: Set `VITE_DEBUG=true` in `.env` for rapid development
-   - Loads fake resume data from `src/fakeData/json_data/fakeResumeData.json`
-   - Skips file upload and AI processing
-   - No API keys required
-   - **Pro Tip**: Copy AI-generated JSON from console, save as `*_private.json`, and import in `fakeResumeData.ts` for testing custom data
+	- Loads fake resume data from `src/fakeData/json_data/fakeResumeData.json`
+	- Skips file upload and AI processing
+	- No API keys required
+	- **Pro Tip**: Copy AI-generated JSON from console, save as `*_private.json`, and import in `fakeResumeData.ts` for
+	  testing custom data
 
 2. **Testing Different Providers**: Create multiple API keys with usage limits
-   - Test each provider's output quality
-   - Compare processing times
-   - Use debug mode to test UI changes without consuming API credits
+	- Test each provider's output quality
+	- Compare processing times
+	- Use debug mode to test UI changes without consuming API credits
 
 3. **Customizing Default Settings**: Edit `src/config/resume-ai-config.json`
-   - Changes affect all new users
-   - User settings in localStorage override defaults
-   - Test with different configurations using debug mode
+	- Changes affect all new users
+	- User settings in localStorage override defaults
+	- Test with different configurations using debug mode
 
 4. **Adding New AI Providers**: Modify `src/services/aiServiceFactory.ts`
-   - Add provider to `AIProvider` enum in `src/types/ai.types.ts`
-   - Implement `enhanceWith[Provider]()` function
-   - Add to switch statement in `enhanceResume()`
-   - Add environment variables in `.env.example` and `src/config/env.ts`
+	- Add provider to `AIProvider` enum in `src/types/ai.types.ts`
+	- Implement `enhanceWith[Provider]()` function
+	- Add to switch statement in `enhanceResume()`
+	- Add environment variables in `.env.example` and `src/config/env.ts`
 
 5. **Styling Changes**: This project uses Tailwind CSS
-   - All styling is utility-based
-   - Custom colors defined in `tailwind.config.js`
-   - Global styles in `src/index.css`
-   - Use debug mode to see changes instantly without AI calls
+	- All styling is utility-based
+	- Custom colors defined in `tailwind.config.js`
+	- Global styles in `src/index.css`
+	- Use debug mode to see changes instantly without AI calls
 
 6. **Console Debugging**: AI responses are always logged
-   - Check browser console (F12 → Console) for `=== Generated Resume Data ===`
-   - Useful for debugging JSON structure issues
-   - Located in `src/App.tsx:52-53`
+	- Check browser console (F12 → Console) for `=== Generated Resume Data ===`
+	- Useful for debugging JSON structure issues
+	- Located in `src/App.tsx:52-53`
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
-Contributions are welcome! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
+Contributions are welcome! Whether you're fixing bugs, adding features, or improving documentation, your help is
+appreciated.
 
 ### How to Contribute
 
@@ -719,7 +812,7 @@ Contributions are welcome! Whether you're fixing bugs, adding features, or impro
 
 ---
 
-## Author
+## 👤 Author
 
 **Iliya Brook**
 
@@ -729,9 +822,12 @@ Contributions are welcome! Whether you're fixing bugs, adding features, or impro
 
 ### About the Project
 
-CVEnhancer was created to help job seekers leverage AI technology to improve their resumes. The goal is to make professional resume enhancement accessible to everyone, whether they have an OpenAI API key or prefer to use free, local AI models with Ollama.
+CVEnhancer was created to help job seekers leverage AI technology to improve their resumes. The goal is to make
+professional resume enhancement accessible to everyone, whether they have an OpenAI API key or prefer to use free, local
+AI models with Ollama.
 
 If you find this project helpful, please consider:
+
 - ⭐ Starring the repository
 - 🐛 Reporting bugs and issues
 - 💡 Suggesting new features
@@ -739,13 +835,14 @@ If you find this project helpful, please consider:
 
 ---
 
-## License
+## 📄 License
 
 This project is licensed under a **custom MIT License with Commercial Use Restriction**.
 
 ### License Summary
 
 ✅ **Permitted for Non-Commercial Use:**
+
 - Personal resume enhancement
 - Educational purposes
 - Open-source projects
@@ -753,6 +850,7 @@ This project is licensed under a **custom MIT License with Commercial Use Restri
 - Portfolio demonstration
 
 ❌ **Requires Written Permission for Commercial Use:**
+
 - Offering resume enhancement as a paid service
 - Incorporating into a commercial product
 - Using in a business environment that generates revenue
@@ -761,10 +859,12 @@ This project is licensed under a **custom MIT License with Commercial Use Restri
 ### Getting Permission
 
 For commercial licensing inquiries, please contact:
+
 - **Email**: iliyabrook1987@gmail.com
 - **Subject**: CVEnhancer Commercial License Request
 
 Please include:
+
 - Your intended use case
 - Expected scale/volume
 - Company/organization details (if applicable)
@@ -775,7 +875,7 @@ See the [LICENSE](LICENSE) file for complete legal terms.
 
 ---
 
-## Support
+## 💬 Support
 
 ### Getting Help
 
@@ -789,6 +889,7 @@ If you encounter issues or have questions:
 ### When Reporting Issues
 
 Please include:
+
 - **Environment**: OS, Node.js version, browser
 - **AI Provider**: Which provider you're using (OpenAI, Claude, Ollama)
 - **Steps to Reproduce**: Clear steps to recreate the issue
@@ -799,34 +900,40 @@ Please include:
 ### Common Issues
 
 **Issue**: `Missing required environment variable`
+
 - **Solution**: Copy `.env.example` to `.env` and fill in values
 
 **Issue**: `Failed to fetch Ollama models`
+
 - **Solution**: Ensure Ollama is running: `ollama serve`
 
 **Issue**: `API error: 401 Unauthorized`
+
 - **Solution**: Check that your API key is correct and has sufficient credits
 
 **Issue**: Resume preview not updating
+
 - **Solution**: Check browser console for errors, ensure AI provider is configured
 
 **Issue**: Want to test without using API credits
+
 - **Solution**: Enable debug mode (`VITE_DEBUG=true` in `.env`)
 - Loads sample data instantly without AI calls
 - See [Debug Mode](#debug-mode) section for details
 
 **Issue**: Need to test specific resume data
+
 - **Solution**: Use the custom test data workflow:
-  1. Generate a resume with AI
-  2. Copy JSON from browser console
-  3. Save as `src/fakeData/json_data/mydata_private.json`
-  4. Import in `fakeResumeData.ts`
-  5. Enable debug mode
+	1. Generate a resume with AI
+	2. Copy JSON from browser console
+	3. Save as `src/fakeData/json_data/mydata_private.json`
+	4. Import in `fakeResumeData.ts`
+	5. Enable debug mode
 - **Note**: `*_private.json` files are gitignored (`.gitignore:29`)
 
 ---
 
-## Roadmap
+## 🗺️ Roadmap
 
 ### Planned Features
 
@@ -849,7 +956,7 @@ Please include:
 
 ---
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - **OpenAI** - For GPT models and API
 - **Anthropic** - For Claude models and API
@@ -860,6 +967,16 @@ Please include:
 
 ---
 
+<div align="center">
+
+### ⭐ If you find this project helpful, please consider starring it!
+
 **Made with ❤️ using React, TypeScript, and AI**
 
 *Transform your resume, transform your career*
+
+---
+
+[![GitHub stars](https://img.shields.io/github/stars/IliyaBrook/CVEnhancer?style=social)](https://github.com/IliyaBrook/CVEnhancer/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/IliyaBrook/CVEnhancer?style=social)](https://github.com/IliyaBrook/CVEnhancer/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/IliyaBrook/CVEnhancer)](https://github.com/IliyaBrook/CVEnhancer/issues)
