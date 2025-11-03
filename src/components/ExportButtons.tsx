@@ -219,7 +219,7 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
           Copy
         </button>
       </div>
-      <Alert {...alertState} onClose={hideAlert} position="bottom-center" variant="error" />
+      <Alert {...alertState} onClose={hideAlert} position="bottom-center" />
     </div>
   );
 };
