@@ -27,3 +27,5 @@ lerna-debug.log*
 tmp
 # private json data for testing and debugging
 src/fakeData/json_data/*_private.json
+playwright-profile
+.playwright-mcp

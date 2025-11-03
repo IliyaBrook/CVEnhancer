@@ -10,16 +10,42 @@ interface ResumePreviewProps {
 export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
   if (!resumeData) {
     return (
-      <div className="rounded-lg bg-white p-6 shadow-md">
-        <h2 className="mb-4 text-2xl font-bold text-gray-800">Resume Preview</h2>
-        <p className="py-12 text-center text-gray-500">Upload and process a resume to see the preview</p>
+      <div className="rounded-2xl bg-gradient-to-br from-white to-gray-50 p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300">
+        <div className="flex items-center gap-3 mb-6 pb-6 border-b-2 border-gray-200">
+          <div className="p-2.5 bg-gradient-to-br from-gray-700 to-gray-900 rounded-xl shadow-lg">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+            Resume Preview
+          </h2>
+        </div>
+        <div className="py-16 text-center">
+          <div className="mb-6 inline-flex p-6 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200">
+            <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <p className="text-gray-500 text-lg font-medium">Upload and process a resume to see the preview</p>
+          <p className="text-gray-400 text-sm mt-2">AI-enhanced formatting will appear here</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg bg-white p-6 shadow-md">
-      <h2 className="mb-4 text-2xl font-bold text-gray-800">Resume Preview</h2>
+    <div className="rounded-2xl bg-gradient-to-br from-white to-gray-50 p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300">
+      <div className="flex items-center gap-3 mb-6 pb-6 border-b-2 border-gray-200">
+        <div className="p-2.5 bg-gradient-to-br from-gray-700 to-gray-900 rounded-xl shadow-lg">
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+          Resume Preview
+        </h2>
+      </div>
 
       <style>{`
         .resume-container { ${stylesToCss(styles.page)} hyphens: none; }
