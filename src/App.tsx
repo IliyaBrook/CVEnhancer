@@ -32,8 +32,6 @@ function App() {
     setError('');
 
     try {
-      const extractedText = await parseFile(file, fileType);
-
       if (!config) {
         setError('Please configure AI provider settings first');
         setStatus('error');
@@ -46,8 +44,21 @@ function App() {
         return;
       }
 
+      // Parse file with config to determine vision mode
+      const parsedData = await parseFile(file, fileType, config);
+
+      console.log('=== Parsed Resume Data ===');
+      console.log('Vision mode:', parsedData.isVisionMode);
+      if (parsedData.text) {
+        console.log('Text length:', parsedData.text.length);
+        console.log('First 500 chars:', parsedData.text.substring(0, 500));
+      }
+      if (parsedData.images) {
+        console.log('Number of images:', parsedData.images.length);
+      }
+
       setStatus('enhancing');
-      const enhanced = await enhanceResume(extractedText, config, jobTitle);
+      const enhanced = await enhanceResume(parsedData, config, jobTitle);
 
       console.log('=== Generated Resume Data ===');
       console.log(enhanced);

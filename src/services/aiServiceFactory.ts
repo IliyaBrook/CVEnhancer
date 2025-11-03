@@ -1,4 +1,4 @@
-import { AIConfig, AIProvider, ClaudeApiBody, OllamaApiBody, OpenAIApiBody, ResumeData, ResumeConfig } from '@/types';
+import { AIConfig, AIProvider, ClaudeApiBody, OllamaApiBody, OpenAIApiBody, ResumeData, ResumeConfig, ParsedResumeData } from '@/types';
 import { claudeOptions, ollamaOptions, openaiOptions } from '@/config';
 import { loadResumeConfig } from '@/utils';
 import resumeAiConfigDefault from '@/config/resume-ai-config.json';
@@ -421,32 +421,54 @@ const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
 };
 
 export const enhanceResume = async (
-  resumeText: string,
+  parsedData: ParsedResumeData,
   config: AIConfig,
   jobTitle?: string
 ): Promise<ResumeData> => {
   switch (config.provider) {
     case AIProvider.OPENAI:
     case AIProvider.CHATGPT:
-      return enhanceWithOpenAI(resumeText, config, jobTitle);
+      return enhanceWithOpenAI(parsedData, config, jobTitle);
     case AIProvider.CLAUDE:
-      return enhanceWithClaude(resumeText, config, jobTitle);
+      return enhanceWithClaude(parsedData, config, jobTitle);
     case AIProvider.OLLAMA:
-      return enhanceWithOllama(resumeText, config, jobTitle);
+      return enhanceWithOllama(parsedData, config, jobTitle);
     default:
       throw new Error(`Unsupported AI provider: ${config.provider}`);
   }
 };
 
 const enhanceWithOpenAI = async (
-  resumeText: string,
+  parsedData: ParsedResumeData,
   config: AIConfig,
   jobTitle?: string
 ): Promise<ResumeData> => {
   const prompt = createResumeEnhancementPrompt(jobTitle);
+  const isVision = parsedData.isVisionMode;
+  const resumeText = parsedData.text || '';
+  const dataURLs = parsedData.dataURLs || [];
+
+  if (isVision) {
+    console.log('[OpenAI Vision] Using vision mode with', dataURLs.length, 'images');
+  }
+
+  let userContent: any;
+  if (isVision && dataURLs.length > 0) {
+    // Vision mode: send images
+    userContent = [
+      { type: 'text', text: `${prompt}\n\nAnalyze the resume image(s) and extract information.` },
+      ...dataURLs.map(url => ({
+        type: 'image_url',
+        image_url: { url }
+      }))
+    ];
+  } else {
+    // Text mode
+    userContent = `${prompt}\n\n<resume>\n${resumeText}\n</resume>`;
+  }
 
   const openAiBody: OpenAIApiBody = {
-    model: config.model || 'gpt-4o-2024-08-06', // Need this version for structured output
+    model: config.model || 'gpt-4o-2024-08-06',
     messages: [
       {
         role: 'system',
@@ -454,7 +476,7 @@ const enhanceWithOpenAI = async (
       },
       {
         role: 'user',
-        content: `${prompt}\n\n<resume>\n${resumeText}\n</resume>`
+        content: userContent
       },
     ],
     response_format: {
@@ -488,18 +510,47 @@ const enhanceWithOpenAI = async (
 };
 
 const enhanceWithClaude = async (
-  resumeText: string,
+  parsedData: ParsedResumeData,
   config: AIConfig,
   jobTitle?: string
 ): Promise<ResumeData> => {
   const prompt = createResumeEnhancementPrompt(jobTitle);
+  const isVision = parsedData.isVisionMode;
+  const resumeText = parsedData.text || '';
+  const images = parsedData.images || [];
+
+  if (isVision) {
+    console.log('[Claude Vision] Using vision mode with', images.length, 'images');
+  }
+
+  let userContent: any;
+  if (isVision && images.length > 0) {
+    // Vision mode: send images (Claude expects base64 without prefix)
+    userContent = [
+      ...images.map(imageData => ({
+        type: 'image',
+        source: {
+          type: 'base64',
+          media_type: 'image/png',
+          data: imageData
+        }
+      })),
+      {
+        type: 'text',
+        text: `${prompt}\n\nAnalyze the resume image(s) and extract information.\n\nOutput valid JSON:`
+      }
+    ];
+  } else {
+    // Text mode
+    userContent = `${prompt}\n\n<resume>\n${resumeText}\n</resume>\n\nOutput valid JSON:`;
+  }
 
   const claudeBody: ClaudeApiBody = {
     model: config.model || 'claude-3-5-sonnet-20241022',
     messages: [
       {
         role: 'user',
-        content: `${prompt}\n\n<resume>\n${resumeText}\n</resume>\n\nOutput valid JSON:`
+        content: userContent
       },
       {
         role: 'assistant',
@@ -531,11 +582,18 @@ const enhanceWithClaude = async (
 };
 
 const enhanceWithOllama = async (
-  resumeText: string,
+  parsedData: ParsedResumeData,
   config: AIConfig,
   jobTitle?: string
 ): Promise<ResumeData> => {
   const endpoint = config.ollamaEndpoint || 'http://localhost:11434';
+  const isVision = parsedData.isVisionMode;
+  const resumeText = parsedData.text || '';
+  const images = parsedData.images || [];
+
+  if (isVision) {
+    console.log('[Ollama Vision] Using vision mode with', images.length, 'images');
+  }
 
   // Ollama request with retry logic
   const ollamaRequest = async (prompt: string, stepName: string, retries = 2): Promise<any> => {
@@ -543,7 +601,9 @@ const enhanceWithOllama = async (
       try {
         const ollamaBody: OllamaApiBody = {
           model: config.model || 'llama2',
-          prompt: `${prompt}\n\n<resume>\n${resumeText}\n</resume>\n\nJSON output:`,
+          prompt: isVision
+            ? `${prompt}\n\nAnalyze the resume image(s) and extract the information.\n\nJSON output:`
+            : `${prompt}\n\n<resume>\n${resumeText}\n</resume>\n\nJSON output:`,
           stream: false,
           format: 'json',
           options: {
@@ -551,6 +611,11 @@ const enhanceWithOllama = async (
             temperature: attempt > 0 ? 0.3 : ollamaOptions.temperature, // Lower temperature on retry
           },
         };
+
+        // Add images for vision models
+        if (isVision && images.length > 0) {
+          (ollamaBody as any).images = images;
+        }
 
         const response = await fetch(`${endpoint}/api/generate`, {
           method: 'POST',
