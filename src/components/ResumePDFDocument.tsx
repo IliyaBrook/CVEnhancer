@@ -5,11 +5,16 @@ import { resumePdfStyles as styles } from '@/styles/resumePdfStyles';
 import { loadResumeConfig } from '@/utils';
 import resumeConfigDefault from '@/config/resume-ai-config.json';
 
-// Helper function to safely render text (protect against null/undefined)
+// Helper function to safely render text (protect against null/undefined/objects/arrays)
 const safeText = (value: any, fallback: string = ''): string => {
   if (value === null || value === undefined) return fallback;
   if (typeof value === 'string') return value;
   if (typeof value === 'number') return String(value);
+  if (typeof value === 'boolean') return String(value);
+  // Protect against arrays, objects, and functions - never render them directly
+  if (Array.isArray(value)) return fallback;
+  if (typeof value === 'object') return fallback;
+  if (typeof value === 'function') return fallback;
   return fallback;
 };
 
@@ -110,7 +115,9 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
           {experience && experience.length > 0 && (
             <View>
               <Text style={styles.sectionTitle}>WORK EXPERIENCE</Text>
-              {experience.map((exp, index) => (
+              {experience
+                .filter(exp => exp && typeof exp === 'object' && (exp.company || exp.title))
+                .map((exp, index) => (
                 <View
                   key={index}
                   style={experience.length - 1 === index ? [styles.job, styles.lastJobElement] : styles.job}
@@ -125,12 +132,14 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
                   </View>
                   {exp?.duties && Array.isArray(exp.duties) && exp.duties.length > 0 && (
                     <View style={styles.jobDuties}>
-                      {exp.duties.map((duty, dutyIndex) => (
-                        <View key={dutyIndex} style={styles.jobDuty} wrap={false}>
-                          <Text style={styles.bullet}>•</Text>
-                          <Text style={styles.dutyText}>{safeText(duty, '')}</Text>
-                        </View>
-                      ))}
+                      {exp.duties
+                        .filter(duty => duty !== null && duty !== undefined && typeof duty === 'string' && duty.trim().length > 0)
+                        .map((duty, dutyIndex) => (
+                          <View key={dutyIndex} style={styles.jobDuty} wrap={false}>
+                            <Text style={styles.bullet}>•</Text>
+                            <Text style={styles.dutyText}>{safeText(duty, '')}</Text>
+                          </View>
+                        ))}
                     </View>
                   )}
                 </View>
@@ -159,22 +168,34 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
             {personalInfo?.linkedin && <Text style={styles.contactInfo}>{safeText(personalInfo?.linkedin)}</Text>}
           </View>
 
-          {skills && Array.isArray(skills) && skills.length > 0 && (
+          {skills && Array.isArray(skills) && skills?.length > 0 && (
             <View style={styles.sidebarSection}>
               <Text style={styles.sectionTitleWithMargin}>SKILLS</Text>
-              {skills.map((category, index) => (
-                <View key={index} style={styles.skillCategory}>
-                  <Text style={styles.skillCategoryTitle}>{safeText(category?.categoryTitle, 'Category')}</Text>
-                  {category?.skills &&
-                    Array.isArray(category.skills) &&
-                    category.skills.map((skill, skillIndex) => (
-                      <View key={skillIndex} style={styles.skillItem}>
-                        <Text style={styles.skillBullet}>•</Text>
-                        <Text style={styles.skillText}>{safeText(skill, '')}</Text>
-                      </View>
-                    ))}
-                </View>
-              ))}
+              {skills
+                .filter(category => category && typeof category === 'object' && category.categoryTitle)
+                .map((category, index) => {
+                  // Ensure category.skills is a valid array of strings
+                  const validSkills = Array.isArray(category.skills)
+                    ? category.skills.filter(
+                        skill => skill !== null && skill !== undefined && typeof skill === 'string' && skill.trim().length > 0
+                      )
+                    : [];
+
+                  // Only render category if it has valid skills
+                  if (validSkills.length === 0) return null;
+
+                  return (
+                    <View key={index} style={styles.skillCategory}>
+                      <Text style={styles.skillCategoryTitle}>{safeText(category?.categoryTitle, 'Category')}</Text>
+                      {validSkills.map((skill, skillIndex) => (
+                        <View key={skillIndex} style={styles.skillItem}>
+                          <Text style={styles.skillBullet}>•</Text>
+                          <Text style={styles.skillText}>{safeText(skill, '')}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  );
+                })}
             </View>
           )}
 
