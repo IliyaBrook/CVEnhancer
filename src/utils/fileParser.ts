@@ -10,6 +10,24 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 /**
+ * Get the model name for the current provider
+ */
+const getModelForProvider = (config?: AIConfig): string | undefined => {
+  if (!config) return undefined;
+
+  switch (config.provider) {
+    case 'openai':
+      return config.models?.openai;
+    case 'claude':
+      return config.models?.claude;
+    case 'ollama':
+      return config.models?.ollama;
+    default:
+      return undefined;
+  }
+};
+
+/**
  * Parse file with support for both text and vision modes
  * @param file File to parse
  * @param fileType Type of the file
@@ -21,7 +39,7 @@ export const parseFile = async (
   fileType: SupportedFileType,
   config?: AIConfig
 ): Promise<ParsedResumeData> => {
-  const useVision = config ? isVisionModel(config.model, config.provider) : false;
+  const useVision = config ? isVisionModel(getModelForProvider(config), config.provider) : false;
 
   switch (fileType) {
     case 'pdf':
@@ -52,8 +70,8 @@ const parsePDF = async (
 ): Promise<ParsedResumeData> => {
   if (useVision) {
     // Vision mode: convert PDF to images
-    const scale = getRecommendedScale(config?.model);
-    const maxPages = getMaxPages(config?.model);
+    const scale = getRecommendedScale(getModelForProvider(config));
+    const maxPages = getMaxPages(getModelForProvider(config));
 
     console.log(`[Vision Mode] Converting PDF to images (scale: ${scale}, maxPages: ${maxPages})`);
 

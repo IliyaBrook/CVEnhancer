@@ -76,12 +76,11 @@ npm run dev
 
 ### 🤖 AI Provider Options
 
-| Provider    | Models                | Privacy        |
-|-------------|-----------------------|----------------|
-| **OpenAI**  | GPT-4, GPT-3.5        | Cloud-based    |
-| **ChatGPT** | ChatGPT API           | Cloud-based    |
-| **Claude**  | Sonnet, Opus, Haiku   | Cloud-based    |
-| **Ollama**  | Llama, Mistral, Gemma | **100% Local** |
+| Provider   | Models                | Privacy        |
+|------------|-----------------------|----------------|
+| **OpenAI** | GPT-4, GPT-3.5        | Cloud-based    |
+| **Claude** | Sonnet, Opus, Haiku   | Cloud-based    |
+| **Ollama** | Llama, Mistral, Gemma | **100% Local** |
 
 ### 🎨 Customization Options
 
@@ -348,7 +347,7 @@ VITE_CLAUDE_TEMPERATURE=0.5
 ### Quick Start Guide
 
 1. **Configure AI Provider**
-	- Select your preferred AI provider from the dropdown (OpenAI, ChatGPT, Claude, or Ollama)
+	- Select your preferred AI provider from the dropdown (OpenAI, Claude, or Ollama)
 	- Enter your API key (not required for Ollama)
 	- Optionally specify a model name (defaults to recommended model)
 	- Click "Save Settings"
@@ -400,7 +399,7 @@ VITE_CLAUDE_TEMPERATURE=0.5
 
 ## 🤖 AI Provider Setup
 
-### OpenAI / ChatGPT
+### OpenAI
 
 1. **Get your API Key:**
 	- Visit [OpenAI Platform](https://platform.openai.com/api-keys)
@@ -409,7 +408,7 @@ VITE_CLAUDE_TEMPERATURE=0.5
 	- Click "Create new secret key"
 	- Copy the key (starts with `sk-`)
 2. **Configure in CVEnhancer:**
-	- Select "OpenAI" or "ChatGPT" as provider
+	- Select "OpenAI" as provider
 	- Paste your API key
 	- Recommended models: `gpt-4o-2024-08-06`, `gpt-4`, `gpt-3.5-turbo`
 

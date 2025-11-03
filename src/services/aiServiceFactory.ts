@@ -548,7 +548,6 @@ export const enhanceResume = async (
 ): Promise<ResumeData> => {
   switch (config.provider) {
     case AIProvider.OPENAI:
-    case AIProvider.CHATGPT:
       return enhanceWithOpenAI(parsedData, config, jobTitle);
     case AIProvider.CLAUDE:
       return enhanceWithClaude(parsedData, config, jobTitle);
@@ -589,7 +588,7 @@ const enhanceWithOpenAI = async (
   }
 
   const openAiBody: OpenAIApiBody = {
-    model: config.model || 'gpt-4o-2024-08-06',
+    model: config.models?.openai || 'gpt-4o-2024-08-06',
     messages: [
       {
         role: 'system',
@@ -617,7 +616,7 @@ const enhanceWithOpenAI = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${config.apiKey}`,
+        Authorization: `Bearer ${config.apiKeys?.openai}`,
       },
       body: JSON.stringify(openAiBody),
     }
@@ -667,7 +666,7 @@ const enhanceWithClaude = async (
   }
 
   const claudeBody: ClaudeApiBody = {
-    model: config.model || 'claude-3-5-sonnet-20241022',
+    model: config.models?.claude || 'claude-3-5-sonnet-20241022',
     messages: [
       {
         role: 'user',
@@ -687,7 +686,7 @@ const enhanceWithClaude = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': config.apiKey!,
+        'x-api-key': config.apiKeys?.claude!,
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true',
       },
@@ -734,7 +733,7 @@ const enhanceWithOllama = async (
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
         const ollamaBody: OllamaApiBody = {
-          model: config.model || 'llama2',
+          model: config.models?.ollama || 'llama2',
           prompt: isVision
             ? `${prompt}\n\nAnalyze the resume image(s) and extract the information.\n\nJSON output:`
             : `${prompt}\n\n<resume>\n${contextText || resumeText}\n</resume>\n\nJSON output:`,

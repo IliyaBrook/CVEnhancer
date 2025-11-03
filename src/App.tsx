@@ -38,10 +38,17 @@ function App() {
         return;
       }
 
-      if (!config.apiKey && config.provider !== 'ollama') {
-        setError('Please configure AI provider settings first');
-        setStatus('error');
-        return;
+      // Check if API key is present for the current provider
+      if (config.provider !== 'ollama') {
+        const hasApiKey =
+          (config.provider === 'openai' && config.apiKeys?.openai) ||
+          (config.provider === 'claude' && config.apiKeys?.claude);
+
+        if (!hasApiKey) {
+          setError('Please configure AI provider settings first');
+          setStatus('error');
+          return;
+        }
       }
 
       // Parse file with config to determine vision mode

@@ -11,8 +11,8 @@ interface AIProviderSettingsProps {
 export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfigChange }) => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [provider, setProvider] = useState<AIProvider>(AIProviderEnum.OPENAI);
-  const [apiKey, setApiKey] = useState('');
-  const [model, setModel] = useState('');
+  const [apiKeys, setApiKeys] = useState<{ openai?: string; claude?: string }>({});
+  const [models, setModels] = useState<{ openai?: string; claude?: string; ollama?: string }>({});
   const [ollamaEndpoint, setOllamaEndpoint] = useState('http://localhost:11434');
   const [ollamaModels, setOllamaModels] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -23,8 +23,8 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
     const loadedConfig = loadConfig();
     if (loadedConfig) {
       setProvider(loadedConfig.provider);
-      setApiKey(loadedConfig.apiKey || '');
-      setModel(loadedConfig.model || '');
+      setApiKeys(loadedConfig.apiKeys || {});
+      setModels(loadedConfig.models || {});
       setOllamaEndpoint(loadedConfig.ollamaEndpoint || 'http://localhost:11434');
     }
   }, []);
@@ -49,9 +49,36 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
     }
   };
 
+  const getCurrentModel = () => {
+    switch (provider) {
+      case AIProviderEnum.OPENAI:
+        return models.openai || '';
+      case AIProviderEnum.CLAUDE:
+        return models.claude || '';
+      case AIProviderEnum.OLLAMA:
+        return models.ollama || '';
+      default:
+        return '';
+    }
+  };
+
+  const setCurrentModel = (value: string) => {
+    switch (provider) {
+      case AIProviderEnum.OPENAI:
+        setModels({ ...models, openai: value });
+        break;
+      case AIProviderEnum.CLAUDE:
+        setModels({ ...models, claude: value });
+        break;
+      case AIProviderEnum.OLLAMA:
+        setModels({ ...models, ollama: value });
+        break;
+    }
+  };
+
   const handleModelInputChange = (value: string) => {
-    setModel(value);
-    
+    setCurrentModel(value);
+
     if (value.trim() === '') {
       setFilteredModels(ollamaModels);
     } else {
@@ -64,7 +91,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
   };
 
   const handleModelSelect = (selectedModel: string) => {
-    setModel(selectedModel);
+    setCurrentModel(selectedModel);
     setShowSuggestions(false);
   };
 
@@ -80,8 +107,8 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
   const handleSave = () => {
     const newConfig: AIConfig = {
       provider,
-      apiKey: requiresApiKey() ? apiKey : undefined,
-      model: model || undefined,
+      apiKeys: requiresApiKey() ? apiKeys : undefined,
+      models: models,
       ollamaEndpoint: provider === AIProviderEnum.OLLAMA ? ollamaEndpoint : undefined
     };
     saveConfig(newConfig);
@@ -92,10 +119,31 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
     return provider !== AIProviderEnum.OLLAMA;
   };
 
+  const getCurrentApiKey = () => {
+    switch (provider) {
+      case AIProviderEnum.OPENAI:
+        return apiKeys.openai || '';
+      case AIProviderEnum.CLAUDE:
+        return apiKeys.claude || '';
+      default:
+        return '';
+    }
+  };
+
+  const setCurrentApiKey = (value: string) => {
+    switch (provider) {
+      case AIProviderEnum.OPENAI:
+        setApiKeys({ ...apiKeys, openai: value });
+        break;
+      case AIProviderEnum.CLAUDE:
+        setApiKeys({ ...apiKeys, claude: value });
+        break;
+    }
+  };
+
   const getDefaultModel = () => {
     switch (provider) {
       case AIProviderEnum.OPENAI:
-      case AIProviderEnum.CHATGPT:
         return 'gpt-4';
       case AIProviderEnum.CLAUDE:
         return 'claude-3-sonnet-20240229';
@@ -109,7 +157,6 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
   const getApiKeyPlaceholder = () => {
     switch (provider) {
       case AIProviderEnum.OPENAI:
-      case AIProviderEnum.CHATGPT:
         return 'sk-...';
       case AIProviderEnum.CLAUDE:
         return 'sk-ant-...';
@@ -121,7 +168,6 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
   const getApiKeyDocLink = () => {
     switch (provider) {
       case AIProviderEnum.OPENAI:
-      case AIProviderEnum.CHATGPT:
         return 'https://platform.openai.com/api-keys';
       case AIProviderEnum.CLAUDE:
         return 'https://console.anthropic.com/settings/keys';
@@ -172,7 +218,6 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
           className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 cursor-pointer appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUgN0wxMCAxMkwxNSA3IiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=')] bg-[length:20px_20px] bg-[position:right_12px_center] bg-no-repeat pr-12 font-medium text-gray-900"
         >
           <option value={AIProviderEnum.OPENAI}>OpenAI</option>
-          <option value={AIProviderEnum.CHATGPT}>ChatGPT</option>
           <option value={AIProviderEnum.CLAUDE}>Claude (Anthropic)</option>
           <option value={AIProviderEnum.OLLAMA}>Ollama (Local)</option>
         </select>
@@ -196,8 +241,8 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
           </label>
           <input
             type="password"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
+            value={getCurrentApiKey()}
+            onChange={(e) => setCurrentApiKey(e.target.value)}
             placeholder={getApiKeyPlaceholder()}
             className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 placeholder:text-gray-400 font-mono text-sm"
           />
@@ -228,7 +273,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
             <input
               ref={inputRef}
               type="text"
-              value={model}
+              value={getCurrentModel()}
               onChange={(e) => handleModelInputChange(e.target.value)}
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
@@ -249,10 +294,10 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
                 ))}
               </div>
             )}
-            {showSuggestions && filteredModels.length === 0 && model.trim() !== '' && (
+            {showSuggestions && filteredModels.length === 0 && getCurrentModel().trim() !== '' && (
               <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
                 <div className="px-4 py-2 text-gray-500 text-sm">
-                  No matching models. Press Enter to use "{model}"
+                  No matching models. Press Enter to use "{getCurrentModel()}"
                 </div>
               </div>
             )}
@@ -260,7 +305,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
         </>
       )}
 
-      {(provider === AIProviderEnum.OPENAI || provider === AIProviderEnum.CHATGPT || provider === AIProviderEnum.CLAUDE) && (
+      {(provider === AIProviderEnum.OPENAI || provider === AIProviderEnum.CLAUDE) && (
         <div className="mb-4">
           <label className="block text-sm font-semibold text-gray-700 mb-2.5 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
@@ -268,8 +313,8 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
           </label>
           <input
             type="text"
-            value={model}
-            onChange={(e) => setModel(e.target.value)}
+            value={getCurrentModel()}
+            onChange={(e) => setCurrentModel(e.target.value)}
             placeholder={getDefaultModel()}
             className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 placeholder:text-gray-400 font-mono text-sm"
           />
@@ -278,7 +323,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
 
       <button
         onClick={handleSave}
-        disabled={requiresApiKey() && !apiKey}
+        disabled={requiresApiKey() && !getCurrentApiKey()}
         className="w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white py-3.5 px-6 rounded-xl font-semibold shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:scale-[1.02] disabled:bg-gradient-to-r disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed disabled:shadow-none disabled:scale-100 transition-all duration-200 flex items-center justify-center gap-2 group"
       >
         <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

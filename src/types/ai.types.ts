@@ -1,13 +1,19 @@
 export enum AIProvider {
 	OPENAI = 'openai',
-	CHATGPT = 'chatgpt',
 	CLAUDE = 'claude',
 	OLLAMA = 'ollama',
 }
 
 export interface AIConfig {
-	model?: string,
 	provider: AIProvider
-	apiKey?: string
+	apiKeys?: {
+		openai?: string;
+		claude?: string;
+	}
+	models?: {
+		openai?: string;
+		claude?: string;
+		ollama?: string;
+	}
 	ollamaEndpoint?: string
 }
