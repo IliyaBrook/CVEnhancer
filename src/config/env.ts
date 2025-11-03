@@ -37,6 +37,12 @@ const stopOption: string[] = [
 	"\n\n\n"
 ]
 
+// Claude requires valid stop_sequences (non-whitespace only)
+// For JSON generation, we don't need stop sequences with the prefill approach
+const claudeStopSequences: string[] = [
+	"\n\nHuman:"
+]
+
 export const debug = getEnvBoolean('VITE_DEBUG', false)
 
 // OPEN AI
@@ -49,12 +55,13 @@ export const openaiOptions: OpenAIOptions = {
 	stop: stopOption
 }
 // CLAUDE
+// Note: Claude API doesn't allow both temperature and top_p at the same time
 export const claudeOptions: ClaudeOptions = {
 	temperature: getEnvNumber('VITE_CLAUDE_TEMPERATURE'),
 	max_tokens: getEnvNumber('VITE_CLAUDE_MAX_TOKENS'),
-	top_p: getEnvNumber('VITE_CLAUDE_TOP_P'),
+	// top_p: getEnvNumber('VITE_CLAUDE_TOP_P'), // Disabled - cannot use with temperature
 	top_k: getEnvNumber('VITE_CLAUDE_TOP_K'),
-	stop_sequences: stopOption
+	stop_sequences: claudeStopSequences
 }
 // OLLAMA
 export const ollamaOptions: OllamaOptions = {
