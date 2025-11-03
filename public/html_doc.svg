@@ -1,0 +1,19 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main document outline with folded corner -->
+  <path d="M 100 60 L 352 60 L 412 120 L 412 452 L 100 452 Z" stroke="white" stroke-width="8" fill="none" stroke-linejoin="miter"/>
+
+  <!-- Folded corner detail -->
+  <path d="M 352 60 L 352 120 L 412 120" stroke="white" stroke-width="8" fill="none" stroke-linejoin="miter"/>
+
+  <!-- HTML text -->
+  <text x="256" y="240" font-family="Arial, sans-serif" font-size="85" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">HTML</text>
+
+  <!-- Copy icon - two overlapping rectangles representing copy to clipboard -->
+  <g>
+    <!-- Back rectangle (clipboard/copy destination) -->
+    <rect x="226" y="315" width="50" height="65" stroke="white" stroke-width="7" fill="none" rx="3"/>
+
+    <!-- Front rectangle (source document being copied) -->
+    <rect x="236" y="325" width="50" height="65" stroke="white" stroke-width="7" fill="none" rx="3"/>
+  </g>
+</svg>

@@ -1,0 +1,23 @@
+<svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Document outline with folded corner -->
+  <path d="M 100 60 L 352 60 L 412 120 L 412 452 L 100 452 Z" stroke="white" stroke-width="8" fill="none"
+        stroke-linejoin="miter"/>
+
+  <!-- Folded corner detail -->
+  <path d="M 352 60 L 352 120 L 412 120" stroke="white" stroke-width="8" fill="none" stroke-linejoin="miter"/>
+
+  <!-- PDF text -->
+  <text x="256" y="250" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white"
+        text-anchor="middle" dominant-baseline="middle">PDF
+  </text>
+
+  <!-- Download arrow -->
+  <g>
+    <!-- Arrow shaft -->
+    <line x1="256" y1="310" x2="256" y2="390" stroke="white" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- Arrow head -->
+    <polyline points="226,360 256,390 286,360" stroke="white" stroke-width="8" fill="none" stroke-linecap="round"
+              stroke-linejoin="round"/>
+  </g>
+</svg>

@@ -140,7 +140,9 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
           )}
 
           {/* Education in main-content if placement is 'main-content' */}
-          {config.education.placement === 'main-content' && <EducationSection education={education} showInMain={true} />}
+          {config.education.placement === 'main-content' && (
+            <EducationSection education={education} showInMain={true} />
+          )}
 
           {militaryService && typeof militaryService === 'string' && militaryService.trim().length > 0 && (
             <View style={styles.militarySection}>

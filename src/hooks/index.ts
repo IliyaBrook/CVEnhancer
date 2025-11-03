@@ -1,1 +1,2 @@
-export * from './useAIConfig'
+export * from './useAIConfig';
+export * from './useAlert';
