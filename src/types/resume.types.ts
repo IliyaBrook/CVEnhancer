@@ -20,7 +20,6 @@ export interface PersonalInfo {
 export interface Experience {
   company: string;
   location: string;
-  description?: string;
   title: string;
   dateRange: string;
   duties: string[];

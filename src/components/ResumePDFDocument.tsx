@@ -119,7 +119,6 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
                     <Text style={styles.companyName}>{safeText(exp?.company, 'Unknown Company')}</Text>
                     {exp?.location && <Text style={styles.location}>, {safeText(exp.location)}</Text>}
                   </View>
-                  {exp?.description && <Text style={styles.companyDescription}>{safeText(exp.description)}</Text>}
                   <View style={styles.jobTitleLine} wrap={false}>
                     <Text style={styles.jobTitle}>{safeText(exp?.title, 'Position')}</Text>
                     <Text style={styles.dateRange}>{safeText(exp?.dateRange, 'N/A')}</Text>

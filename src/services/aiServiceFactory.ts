@@ -47,7 +47,6 @@ const RESUME_JSON_SCHEMA = {
         properties: {
           company: { type: "string" },
           location: { type: "string" },
-          description: { type: "string" },
           title: { type: "string" },
           dateRange: { type: "string" },
           duties: {
@@ -55,7 +54,7 @@ const RESUME_JSON_SCHEMA = {
             items: { type: "string" }
           }
         },
-        required: ["company", "location", "description", "title", "dateRange", "duties"],
+        required: ["company", "location", "title", "dateRange", "duties"],
         additionalProperties: false
       }
     },
@@ -176,7 +175,6 @@ const createResumeEnhancementPrompt = (jobTitle?: string): string => {
 ${jobContext}
 <experience_requirements>
 ${experienceConstraints.map(c => `- ${c}`).join('\n')}
-- Keep job descriptions concise (2-3 words based on actual role)
 </experience_requirements>
 
 <skills_requirements>
@@ -220,7 +218,6 @@ Return ONLY valid JSON matching this structure:
   "experience": [{
     "company": "string",
     "location": "string",
-    "description": "string (2-3 words)",
     "title": "string",
     "dateRange": "string",
     "duties": ["string"]
@@ -372,7 +369,6 @@ const createOllamaStep2Prompt = (jobTitle?: string): string => {
 <instructions>
 <constraints>
 ${constraints.map(c => `- ${c}`).join('\n')}
-- Description: 2-3 words only based on actual role
 - Return valid JSON only - start with { and end with }
 </constraints>
 ${jobContext}
@@ -381,7 +377,6 @@ ${jobContext}
   "experience": [{
     "company": "",
     "location": "",
-    "description": "",
     "title": "",
     "dateRange": "",
     "duties": []
@@ -493,8 +488,7 @@ const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
     if (config.experience.exclude && Array.isArray(config.experience.exclude) && config.experience.exclude.length > 0) {
       resumeData.experience = resumeData.experience.filter(job =>
         !config.experience.exclude?.some(excludedTitle =>
-          job.title?.toLowerCase().includes(excludedTitle.toLowerCase()) ||
-          job.description?.toLowerCase().includes(excludedTitle.toLowerCase())
+          job.title?.toLowerCase().includes(excludedTitle.toLowerCase())
         )
       );
     }

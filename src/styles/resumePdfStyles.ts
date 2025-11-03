@@ -74,12 +74,6 @@ export const resumePdfStyles = StyleSheet.create({
     fontStyle: 'italic',
     fontSize: 11,
   },
-  companyDescription: {
-    color: '#666',
-    fontStyle: 'italic',
-    fontSize: 10,
-    marginBottom: 4,
-  },
   jobTitleLine: {
     flexDirection: 'row',
     justifyContent: 'space-between',
