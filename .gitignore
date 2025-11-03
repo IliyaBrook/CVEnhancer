@@ -29,3 +29,5 @@ tmp
 src/fakeData/json_data/*_private.json
 playwright-profile
 .playwright-mcp
+.claude
+.kilocode
