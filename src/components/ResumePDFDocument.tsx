@@ -83,7 +83,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
     militaryService: resumeData?.militaryService || '',
   };
 
-  const { personalInfo, experience, skills, education, militaryService } = safeResumeData;
+  const { personalInfo, experience, skills, education, militaryService = '' } = safeResumeData;
   const loadedConfig = loadResumeConfig() || (resumeConfigDefault as ResumeConfig);
 
   // Ensure placement exists for backward compatibility
@@ -139,12 +139,11 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
             </View>
           )}
 
-          {/* Education in main-content if placement is 'main-content' */}
           {config.education.placement === 'main-content' && (
             <EducationSection education={education} showInMain={true} />
           )}
 
-          {militaryService && typeof militaryService === 'string' && militaryService.trim().length > 0 && (
+          {militaryService && militaryService.trim().length > 0 && (
             <View style={styles.militarySection}>
               <Text style={[styles.sectionTitle, styles.militarySectionTitle]}>MILITARY SERVICE</Text>
               <Text style={styles.militaryText}>{safeText(militaryService)}</Text>
