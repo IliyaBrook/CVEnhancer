@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import type { ResumeData, ResumeConfig } from '@/types';
+import type { ResumeData, ResumeConfig, Education } from '@/types';
 import { resumePdfStyles as styles } from '@/styles';
 import { stylesToCss, loadResumeConfig } from '@/utils';
 import resumeConfigDefault from '@/config/resume-ai-config.json';
@@ -7,6 +7,23 @@ import resumeConfigDefault from '@/config/resume-ai-config.json';
 interface ResumePreviewProps {
   resumeData: ResumeData | null;
 }
+
+const RenderEducation = ({ edu }: { edu: Education }) => (
+  <div className="education-item">
+    <div className="university">{safeText(edu?.university || edu?.institution, 'Institution')}</div>
+    {edu?.degree && <div className="degree">{safeText(edu.degree)}</div>}
+    {edu?.field && <div className="degree">{safeText(edu.field)}</div>}
+    {edu?.location && <div className="education-location">{safeText(edu.location)}</div>}
+    {edu?.dateRange && edu.dateRange !== '-' && <div className="education-date">{safeText(edu.dateRange)}</div>}
+  </div>
+);
+
+const safeText = (value: any, fallback: string = ''): string => {
+  if (value === null || value === undefined) return fallback;
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number') return String(value);
+  return fallback;
+};
 
 export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
   const [config, setConfig] = useState<ResumeConfig>(resumeConfigDefault as ResumeConfig);
@@ -27,12 +44,6 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
   }, []);
 
   // Helper function to safely render text (protect against null/undefined)
-  const safeText = (value: any, fallback: string = ''): string => {
-    if (value === null || value === undefined) return fallback;
-    if (typeof value === 'string') return value;
-    if (typeof value === 'number') return String(value);
-    return fallback;
-  };
 
   if (!resumeData) {
     return (
@@ -52,8 +63,8 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
             Resume Preview
           </h2>
           {config.pdf.singlePageExport && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold border border-red-200">
-              <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-red-500"></span>
               Single Page Mode
             </span>
           )}
@@ -93,8 +104,8 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
           Resume Preview
         </h2>
         {config.pdf.singlePageExport && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold border border-red-200">
-            <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-red-500"></span>
             Single Page Mode
           </span>
         )}
@@ -167,9 +178,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
         <div className="main-content">
           <div className="header">
             <h1 className="name">{safeText(resumeData?.personalInfo?.name, 'N/A')}</h1>
-            {resumeData?.personalInfo?.title && (
-              <div className="title">{safeText(resumeData.personalInfo.title)}</div>
-            )}
+            {resumeData?.personalInfo?.title && <div className="title">{safeText(resumeData.personalInfo.title)}</div>}
           </div>
 
           {resumeData.experience && Array.isArray(resumeData.experience) && resumeData.experience.length > 0 && (
@@ -202,49 +211,36 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
           )}
 
           {/* Education in main-content if placement is 'main-content' */}
-          {config.education.placement === 'main-content' && resumeData.education && Array.isArray(resumeData.education) && resumeData.education.length > 0 && (
-            <>
-              <div className="section-title education-section-title">EDUCATION</div>
-              {resumeData.education.map((edu, idx) => (
-                <div key={idx} className="education-item">
-                  <div className="university">
-                    {safeText(edu?.university || edu?.institution, 'Institution')}
-                  </div>
-                  {edu?.degree && <div className="degree">{safeText(edu.degree)}</div>}
-                  {edu?.field && <div className="degree">{safeText(edu.field)}</div>}
-                  {edu?.location && <div className="education-location">{safeText(edu.location)}</div>}
-                  {edu?.dateRange && edu.dateRange !== '-' && (
-                    <div className="education-date">{safeText(edu.dateRange)}</div>
-                  )}
-                </div>
-              ))}
-            </>
-          )}
+          {config.education.placement === 'main-content' &&
+            resumeData.education &&
+            Array.isArray(resumeData.education) &&
+            resumeData.education.length > 0 && (
+              <>
+                <div className="section-title education-section-title">EDUCATION</div>
+                {resumeData.education.map((edu, idx) => (
+                  <RenderEducation edu={edu} key={idx} />
+                ))}
+              </>
+            )}
 
-          {resumeData.militaryService && typeof resumeData.militaryService === 'string' && resumeData.militaryService.trim().length > 0 && (
-            <div className="military-section">
-              <div className="section-title military-section-title">MILITARY SERVICE</div>
-              <div className="military-text">{safeText(resumeData.militaryService)}</div>
-            </div>
-          )}
+          {resumeData.militaryService &&
+            typeof resumeData.militaryService === 'string' &&
+            resumeData.militaryService.trim().length > 0 && (
+              <div className="military-section">
+                <div className="section-title military-section-title">MILITARY SERVICE</div>
+                <div className="military-text">{safeText(resumeData.militaryService)}</div>
+              </div>
+            )}
         </div>
 
         <div className="sidebar">
           <div className="sidebar-contact-section">
             <div className="section-title">CONTACT</div>
             <ul className="contact-info">
-              {resumeData?.personalInfo?.location && (
-                <li>{safeText(resumeData.personalInfo.location)}</li>
-              )}
-              {resumeData?.personalInfo?.phone && (
-                <li>{safeText(resumeData.personalInfo.phone)}</li>
-              )}
-              {resumeData?.personalInfo?.email && (
-                <li>{safeText(resumeData.personalInfo.email)}</li>
-              )}
-              {resumeData?.personalInfo?.linkedin && (
-                <li>{safeText(resumeData.personalInfo.linkedin)}</li>
-              )}
+              {resumeData?.personalInfo?.location && <li>{safeText(resumeData.personalInfo.location)}</li>}
+              {resumeData?.personalInfo?.phone && <li>{safeText(resumeData.personalInfo.phone)}</li>}
+              {resumeData?.personalInfo?.email && <li>{safeText(resumeData.personalInfo.email)}</li>}
+              {resumeData?.personalInfo?.linkedin && <li>{safeText(resumeData.personalInfo.linkedin)}</li>}
             </ul>
           </div>
 
@@ -253,13 +249,11 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
               <div className="section-title-with-margin">SKILLS</div>
               {resumeData.skills.map((category, idx) => (
                 <div key={idx} className="skill-category">
-                  <div className="skill-category-title">
-                    {safeText(category?.categoryTitle, 'Category')}
-                  </div>
+                  <div className="skill-category-title">{safeText(category?.categoryTitle, 'Category')}</div>
                   <ul className="skill-list">
-                    {category?.skills && Array.isArray(category.skills) && category.skills.map((skill, i) => (
-                      <li key={i}>{safeText(skill, '')}</li>
-                    ))}
+                    {category?.skills &&
+                      Array.isArray(category.skills) &&
+                      category.skills.map((skill, i) => <li key={i}>{safeText(skill, '')}</li>)}
                   </ul>
                 </div>
               ))}
@@ -267,24 +261,17 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
           )}
 
           {/* Education in sidebar if placement is 'sidebar' */}
-          {config.education.placement === 'sidebar' && resumeData.education && Array.isArray(resumeData.education) && resumeData.education.length > 0 && (
-            <div className="sidebar-section">
-              <div className="section-title-with-margin">EDUCATION</div>
-              {resumeData.education.map((edu, idx) => (
-                <div key={idx} className="education-item">
-                  <div className="university">
-                    {safeText(edu?.university || edu?.institution, 'Institution')}
-                  </div>
-                  {edu?.degree && <div className="degree">{safeText(edu.degree)}</div>}
-                  {edu?.field && <div className="degree">{safeText(edu.field)}</div>}
-                  {edu?.location && <div className="education-location">{safeText(edu.location)}</div>}
-                  {edu?.dateRange && edu.dateRange !== '-' && (
-                    <div className="education-date">{safeText(edu.dateRange)}</div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+          {config.education.placement === 'sidebar' &&
+            resumeData.education &&
+            Array.isArray(resumeData.education) &&
+            resumeData.education.length > 0 && (
+              <div className="sidebar-section">
+                <div className="section-title-with-margin">EDUCATION</div>
+                {resumeData.education.map((edu, idx) => (
+                  <RenderEducation edu={edu} key={idx} />
+                ))}
+              </div>
+            )}
         </div>
       </div>
     </div>

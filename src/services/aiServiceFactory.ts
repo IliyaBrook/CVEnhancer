@@ -87,37 +87,105 @@ const RESUME_JSON_SCHEMA = {
 };
 
 const createResumeEnhancementPrompt = (jobTitle?: string): string => {
+  const config = getResumeConfig();
   const jobContext = jobTitle
     ? `\n<job_context>\nThe candidate's profession/job title is: ${jobTitle}\nUse this context to better understand and enhance the resume content.\n</job_context>\n`
     : '';
+
+  // Build experience constraints
+  const experienceConstraints: string[] = [];
+  if (config?.experience) {
+    if (config.experience.maxJobs !== null && config.experience.maxJobs !== undefined) {
+      experienceConstraints.push(`Include ONLY the ${config.experience.maxJobs} most recent and relevant jobs`);
+    }
+    if (config.experience.bulletPointsPerJob !== null && config.experience.bulletPointsPerJob !== undefined) {
+      experienceConstraints.push(`Each job MUST have EXACTLY ${config.experience.bulletPointsPerJob} bullet points (duties)`);
+    }
+    if (config.experience.maxBulletLength !== null && config.experience.maxBulletLength !== undefined) {
+      experienceConstraints.push(`CRITICAL: Each bullet point MUST be maximum ${config.experience.maxBulletLength} characters. DO NOT EXCEED THIS LIMIT.`);
+    } else {
+      experienceConstraints.push(`IMPORTANT: Write full, detailed bullet points. DO NOT truncate or abbreviate unless necessary.`);
+    }
+    if (config.experience.requireActionVerbs) {
+      experienceConstraints.push(`REQUIRED: Start each bullet point with a strong action verb (e.g., "Developed", "Implemented", "Managed", "Led")`);
+    }
+    if (config.experience.metricsLevel) {
+      const metricsInstructions = {
+        low: 'Include metrics and numbers if they are readily available in the resume',
+        moderate: 'Actively look for and include quantifiable metrics and achievements (percentages, numbers, sizes, etc.)',
+        high: 'PRIORITIZE quantifiable metrics in every bullet point where possible. Extract all numbers, percentages, team sizes, and measurable impacts.'
+      };
+      experienceConstraints.push(metricsInstructions[config.experience.metricsLevel]);
+    }
+    if (config.experience.exclude && Array.isArray(config.experience.exclude) && config.experience.exclude.length > 0) {
+      experienceConstraints.push(`COMPLETELY SKIP jobs with these titles: ${config.experience.exclude.join(', ')}`);
+    }
+    if (config.experience.avoidDuplicatePoints) {
+      experienceConstraints.push(`Avoid duplicate or very similar bullet points across different jobs`);
+    }
+  }
+
+  // Build skills constraints
+  const skillsConstraints: string[] = [];
+  if (config?.skills) {
+    if (config.skills.categoriesLimit !== null && config.skills.categoriesLimit !== undefined) {
+      skillsConstraints.push(`Include up to ${config.skills.categoriesLimit} skill categories`);
+    }
+    if (config.skills.skillsPerCategory !== null && config.skills.skillsPerCategory !== undefined) {
+      skillsConstraints.push(`Each category should have up to ${config.skills.skillsPerCategory} skills`);
+    }
+  }
+
+  // Build education constraints
+  const educationConstraints: string[] = [];
+  if (config?.education) {
+    if (config.education.maxEntries !== null && config.education.maxEntries !== undefined) {
+      educationConstraints.push(`Include ONLY the ${config.education.maxEntries} most relevant education entries`);
+    }
+    if (config.education.exclude && Array.isArray(config.education.exclude) && config.education.exclude.length > 0) {
+      educationConstraints.push(`COMPLETELY SKIP education entries containing: ${config.education.exclude.join(', ')}`);
+    }
+  }
 
   return `You are a professional resume enhancement AI.
 
 <instructions>
 <critical_constraints>
-- Resume MUST fit on ONE page - be extremely concise
-- Remove ALL redundant or repetitive information
 - CRITICAL: Extract ONLY information that exists in the provided resume
 - DO NOT invent, fabricate, or add any information not present in the original resume
 - DO NOT make assumptions about job duties or experience that aren't explicitly stated
 - If information is missing, leave the field empty rather than inventing data
+- PRESERVE all important information - better to include more detail than to truncate
+- DO NOT sacrifice important content for brevity
 </critical_constraints>
 ${jobContext}
+<experience_requirements>
+${experienceConstraints.map(c => `- ${c}`).join('\n')}
+- Keep job descriptions concise (2-3 words based on actual role)
+</experience_requirements>
+
+<skills_requirements>
+${skillsConstraints.length > 0 ? skillsConstraints.map(c => `- ${c}`).join('\n') : '- Extract all relevant skills from the resume'}
+- Remove duplicated skills across categories
+- Group skills logically by category (e.g., "Programming Languages", "Frameworks", "Tools")
+</skills_requirements>
+
+<education_requirements>
+${educationConstraints.length > 0 ? educationConstraints.map(c => `- ${c}`).join('\n') : '- Extract all education information from the resume'}
+- Prioritize most recent and relevant education
+- Include degree, field of study, institution, and location
+</education_requirements>
+
 <formatting_rules>
 - Fix all spelling and grammar errors
 - Use ATS-optimized formatting with clear section headers
 - Contact info: name, email, phone, location, LinkedIn profile only
 - Use impactful bullet points for achievements
-- Quantify achievements where applicable
 - Emphasize relevant skills and keywords for the profession
 - Remove objective statements and verbose descriptions
-- Keep job descriptions concise (2-3 words based on actual role)
 </formatting_rules>
 
 <content_rules>
-- Prioritize most recent and relevant experience
-- Combine similar responsibilities into concise bullet points
-- Remove duplicated skills across categories
 - Include military service if present (1-2 sentences max, otherwise empty string)
 - Respect the actual profession - do not transform a sales role into a tech role or vice versa
 </content_rules>
@@ -161,19 +229,45 @@ Return ONLY valid JSON matching this structure:
 };
 
 const createOllamaStep1Prompt = (jobTitle?: string): string => {
+  const config = getResumeConfig();
   const jobContext = jobTitle
     ? `\n<job_context>\nThe candidate's profession is: ${jobTitle}\n</job_context>\n`
     : '';
 
-  return `Extract personal information, education, and skills from the resume.
+  const constraints: string[] = [
+    'CRITICAL: Extract ONLY what exists in the resume',
+    'DO NOT invent or fabricate any information',
+    'PRESERVE all information - do NOT truncate or abbreviate',
+    'Military service: 1-2 sentences max if present, otherwise empty string',
+    'Return valid JSON only - start with { and end with }',
+    'No markdown, no code blocks, no extra text'
+  ];
+
+  // Add skills constraints if configured
+  if (config?.skills) {
+    if (config.skills.categoriesLimit !== null && config.skills.categoriesLimit !== undefined) {
+      constraints.push(`Include up to ${config.skills.categoriesLimit} skill categories`);
+    }
+    if (config.skills.skillsPerCategory !== null && config.skills.skillsPerCategory !== undefined) {
+      constraints.push(`Each category should have up to ${config.skills.skillsPerCategory} skills`);
+    }
+  }
+
+  // Add education constraints if configured
+  if (config?.education) {
+    if (config.education.maxEntries !== null && config.education.maxEntries !== undefined) {
+      constraints.push(`Include ONLY the ${config.education.maxEntries} most relevant education entries`);
+    }
+    if (config.education.exclude && Array.isArray(config.education.exclude) && config.education.exclude.length > 0) {
+      constraints.push(`COMPLETELY SKIP education entries containing: ${config.education.exclude.join(', ')}`);
+    }
+  }
+
+  return `Extract personal information, education, and skills from the resume. Follow all rules strictly.
 
 <instructions>
 <rules>
-- CRITICAL: Extract ONLY what exists in the resume
-- DO NOT invent or fabricate any information
-- Military service: 1-2 sentences max if present, otherwise empty string
-- Return valid JSON only - start with { and end with }
-- No markdown, no code blocks, no extra text
+${constraints.map(c => `- ${c}`).join('\n')}
 </rules>
 ${jobContext}
 <output_structure>
@@ -202,6 +296,8 @@ ${jobContext}
   "militaryService": ""
 }
 </output_structure>
+
+IMPORTANT: Follow ALL rules above strictly. Do not skip or ignore any requirements.
 </instructions>`;
 };
 
@@ -211,6 +307,7 @@ const createOllamaStep2Prompt = (jobTitle?: string): string => {
 
   constraints.push('CRITICAL: Extract ONLY work experience that exists in the resume');
   constraints.push('DO NOT invent or fabricate any job positions or duties');
+  constraints.push('PRESERVE all important information - do NOT truncate or abbreviate text');
 
   if (config?.experience) {
     if (config.experience.maxJobs !== null && config.experience.maxJobs !== undefined) {
@@ -218,11 +315,30 @@ const createOllamaStep2Prompt = (jobTitle?: string): string => {
     }
 
     if (config.experience.bulletPointsPerJob !== null && config.experience.bulletPointsPerJob !== undefined) {
-      constraints.push(`Each job MUST have EXACTLY ${config.experience.bulletPointsPerJob} bullet points (duties)`);
+      constraints.push(`CRITICAL: Each job MUST have EXACTLY ${config.experience.bulletPointsPerJob} bullet points (duties). This is a STRICT requirement.`);
     }
 
     if (config.experience.maxBulletLength !== null && config.experience.maxBulletLength !== undefined) {
-      constraints.push(`Each bullet point MUST be maximum ${config.experience.maxBulletLength} characters`);
+      constraints.push(`CRITICAL: Each bullet point MUST be maximum ${config.experience.maxBulletLength} characters. DO NOT EXCEED THIS LIMIT.`);
+    } else {
+      constraints.push(`IMPORTANT: Write full, complete bullet points. DO NOT truncate or abbreviate. Better to be detailed than brief.`);
+    }
+
+    if (config.experience.requireActionVerbs) {
+      constraints.push(`REQUIRED: Start each bullet point with a strong action verb (e.g., "Developed", "Implemented", "Managed", "Led")`);
+    }
+
+    if (config.experience.metricsLevel) {
+      const metricsInstructions = {
+        low: 'Include metrics and numbers if they are readily available',
+        moderate: 'Actively look for and include quantifiable metrics (percentages, numbers, sizes)',
+        high: 'PRIORITIZE quantifiable metrics in every bullet point. Extract all numbers, percentages, team sizes, and measurable impacts.'
+      };
+      constraints.push(metricsInstructions[config.experience.metricsLevel]);
+    }
+
+    if (config.experience.avoidDuplicatePoints) {
+      constraints.push(`Avoid duplicate or very similar duties across different jobs`);
     }
 
     if (config.experience.exclude && Array.isArray(config.experience.exclude) && config.experience.exclude.length > 0) {
@@ -234,13 +350,12 @@ const createOllamaStep2Prompt = (jobTitle?: string): string => {
     ? `\n<job_context>\nThe candidate's profession is: ${jobTitle}\nExtract experience relevant to this field.\n</job_context>\n`
     : '';
 
-  return `Extract work experience from the resume.
+  return `Extract work experience from the resume. Pay close attention to all constraints.
 
 <instructions>
 <constraints>
 ${constraints.map(c => `- ${c}`).join('\n')}
 - Description: 2-3 words only based on actual role
-- No duplicate duties
 - Return valid JSON only - start with { and end with }
 </constraints>
 ${jobContext}
@@ -256,6 +371,8 @@ ${jobContext}
   }]
 }
 </output_structure>
+
+IMPORTANT: Follow ALL constraints above strictly. Do not skip or ignore any requirements.
 </instructions>`;
 };
 
@@ -355,6 +472,7 @@ const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
   const config = getResumeConfig();
 
   if (config?.experience && resumeData.experience) {
+    // Filter out excluded jobs
     if (config.experience.exclude && Array.isArray(config.experience.exclude) && config.experience.exclude.length > 0) {
       resumeData.experience = resumeData.experience.filter(job =>
         !config.experience.exclude?.some(excludedTitle =>
@@ -364,32 +482,23 @@ const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
       );
     }
 
+    // Limit number of jobs (as fallback, model should already respect this)
     const maxJobs = config.experience.maxJobs;
     if (maxJobs !== null && maxJobs !== undefined) {
       resumeData.experience = resumeData.experience.slice(0, maxJobs);
     }
 
+    // Limit bullet points per job (as fallback, model should already respect this)
     const bulletPointsPerJob = config.experience.bulletPointsPerJob;
-    const maxBulletLength = config.experience.maxBulletLength;
+    if (bulletPointsPerJob !== null && bulletPointsPerJob !== undefined) {
+      resumeData.experience = resumeData.experience.map(job => ({
+        ...job,
+        duties: job.duties ? job.duties.slice(0, bulletPointsPerJob) : []
+      }));
+    }
 
-    resumeData.experience = resumeData.experience.map(job => {
-      const updatedJob = { ...job };
-
-      if (bulletPointsPerJob !== null && bulletPointsPerJob !== undefined && job.duties) {
-        updatedJob.duties = job.duties.slice(0, bulletPointsPerJob);
-      }
-
-      if (maxBulletLength !== null && maxBulletLength !== undefined && updatedJob.duties) {
-        updatedJob.duties = updatedJob.duties.map(duty => {
-          if (duty && duty.length > maxBulletLength) {
-            return duty.substring(0, maxBulletLength - 3) + '...';
-          }
-          return duty;
-        });
-      }
-
-      return updatedJob;
-    });
+    // REMOVED: Hard truncation with "..." - model should respect maxBulletLength in prompts
+    // This allows models to create proper content within the character limit
   }
 
   if (config?.skills && resumeData.skills) {
@@ -409,6 +518,18 @@ const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
   }
 
   if (config?.education && resumeData.education) {
+    // Filter out excluded education entries
+    if (config.education.exclude && Array.isArray(config.education.exclude) && config.education.exclude.length > 0) {
+      resumeData.education = resumeData.education.filter(edu =>
+        !config.education.exclude?.some(excludedTerm =>
+          edu.institution?.toLowerCase().includes(excludedTerm.toLowerCase()) ||
+          edu.degree?.toLowerCase().includes(excludedTerm.toLowerCase()) ||
+          edu.field?.toLowerCase().includes(excludedTerm.toLowerCase())
+        )
+      );
+    }
+
+    // Limit number of education entries (as fallback, model should already respect this)
     const maxEntries = config.education.maxEntries;
     if (maxEntries !== null && maxEntries !== undefined) {
       resumeData.education = resumeData.education.slice(0, maxEntries);
@@ -491,7 +612,7 @@ const enhanceWithOpenAI = async (
   };
 
   const response = await fetchWithRetry(
-    'https://api.openai.com/v1/chat/completions',
+    '/api/openai/v1/chat/completions',
     {
       method: 'POST',
       headers: {
@@ -561,13 +682,14 @@ const enhanceWithClaude = async (
   };
 
   const response = await fetchWithRetry(
-    'https://api.anthropic.com/v1/messages',
+    '/api/anthropic/v1/messages',
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': config.apiKey!,
         'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
       },
       body: JSON.stringify(claudeBody),
     }
@@ -595,15 +717,27 @@ const enhanceWithOllama = async (
     console.log('[Ollama Vision] Using vision mode with', images.length, 'images');
   }
 
+  // Determine if we need to split Step 2 based on text length
+  // If resume is very long, split experience extraction into multiple requests
+  const shouldSplitStep2 = resumeText.length > 8000 && !isVision;
+  if (shouldSplitStep2) {
+    console.log('[Ollama] Large resume detected, will split experience extraction into multiple requests');
+  }
+
   // Ollama request with retry logic
-  const ollamaRequest = async (prompt: string, stepName: string, retries = 2): Promise<any> => {
+  const ollamaRequest = async (
+    prompt: string,
+    stepName: string,
+    contextText?: string,
+    retries = 2
+  ): Promise<any> => {
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
         const ollamaBody: OllamaApiBody = {
           model: config.model || 'llama2',
           prompt: isVision
             ? `${prompt}\n\nAnalyze the resume image(s) and extract the information.\n\nJSON output:`
-            : `${prompt}\n\n<resume>\n${resumeText}\n</resume>\n\nJSON output:`,
+            : `${prompt}\n\n<resume>\n${contextText || resumeText}\n</resume>\n\nJSON output:`,
           stream: false,
           format: 'json',
           options: {
@@ -655,16 +789,64 @@ const enhanceWithOllama = async (
     const step1Data = await ollamaRequest(step1Prompt, 'Step 1: Personal Info & Education');
     await new Promise(resolve => setTimeout(resolve, 300));
 
-    // Step 2: Get work experience
-    const step2Prompt = createOllamaStep2Prompt(jobTitle);
-    const step2Data = await ollamaRequest(step2Prompt, 'Step 2: Work Experience');
+    let allExperience: any[] = [];
+
+    if (shouldSplitStep2 && !isVision) {
+      // Split resume text into chunks for experience extraction
+      // Try to split by common section delimiters
+      const lines = resumeText.split('\n');
+      const chunks: string[] = [];
+      let currentChunk = '';
+      let chunkSize = 0;
+      const maxChunkSize = 4000; // Characters per chunk
+
+      for (const line of lines) {
+        if (chunkSize + line.length > maxChunkSize && currentChunk.length > 0) {
+          chunks.push(currentChunk.trim());
+          currentChunk = line + '\n';
+          chunkSize = line.length;
+        } else {
+          currentChunk += line + '\n';
+          chunkSize += line.length;
+        }
+      }
+      if (currentChunk.trim()) {
+        chunks.push(currentChunk.trim());
+      }
+
+      console.log(`[Ollama] Split resume into ${chunks.length} chunks for experience extraction`);
+
+      // Process each chunk
+      for (let i = 0; i < chunks.length; i++) {
+        const step2Prompt = createOllamaStep2Prompt(jobTitle);
+        const chunkData = await ollamaRequest(
+          step2Prompt,
+          `Step 2.${i + 1}: Work Experience (chunk ${i + 1}/${chunks.length})`,
+          chunks[i]
+        );
+
+        if (chunkData.experience && Array.isArray(chunkData.experience)) {
+          allExperience.push(...chunkData.experience);
+        }
+
+        // Delay between chunks to avoid overwhelming the model
+        if (i < chunks.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 300));
+        }
+      }
+    } else {
+      // Standard single request for experience
+      const step2Prompt = createOllamaStep2Prompt(jobTitle);
+      const step2Data = await ollamaRequest(step2Prompt, 'Step 2: Work Experience');
+      allExperience = step2Data.experience || [];
+    }
 
     // Combine data
     const combinedData: ResumeData = {
       personalInfo: step1Data.personalInfo || {},
       education: step1Data.education || [],
       skills: step1Data.skills || [],
-      experience: step2Data.experience || [],
+      experience: allExperience,
       projects: [],
       militaryService: step1Data.militaryService || '',
     };
