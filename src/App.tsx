@@ -140,18 +140,52 @@ function App() {
           </div>
         </div>
 
-        <footer className="mt-16 border-t-2 border-white/50 pt-8 backdrop-blur-sm">
-          <div className="space-y-3 text-center">
-            <div className="flex items-center justify-center gap-2 text-sm">
-              <span className="rounded-full bg-white/80 px-3 py-1.5 font-medium text-gray-600 shadow-sm">
-                Powered by AI
-              </span>
-              <span className="text-gray-400">|</span>
-              <span className="rounded-full bg-white/80 px-3 py-1.5 font-medium text-gray-600 shadow-sm">
-                Built with React, TypeScript & Tailwind CSS
-              </span>
+        <footer className="mt-20">
+          <div className="mb-8 h-px bg-gradient-to-r from-transparent via-violet-200 to-transparent"></div>
+
+          <div className="rounded-2xl border border-violet-100/50 bg-gradient-to-br from-white to-violet-50/30 p-6 shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-xl">
+            <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+              <div className="flex items-center gap-2">
+                <div className="rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 p-2 shadow-md">
+                  <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p className="bg-gradient-to-r from-violet-600 via-purple-600 to-cyan-600 bg-clip-text text-sm font-bold text-transparent">
+                    CVEnhancer
+                  </p>
+                  <p className="text-xs text-gray-500">AI-Powered Resume Enhancement</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-2 md:items-end">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-700">
+                    <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        fillRule="evenodd"
+                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    v1.0.0
+                  </span>
+                </div>
+                <p className="text-xs font-medium text-gray-600">
+                  Crafted by{' '}
+                  <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text font-bold text-transparent">
+                    Iliya Brook
+                  </span>{' '}
+                  • 2025
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-gray-500">Version 1.0.0 - 2024</p>
           </div>
         </footer>
       </div>
