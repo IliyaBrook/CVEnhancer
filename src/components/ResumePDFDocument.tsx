@@ -4,6 +4,7 @@ import type { ResumeData, ResumeConfig, Education } from '@/types';
 import { resumePdfStyles as styles } from '@/styles/resumePdfStyles';
 import { loadResumeConfig } from '@/utils';
 import resumeConfigDefault from '@/config/resume-ai-config.json';
+import HtmlContent from './HtmlContent';
 
 // Education component for reuse - defined outside to prevent recreation on each render
 interface EducationSectionProps {
@@ -123,7 +124,9 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
                           .map((duty, dutyIndex) => (
                             <View key={dutyIndex} style={styles.jobDuty} wrap={false}>
                               <Text style={styles.bullet}>•</Text>
-                              <Text style={styles.dutyText}>{duty}</Text>
+                              <Text style={styles.dutyText}>
+                                <HtmlContent>{duty}</HtmlContent>
+                              </Text>
                             </View>
                           ))}
                       </View>

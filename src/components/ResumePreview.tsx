@@ -3,6 +3,7 @@ import type { ResumeData, ResumeConfig, Education } from '@/types';
 import { resumePdfStyles as styles } from '@/styles';
 import { stylesToCss, loadResumeConfig } from '@/utils';
 import resumeConfigDefault from '@/config/resume-ai-config.json';
+import HtmlContent from './HtmlContent';
 
 interface ResumePreviewProps {
   resumeData: ResumeData | null;
@@ -194,7 +195,9 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
                   {exp?.duties && Array.isArray(exp.duties) && exp.duties.length > 0 && (
                     <ul className="job-duties">
                       {exp.duties.map((duty, i) => (
-                        <li key={i}>{duty}</li>
+                        <li key={i}>
+                          <HtmlContent>{duty}</HtmlContent>
+                        </li>
                       ))}
                     </ul>
                   )}
