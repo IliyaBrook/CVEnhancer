@@ -1,14 +1,30 @@
-import parse from 'html-react-parser';
-import DOMPurify from 'dompurify';
+import { Text } from '@react-pdf/renderer';
 import { Fragment } from 'react';
 
-const HtmlContent = ({ children }: { children: string }) => {
-  const cleanHtml = DOMPurify.sanitize(children, {
-    RETURN_TRUSTED_TYPE: false,
-    USE_PROFILES: { html: true },
-  }) as string;
+interface HtmlContentProps {
+  children: string;
+}
 
-  return <Fragment>{parse(cleanHtml)}</Fragment>;
+const HtmlContent = ({ children }: HtmlContentProps) => {
+  const parts = children.split(/(<strong>.*?<\/strong>)/g);
+
+  return (
+    <Fragment>
+      {parts.map((part, index) => {
+        const strongMatch = part.match(/<strong>(.*?)<\/strong>/);
+
+        if (strongMatch) {
+          return (
+            <Text key={index} style={{ fontFamily: 'Helvetica-Bold', fontWeight: 'bold' }}>
+              {strongMatch[1]}
+            </Text>
+          );
+        }
+
+        return part ? <Text key={index}>{part}</Text> : null;
+      })}
+    </Fragment>
+  );
 };
 
 export default HtmlContent;
