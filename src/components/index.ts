@@ -7,3 +7,4 @@ export * from './PDFDebugViewer';
 export * from './ResumePDFDocument';
 export * from './ResumeSettingsModal';
 export * from './Alert';
+export { default as HtmlContent } from './HtmlContent.tsx';
