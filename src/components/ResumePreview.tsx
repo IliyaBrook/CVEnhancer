@@ -10,20 +10,13 @@ interface ResumePreviewProps {
 
 const RenderEducation = ({ edu }: { edu: Education }) => (
   <div className="education-item">
-    <div className="university">{safeText(edu?.university || edu?.institution, 'Institution')}</div>
-    {edu?.degree && <div className="degree">{safeText(edu.degree)}</div>}
-    {edu?.field && <div className="degree">{safeText(edu.field)}</div>}
-    {edu?.location && <div className="education-location">{safeText(edu.location)}</div>}
-    {edu?.dateRange && edu.dateRange !== '-' && <div className="education-date">{safeText(edu.dateRange)}</div>}
+    <div className="university">{edu?.university || edu?.institution || 'Institution'}</div>
+    {edu?.degree && <div className="degree">{edu.degree}</div>}
+    {edu?.field && <div className="degree">{edu.field}</div>}
+    {edu?.location && <div className="education-location">{edu.location}</div>}
+    {edu?.dateRange && edu.dateRange !== '-' && <div className="education-date">{edu.dateRange}</div>}
   </div>
 );
-
-const safeText = (value: any, fallback: string = ''): string => {
-  if (value === null || value === undefined) return fallback;
-  if (typeof value === 'string') return value;
-  if (typeof value === 'number') return String(value);
-  return fallback;
-};
 
 export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
   const [config, setConfig] = useState<ResumeConfig>(resumeConfigDefault as ResumeConfig);
@@ -177,8 +170,8 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
       <div className="resume-container">
         <div className="main-content">
           <div className="header">
-            <h1 className="name">{safeText(resumeData?.personalInfo?.name, 'N/A')}</h1>
-            {resumeData?.personalInfo?.title && <div className="title">{safeText(resumeData.personalInfo.title)}</div>}
+            <h1 className="name">{resumeData?.personalInfo?.name || 'N/A'}</h1>
+            {resumeData?.personalInfo?.title && <div className="title">{resumeData.personalInfo.title}</div>}
           </div>
 
           {resumeData.experience && Array.isArray(resumeData.experience) && resumeData.experience.length > 0 && (
@@ -187,21 +180,21 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
               {resumeData.experience.map((exp, idx) => (
                 <div key={idx} className={resumeData.experience.length - 1 === idx ? 'job last-job-element' : 'job'}>
                   <div className="company-info">
-                    <span className="company-name">{safeText(exp?.company, 'Unknown Company')}</span>
+                    <span className="company-name">{exp?.company || 'Unknown Company'}</span>
                     {exp?.location && (
                       <>
-                        , <span className="location">{safeText(exp.location)}</span>
+                        , <span className="location">{exp.location}</span>
                       </>
                     )}
                   </div>
                   <div className="job-title-line">
-                    <span className="job-title">{safeText(exp?.title, 'Position')}</span>
-                    <span className="date-range">{safeText(exp?.dateRange, 'N/A')}</span>
+                    <span className="job-title">{exp?.title || 'Position'}</span>
+                    <span className="date-range">{exp?.dateRange || 'N/A'}</span>
                   </div>
                   {exp?.duties && Array.isArray(exp.duties) && exp.duties.length > 0 && (
                     <ul className="job-duties">
                       {exp.duties.map((duty, i) => (
-                        <li key={i}>{safeText(duty, '')}</li>
+                        <li key={i}>{duty}</li>
                       ))}
                     </ul>
                   )}
@@ -228,7 +221,7 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
             resumeData.militaryService.trim().length > 0 && (
               <div className="military-section">
                 <div className="section-title military-section-title">MILITARY SERVICE</div>
-                <div className="military-text">{safeText(resumeData.militaryService)}</div>
+                <div className="military-text">{resumeData.militaryService}</div>
               </div>
             )}
         </div>
@@ -237,10 +230,10 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
           <div className="sidebar-contact-section">
             <div className="section-title">CONTACT</div>
             <ul className="contact-info">
-              {resumeData?.personalInfo?.location && <li>{safeText(resumeData.personalInfo.location)}</li>}
-              {resumeData?.personalInfo?.phone && <li>{safeText(resumeData.personalInfo.phone)}</li>}
-              {resumeData?.personalInfo?.email && <li>{safeText(resumeData.personalInfo.email)}</li>}
-              {resumeData?.personalInfo?.linkedin && <li>{safeText(resumeData.personalInfo.linkedin)}</li>}
+              {resumeData?.personalInfo?.location && <li>{resumeData.personalInfo.location}</li>}
+              {resumeData?.personalInfo?.phone && <li>{resumeData.personalInfo.phone}</li>}
+              {resumeData?.personalInfo?.email && <li>{resumeData.personalInfo.email}</li>}
+              {resumeData?.personalInfo?.linkedin && <li>{resumeData.personalInfo.linkedin}</li>}
             </ul>
           </div>
 
@@ -249,11 +242,11 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
               <div className="section-title-with-margin">SKILLS</div>
               {resumeData.skills.map((category, idx) => (
                 <div key={idx} className="skill-category">
-                  <div className="skill-category-title">{safeText(category?.categoryTitle, 'Category')}</div>
+                  <div className="skill-category-title">{category?.categoryTitle || 'Category'}</div>
                   <ul className="skill-list">
                     {category?.skills &&
                       Array.isArray(category.skills) &&
-                      category.skills.map((skill, i) => <li key={i}>{safeText(skill, '')}</li>)}
+                      category.skills.map((skill, i) => <li key={i}>{skill}</li>)}
                   </ul>
                 </div>
               ))}

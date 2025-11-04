@@ -5,19 +5,6 @@ import { resumePdfStyles as styles } from '@/styles/resumePdfStyles';
 import { loadResumeConfig } from '@/utils';
 import resumeConfigDefault from '@/config/resume-ai-config.json';
 
-// Helper function to safely render text (protect against null/undefined/objects/arrays)
-const safeText = (value: any, fallback: string = ''): string => {
-  if (value === null || value === undefined) return fallback;
-  if (typeof value === 'string') return value;
-  if (typeof value === 'number') return String(value);
-  if (typeof value === 'boolean') return String(value);
-  // Protect against arrays, objects, and functions - never render them directly
-  if (Array.isArray(value)) return fallback;
-  if (typeof value === 'object') return fallback;
-  if (typeof value === 'function') return fallback;
-  return fallback;
-};
-
 // Education component for reuse - defined outside to prevent recreation on each render
 interface EducationSectionProps {
   education: Education[];
@@ -40,26 +27,22 @@ const EducationSection: React.FC<EducationSectionProps> = ({ education, showInMa
           {showInMain ? (
             <>
               <View style={styles.educationHeader}>
-                <Text style={styles.universityMain}>
-                  {safeText(edu?.university || edu?.institution, 'Institution')}
-                </Text>
+                <Text style={styles.universityMain}>{edu?.university || edu?.institution || 'Institution'}</Text>
                 {edu?.dateRange && edu.dateRange !== '-' && (
-                  <Text style={styles.educationDateMain}>{safeText(edu.dateRange)}</Text>
+                  <Text style={styles.educationDateMain}>{edu.dateRange}</Text>
                 )}
               </View>
-              {edu?.degree && <Text style={styles.degreeMain}>{safeText(edu.degree)}</Text>}
-              {edu?.field && <Text style={styles.degreeMain}>{safeText(edu.field)}</Text>}
-              {edu?.location && <Text style={styles.educationLocationMain}>{safeText(edu.location)}</Text>}
+              {edu?.degree && <Text style={styles.degreeMain}>{edu.degree}</Text>}
+              {edu?.field && <Text style={styles.degreeMain}>{edu.field}</Text>}
+              {edu?.location && <Text style={styles.educationLocationMain}>{edu.location}</Text>}
             </>
           ) : (
             <>
-              <Text style={styles.university}>{safeText(edu?.university || edu?.institution, 'Institution')}</Text>
-              {edu?.degree && <Text style={styles.degree}>{safeText(edu.degree)}</Text>}
-              {edu?.field && <Text style={styles.degree}>{safeText(edu.field)}</Text>}
-              {edu?.location && <Text style={styles.educationLocation}>{safeText(edu.location)}</Text>}
-              {edu?.dateRange && edu.dateRange !== '-' && (
-                <Text style={styles.educationDate}>{safeText(edu.dateRange)}</Text>
-              )}
+              <Text style={styles.university}>{edu?.university || edu?.institution || 'Institution'}</Text>
+              {edu?.degree && <Text style={styles.degree}>{edu.degree}</Text>}
+              {edu?.field && <Text style={styles.degree}>{edu.field}</Text>}
+              {edu?.location && <Text style={styles.educationLocation}>{edu.location}</Text>}
+              {edu?.dateRange && edu.dateRange !== '-' && <Text style={styles.educationDate}>{edu.dateRange}</Text>}
             </>
           )}
         </View>
@@ -108,8 +91,8 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
       <Page wrap={!config?.pdf?.singlePageExport} size="A4" style={styles.page}>
         <View style={styles.mainContent}>
           <View style={styles.header} wrap={false}>
-            <Text style={styles.name}>{safeText(personalInfo?.name, 'N/A')}</Text>
-            {personalInfo?.title && <Text style={styles.title}>{safeText(personalInfo.title)}</Text>}
+            <Text style={styles.name}>{personalInfo?.name || 'N/A'}</Text>
+            {personalInfo?.title && <Text style={styles.title}>{personalInfo.title}</Text>}
           </View>
 
           {experience && experience.length > 0 && (
@@ -118,32 +101,35 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
               {experience
                 .filter(exp => exp && typeof exp === 'object' && (exp.company || exp.title))
                 .map((exp, index) => (
-                <View
-                  key={index}
-                  style={experience.length - 1 === index ? [styles.job, styles.lastJobElement] : styles.job}
-                >
-                  <View style={styles.companyInfo} wrap={false}>
-                    <Text style={styles.companyName}>{safeText(exp?.company, 'Unknown Company')}</Text>
-                    {exp?.location && <Text style={styles.location}>, {safeText(exp.location)}</Text>}
-                  </View>
-                  <View style={styles.jobTitleLine} wrap={false}>
-                    <Text style={styles.jobTitle}>{safeText(exp?.title, 'Position')}</Text>
-                    <Text style={styles.dateRange}>{safeText(exp?.dateRange, 'N/A')}</Text>
-                  </View>
-                  {exp?.duties && Array.isArray(exp.duties) && exp.duties.length > 0 && (
-                    <View style={styles.jobDuties}>
-                      {exp.duties
-                        .filter(duty => duty !== null && duty !== undefined && typeof duty === 'string' && duty.trim().length > 0)
-                        .map((duty, dutyIndex) => (
-                          <View key={dutyIndex} style={styles.jobDuty} wrap={false}>
-                            <Text style={styles.bullet}>•</Text>
-                            <Text style={styles.dutyText}>{safeText(duty, '')}</Text>
-                          </View>
-                        ))}
+                  <View
+                    key={index}
+                    style={experience.length - 1 === index ? [styles.job, styles.lastJobElement] : styles.job}
+                  >
+                    <View style={styles.companyInfo} wrap={false}>
+                      <Text style={styles.companyName}>{exp?.company || 'Unknown Company'}</Text>
+                      {exp?.location && <Text style={styles.location}>, {exp.location}</Text>}
                     </View>
-                  )}
-                </View>
-              ))}
+                    <View style={styles.jobTitleLine} wrap={false}>
+                      <Text style={styles.jobTitle}>{exp?.title || 'Position'}</Text>
+                      <Text style={styles.dateRange}>{exp?.dateRange || 'N/A'}</Text>
+                    </View>
+                    {exp?.duties && Array.isArray(exp.duties) && exp.duties.length > 0 && (
+                      <View style={styles.jobDuties}>
+                        {exp.duties
+                          .filter(
+                            duty =>
+                              duty !== null && duty !== undefined && typeof duty === 'string' && duty.trim().length > 0
+                          )
+                          .map((duty, dutyIndex) => (
+                            <View key={dutyIndex} style={styles.jobDuty} wrap={false}>
+                              <Text style={styles.bullet}>•</Text>
+                              <Text style={styles.dutyText}>{duty}</Text>
+                            </View>
+                          ))}
+                      </View>
+                    )}
+                  </View>
+                ))}
             </View>
           )}
 
@@ -154,7 +140,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
           {militaryService && militaryService.trim().length > 0 && (
             <View style={styles.militarySection}>
               <Text style={[styles.sectionTitle, styles.militarySectionTitle]}>MILITARY SERVICE</Text>
-              <Text style={styles.militaryText}>{safeText(militaryService)}</Text>
+              <Text style={styles.militaryText}>{militaryService}</Text>
             </View>
           )}
         </View>
@@ -162,10 +148,10 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
         <View style={styles.sidebar}>
           <View style={styles.sidebarContactSection}>
             <Text style={styles.sectionTitle}>CONTACT</Text>
-            {personalInfo?.location && <Text style={styles.contactInfo}>{safeText(personalInfo?.location)}</Text>}
-            {personalInfo?.phone && <Text style={styles.contactInfo}>{safeText(personalInfo?.phone)}</Text>}
-            {personalInfo?.email && <Text style={styles.contactInfo}>{safeText(personalInfo?.email)}</Text>}
-            {personalInfo?.linkedin && <Text style={styles.contactInfo}>{safeText(personalInfo?.linkedin)}</Text>}
+            {personalInfo?.location && <Text style={styles.contactInfo}>{personalInfo?.location}</Text>}
+            {personalInfo?.phone && <Text style={styles.contactInfo}>{personalInfo?.phone}</Text>}
+            {personalInfo?.email && <Text style={styles.contactInfo}>{personalInfo?.email}</Text>}
+            {personalInfo?.linkedin && <Text style={styles.contactInfo}>{personalInfo?.linkedin}</Text>}
           </View>
 
           {skills && Array.isArray(skills) && skills?.length > 0 && (
@@ -177,7 +163,8 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
                   // Ensure category.skills is a valid array of strings
                   const validSkills = Array.isArray(category.skills)
                     ? category.skills.filter(
-                        skill => skill !== null && skill !== undefined && typeof skill === 'string' && skill.trim().length > 0
+                        skill =>
+                          skill !== null && skill !== undefined && typeof skill === 'string' && skill.trim().length > 0
                       )
                     : [];
 
@@ -186,11 +173,11 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
 
                   return (
                     <View key={index} style={styles.skillCategory}>
-                      <Text style={styles.skillCategoryTitle}>{safeText(category?.categoryTitle, 'Category')}</Text>
+                      <Text style={styles.skillCategoryTitle}>{category?.categoryTitle || 'Category'}</Text>
                       {validSkills.map((skill, skillIndex) => (
                         <View key={skillIndex} style={styles.skillItem}>
                           <Text style={styles.skillBullet}>•</Text>
-                          <Text style={styles.skillText}>{safeText(skill, '')}</Text>
+                          <Text style={styles.skillText}>{skill}</Text>
                         </View>
                       ))}
                     </View>
