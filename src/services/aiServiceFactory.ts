@@ -175,6 +175,8 @@ const createResumeEnhancementPrompt = (jobTitle?: string): string => {
 ${jobContext}
 <experience_requirements>
 ${experienceConstraints.map(c => `- ${c}`).join('\n')}
+- IMPORTANT: In each duty bullet point, wrap all technical skills, technologies, programming languages, frameworks, tools, and software names with <strong> HTML tags for emphasis
+- Apply <strong> tags naturally within the text flow where technical terms appear
 </experience_requirements>
 
 <skills_requirements>
@@ -369,6 +371,8 @@ const createOllamaStep2Prompt = (jobTitle?: string): string => {
 <instructions>
 <constraints>
 ${constraints.map(c => `- ${c}`).join('\n')}
+- IMPORTANT: In each duty bullet point, wrap all technical skills, technologies, programming languages, frameworks, tools, and software names with <strong> HTML tags for emphasis
+- Apply <strong> tags naturally within the text flow where technical terms appear
 - Return valid JSON only - start with { and end with }
 </constraints>
 ${jobContext}
