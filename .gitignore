@@ -1,33 +1,23 @@
 node_modules
 dist
 dist-ssr
-*.local
-
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 tmp
-# private json data for testing and debugging
+.*
+# custom folders / files
 src/fakeData/json_data/*_private.json
 playwright-profile
-.playwright-mcp
-.claude
-.kilocode
+
+# do not ignore rules
+!.vscode/extensions.json
+!.env.example
