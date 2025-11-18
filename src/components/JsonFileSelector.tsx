@@ -47,7 +47,7 @@ export function JsonFileSelector({onFileSelect}: JsonFileSelectorProps) {
 			setLoading(false);
 		}
 	};
-	console.log("FILE LOG: ", files)
+	
 	return (
 		<div
 			className='rounded-2xl border-2 border-violet-200 bg-white p-6 shadow-xl transition-all duration-300 hover:shadow-2xl'>
