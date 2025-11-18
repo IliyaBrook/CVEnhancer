@@ -1,3 +1,4 @@
+import './utils/suppressWarnings'
 import {useState, useEffect} from 'react';
 import {
 	AIProviderSettings,
@@ -30,7 +31,7 @@ function App() {
 			setStatus('completed');
 		}
 	}, []);
-
+	
 	const handleJsonFileSelect = (data: ResumeData) => {
 		setResumeData(data);
 		setStatus('completed');
@@ -151,7 +152,8 @@ function App() {
 									className='group w-full rounded-2xl border-2 border-violet-300 bg-gradient-to-r from-violet-50 to-purple-50 px-6 py-4 shadow-lg transition-all duration-300 hover:border-violet-400 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50'
 								>
 									<div className='flex items-center justify-center gap-3'>
-										<div className='rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 p-2 shadow-md transition-transform duration-300 group-hover:scale-110'>
+										<div
+											className='rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 p-2 shadow-md transition-transform duration-300 group-hover:scale-110'>
 											<svg className='h-5 w-5 text-white' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
 												<path
 													strokeLinecap='round'
@@ -227,7 +229,7 @@ function App() {
 					</div>
 				</footer>
 			</div>
-
+			
 			<SaveJsonModal
 				isOpen={isSaveModalOpen}
 				onClose={() => setIsSaveModalOpen(false)}

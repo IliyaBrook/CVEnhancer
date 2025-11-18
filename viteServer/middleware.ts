@@ -12,18 +12,22 @@ export function createJsonApiPlugin(rootDir: string): Plugin {
 			const routes = new JsonFilesRoutes(service);
 
 			server.middlewares.use('/api/json-files', async (req, res, next) => {
-				if (req.method === 'GET' && req.url === '/api/json-files') {
+				const url = req.url || '';
+
+				if (req.method === 'GET' && (url === '' || url === '/')) {
 					await routes.handleGetFileList(req, res);
 					return;
 				}
 
-				if (req.method === 'GET' && req.url?.startsWith('/api/json-files/')) {
-					const filename = req.url.replace('/api/json-files/', '');
-					await routes.handleGetFile(req, res, filename);
-					return;
+				if (req.method === 'GET' && url.startsWith('/')) {
+					const filename = url.substring(1);
+					if (filename) {
+						await routes.handleGetFile(req, res, filename);
+						return;
+					}
 				}
 
-				if (req.method === 'POST' && req.url === '/api/json-files') {
+				if (req.method === 'POST' && (url === '' || url === '/')) {
 					await routes.handleSaveFile(req, res);
 					return;
 				}
