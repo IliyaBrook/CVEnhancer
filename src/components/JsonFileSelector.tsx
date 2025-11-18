@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
+import {saveSelectedJsonFile, loadSelectedJsonFile} from '@/utils/storage';
 
 interface JsonFile {
 	name: string;
@@ -17,23 +18,26 @@ export function JsonFileSelector({onFileSelect}: JsonFileSelectorProps) {
 	const [error, setError] = useState<string>('');
 	
 	useEffect(() => {
-		loadFileList();
+		void loadFileList();
 	}, []);
 	
 	const loadFileList = async () => {
 		try {
 			const response = await axios.get<JsonFile[]>('/api/json-files');
 			setFiles(response.data);
+			
+			const savedFile = loadSelectedJsonFile();
+			if (savedFile && response.data.some(f => f.name === savedFile)) {
+				setSelectedFile(savedFile);
+				void loadFile(savedFile);
+			}
 		} catch (err) {
 			console.error('Error loading file list:', err);
 			setError('Failed to load file list');
 		}
 	};
 	
-	const handleFileChange = async (filename: string) => {
-		if (!filename) return;
-		
-		setSelectedFile(filename);
+	const loadFile = async (filename: string) => {
 		setLoading(true);
 		setError('');
 		
@@ -46,6 +50,18 @@ export function JsonFileSelector({onFileSelect}: JsonFileSelectorProps) {
 		} finally {
 			setLoading(false);
 		}
+	};
+	
+	const handleFileChange = async (filename: string) => {
+		if (!filename) {
+			setSelectedFile('');
+			saveSelectedJsonFile('');
+			return;
+		}
+		
+		setSelectedFile(filename);
+		saveSelectedJsonFile(filename);
+		await loadFile(filename);
 	};
 	
 	return (
