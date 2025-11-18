@@ -7,4 +7,6 @@ export * from './PDFDebugViewer';
 export * from './ResumePDFDocument';
 export * from './ResumeSettingsModal';
 export * from './Alert';
+export * from './JsonFileSelector';
+export * from './SaveJsonModal';
 export { default as HtmlContent } from './HtmlContent.tsx';

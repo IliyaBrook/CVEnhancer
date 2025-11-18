@@ -6,6 +6,8 @@ import {
 	ExportButtons,
 	ProcessingStatus,
 	PDFDebugViewer,
+	JsonFileSelector,
+	SaveJsonModal,
 } from '@/components';
 import {useAIConfig} from '@/hooks';
 import {parseFile} from '@/utils';
@@ -20,6 +22,7 @@ function App() {
 	const [resumeData, setResumeData] = useState<ResumeData | null>(null);
 	const [status, setStatus] = useState<StatusType>('idle');
 	const [error, setError] = useState<string>('');
+	const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 	
 	useEffect(() => {
 		if (debug) {
@@ -27,6 +30,11 @@ function App() {
 			setStatus('completed');
 		}
 	}, []);
+
+	const handleJsonFileSelect = (data: ResumeData) => {
+		setResumeData(data);
+		setStatus('completed');
+	};
 	
 	const handleFileSelect = async (file: File, fileType: SupportedFileType, jobTitle?: string) => {
 		setStatus('parsing');
@@ -108,7 +116,7 @@ function App() {
 				<div className='grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8 xl:gap-10'>
 					<div className='space-y-6 lg:col-span-1'>
 						<AIProviderSettings config={config} onConfigChange={updateConfig} />
-						
+						{debug && <JsonFileSelector onFileSelect={handleJsonFileSelect} />}
 						<FileUploader onFileSelect={handleFileSelect} />
 						
 						{error && (
@@ -135,7 +143,28 @@ function App() {
 						<ProcessingStatus status={status} />
 						
 						{resumeData && (
-							<ExportButtons resumeData={resumeData} disabled={status === 'parsing' || status === 'enhancing'} />
+							<>
+								<ExportButtons resumeData={resumeData} disabled={status === 'parsing' || status === 'enhancing'} />
+								<button
+									onClick={() => setIsSaveModalOpen(true)}
+									disabled={status === 'parsing' || status === 'enhancing'}
+									className='group w-full rounded-2xl border-2 border-violet-300 bg-gradient-to-r from-violet-50 to-purple-50 px-6 py-4 shadow-lg transition-all duration-300 hover:border-violet-400 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50'
+								>
+									<div className='flex items-center justify-center gap-3'>
+										<div className='rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 p-2 shadow-md transition-transform duration-300 group-hover:scale-110'>
+											<svg className='h-5 w-5 text-white' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+												<path
+													strokeLinecap='round'
+													strokeLinejoin='round'
+													strokeWidth={2}
+													d='M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4'
+												/>
+											</svg>
+										</div>
+										<span className='text-lg font-bold text-gray-800'>Save JSON Data</span>
+									</div>
+								</button>
+							</>
 						)}
 					</div>
 					
@@ -198,6 +227,12 @@ function App() {
 					</div>
 				</footer>
 			</div>
+
+			<SaveJsonModal
+				isOpen={isSaveModalOpen}
+				onClose={() => setIsSaveModalOpen(false)}
+				resumeData={resumeData}
+			/>
 		</div>
 	);
 }
