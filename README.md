@@ -270,8 +270,8 @@ VITE_DEBUG=false                      # Set to 'true' to enable debug mode
 
 When `VITE_DEBUG=true`, the application enters development mode with the following capabilities:
 
-1. **Instant Preview with Fake Data**
-	- Automatically loads sample resume data from `src/fakeData/json_data/fakeResumeData.json`
+1. **Instant Preview json Data**
+	- Automatically loads sample resume data from `src/json_cv_data/json_files/resumeData.json`
 	- Bypasses AI API calls entirely - no API keys needed
 	- Instantly displays resume preview without file upload
 	- Perfect for UI/UX development and testing
@@ -288,16 +288,16 @@ When `VITE_DEBUG=true`, the application enters development mode with the followi
    
    a. **Generate a resume with AI** (disable debug mode first)
    b. **Copy the console output** - The entire JSON object from browser console
-   c. **Create a private JSON file**: `src/fakeData/json_data/[filename]_private.json`
+   c. **Create a private JSON file**: `src/json_cv_data/json_files/[filename]_private.json`
    d. **Paste the JSON data** into your new file
    e. **Edit manually** - Modify any fields you want to test (name, experience, skills, etc.)
-   f. **Import in fakeResumeData.ts**:
+   f. **Import in resumeData.ts**:
    ```typescript
-   // src/fakeData/fakeResumeData.ts
-   import fakeResumeDataExample from './json_data/fakeResumeData.json';
+   // src/json_cv_data/resumeData.ts
+   import fakeResumeDataExample from './json_data/resumeData.json';
    import myCustomData from './json_data/myResume_private.json'; // Your file
    
-   export const fakeResumeData: ResumeData = myCustomData; // Use your data
+   export const resumeData: ResumeData = myCustomData; // Use your data
    ```
    **Enable debug mode** and test your changes
    
@@ -536,12 +536,12 @@ Environment variable parsing with:
 - Validation with helpful error messages
 - Exports for OpenAI, Claude, and Ollama options
 
-#### `src/fakeData/fakeResumeData.ts`
+#### `src/json_cv_data/resumeData.ts`
 
 Debug mode data management:
 
 - Imports sample resume data from JSON files
-- Default: `fakeResumeData.json` (example resume)
+- Default: `resumeData.json` (example resume)
 - Can be switched to custom `*_private.json` files for testing
 - Used when `VITE_DEBUG=true` to bypass AI processing
 - Enables rapid UI iteration without API costs
@@ -549,10 +549,10 @@ Debug mode data management:
 ### Development Tips
 
 1. **Debug Mode**: Set `VITE_DEBUG=true` in `.env` for rapid development
-	- Loads fake resume data from `src/fakeData/json_data/fakeResumeData.json`
+	- Loads fake resume data from `src/json_cv_data/json_files/resumeData.json`
 	- Skips file upload and AI processing
 	- No API keys required
-	- **Pro Tip**: Copy AI-generated JSON from console, save as `*_private.json`, and import in `fakeResumeData.ts` for
+	- **Pro Tip**: Copy AI-generated JSON from console, save as `*_private.json`, and import in `resumeData.ts` for
 	  testing custom data
 
 2. **Testing Different Providers**: Create multiple API keys with usage limits

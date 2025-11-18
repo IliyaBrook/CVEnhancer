@@ -15,7 +15,7 @@ lerna-debug.log*
 tmp
 .*
 # custom folders / files
-src/fakeData/json_data/*_private.json
+src/json_cv_data/json_files/*_private.json
 playwright-profile
 
 # do not ignore rules
