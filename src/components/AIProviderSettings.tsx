@@ -1,6 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
-import  { type AIConfig, type AIProvider, AIProvider as AIProviderEnum } from '@/types';
-import { saveConfig, loadConfig } from '@/utils';
+import React, { useEffect, useRef } from 'react';
+import type { AIConfig, AIProvider } from '@/types';
+import { AIProvider as AIProviderEnum } from '@/types';
+import { useAppDispatch, useAppSelector } from '@/store';
+import {
+  loadConfigFromStorage,
+  setProvider,
+  setApiKey,
+  setModel,
+  setOllamaEndpoint,
+  setOllamaModels,
+  setShowSuggestions,
+  filterModels,
+  setIsSettingsModalOpen,
+  saveConfigToStorage,
+} from '@/store/slices';
+import { useFetchOllamaModelsQuery } from '@/store/api';
 import { ResumeSettingsModal } from './ResumeSettingsModal';
 
 interface AIProviderSettingsProps {
@@ -9,45 +23,37 @@ interface AIProviderSettingsProps {
 }
 
 export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfigChange }) => {
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [provider, setProvider] = useState<AIProvider>(AIProviderEnum.OPENAI);
-  const [apiKeys, setApiKeys] = useState<{ openai?: string; claude?: string }>({});
-  const [models, setModels] = useState<{ openai?: string; claude?: string; ollama?: string }>({});
-  const [ollamaEndpoint, setOllamaEndpoint] = useState('http://localhost:11434');
-  const [ollamaModels, setOllamaModels] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [filteredModels, setFilteredModels] = useState<string[]>([]);
+  const dispatch = useAppDispatch();
+  const {
+    provider,
+    apiKeys,
+    models,
+    ollamaEndpoint,
+    ollamaModels,
+    showSuggestions,
+    filteredModels,
+    isSettingsModalOpen,
+  } = useAppSelector(state => state.aiConfig);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const loadedConfig = loadConfig();
-    if (loadedConfig) {
-      setProvider(loadedConfig.provider);
-      setApiKeys(loadedConfig.apiKeys || {});
-      setModels(loadedConfig.models || {});
-      setOllamaEndpoint(loadedConfig.ollamaEndpoint || 'http://localhost:11434');
+  const { data: ollamaModelsData, isSuccess: isOllamaModelsSuccess } = useFetchOllamaModelsQuery(
+    ollamaEndpoint,
+    {
+      skip: provider !== AIProviderEnum.OLLAMA,
     }
-  }, []);
+  );
 
   useEffect(() => {
-    if (provider === AIProviderEnum.OLLAMA) {
-      fetchOllamaModels();
-    }
-  }, [provider]);
+    dispatch(loadConfigFromStorage());
+  }, [dispatch]);
 
-  const fetchOllamaModels = async () => {
-    try {
-      const response = await fetch(`${ollamaEndpoint}/api/tags`);
-      if (response.ok) {
-        const data = await response.json();
-        const models = data.models?.map((m: any) => m.name) || [];
-        setOllamaModels(models);
-        setFilteredModels(models);
-      }
-    } catch (error) {
-      console.error('Failed to fetch Ollama models:', error);
+  useEffect(() => {
+    if (isOllamaModelsSuccess && ollamaModelsData?.models) {
+      const modelNames = ollamaModelsData.models.map(m => m.name);
+      dispatch(setOllamaModels(modelNames));
     }
-  };
+  }, [isOllamaModelsSuccess, ollamaModelsData, dispatch]);
 
   const getCurrentModel = () => {
     switch (provider) {
@@ -65,54 +71,43 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
   const setCurrentModel = (value: string) => {
     switch (provider) {
       case AIProviderEnum.OPENAI:
-        setModels({ ...models, openai: value });
+        dispatch(setModel({ provider: 'openai', model: value }));
         break;
       case AIProviderEnum.CLAUDE:
-        setModels({ ...models, claude: value });
+        dispatch(setModel({ provider: 'claude', model: value }));
         break;
       case AIProviderEnum.OLLAMA:
-        setModels({ ...models, ollama: value });
+        dispatch(setModel({ provider: 'ollama', model: value }));
         break;
     }
   };
 
   const handleModelInputChange = (value: string) => {
     setCurrentModel(value);
-
-    if (value.trim() === '') {
-      setFilteredModels(ollamaModels);
-    } else {
-      const filtered = ollamaModels.filter(m =>
-        m.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredModels(filtered);
-    }
-    setShowSuggestions(true);
+    dispatch(filterModels(value));
+    dispatch(setShowSuggestions(true));
   };
 
   const handleModelSelect = (selectedModel: string) => {
     setCurrentModel(selectedModel);
-    setShowSuggestions(false);
+    dispatch(setShowSuggestions(false));
   };
 
   const handleInputFocus = () => {
-    setFilteredModels(ollamaModels);
-    setShowSuggestions(true);
+    dispatch(setShowSuggestions(true));
   };
 
   const handleInputBlur = () => {
-    setTimeout(() => setShowSuggestions(false), 200);
+    setTimeout(() => dispatch(setShowSuggestions(false)), 200);
   };
 
   const handleSave = () => {
-    const newConfig: AIConfig = {
-      provider,
-      apiKeys: requiresApiKey() ? apiKeys : undefined,
-      models: models,
-      ollamaEndpoint: provider === AIProviderEnum.OLLAMA ? ollamaEndpoint : undefined
-    };
-    saveConfig(newConfig);
-    onConfigChange(newConfig);
+    dispatch(saveConfigToStorage());
+    const state = (window as any).__REDUX_STORE__?.getState?.() || {};
+    const savedConfig = state.aiConfig?.config;
+    if (savedConfig) {
+      onConfigChange(savedConfig);
+    }
   };
 
   const requiresApiKey = () => {
@@ -133,10 +128,10 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
   const setCurrentApiKey = (value: string) => {
     switch (provider) {
       case AIProviderEnum.OPENAI:
-        setApiKeys({ ...apiKeys, openai: value });
+        dispatch(setApiKey({ provider: 'openai', key: value }));
         break;
       case AIProviderEnum.CLAUDE:
-        setApiKeys({ ...apiKeys, claude: value });
+        dispatch(setApiKey({ provider: 'claude', key: value }));
         break;
     }
   };
@@ -180,7 +175,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
     <>
       <ResumeSettingsModal
         isOpen={isSettingsModalOpen}
-        onClose={() => setIsSettingsModalOpen(false)}
+        onClose={() => dispatch(setIsSettingsModalOpen(false))}
       />
       
       <div className="group bg-gradient-to-br from-white to-violet-50/30 rounded-2xl shadow-lg hover:shadow-2xl border border-violet-100/50 p-6 mb-6 transition-all duration-300 hover:scale-[1.02] hover:border-violet-200">
@@ -196,7 +191,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
             </h2>
           </div>
           <button
-            onClick={() => setIsSettingsModalOpen(true)}
+            onClick={() => dispatch(setIsSettingsModalOpen(true))}
             className="p-2.5 text-gray-600 hover:text-violet-600 hover:bg-violet-50 rounded-xl transition-all duration-200 hover:scale-110 group/btn"
             title="Resume Settings"
           >
@@ -214,7 +209,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
         </label>
         <select
           value={provider}
-          onChange={(e) => setProvider(e.target.value as AIProvider)}
+          onChange={(e) => dispatch(setProvider(e.target.value as AIProvider))}
           className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 cursor-pointer appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUgN0wxMCAxMkwxNSA3IiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=')] bg-[length:20px_20px] bg-[position:right_12px_center] bg-no-repeat pr-12 font-medium text-gray-900"
         >
           <option value={AIProviderEnum.OPENAI}>OpenAI</option>
@@ -259,7 +254,7 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
             <input
               type="text"
               value={ollamaEndpoint}
-              onChange={(e) => setOllamaEndpoint(e.target.value)}
+              onChange={(e) => dispatch(setOllamaEndpoint(e.target.value))}
               placeholder="http://localhost:11434"
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 placeholder:text-gray-400 font-mono text-sm"
             />

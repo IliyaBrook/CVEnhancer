@@ -1,46 +1,26 @@
-// Export store configuration
 export { store } from './store';
 export type { RootState, AppDispatch, AppStore } from './store';
 
-// Export API
-export { exampleApi } from './api';
-export type {
-  ExampleItem,
-  ExampleRequestType,
-  ExampleResponseType,
-  ExampleGetResponseType,
-  ExamplePostResponseType,
-  ExampleUpdateRequest,
-} from './api/example.api';
+export { useAppDispatch, useAppSelector } from './hooks';
 
-// Export slices and actions
-export { exampleSlice, counterSlice, userSlice } from './slices';
+export { aiApi, useFetchOllamaModelsQuery } from './api';
 
+export { aiConfigSlice, appSlice } from './slices';
 export {
-  addItem,
-  toggleItem,
-  removeItem,
-  setFilter,
-  setLoading,
-  increment,
-  decrement,
-  incrementByAmount,
-  reset,
-  setStep,
-  setUser,
-  logout,
-  toggleTheme,
-  setTheme,
-  updatePreferences,
-  setLanguage,
-  toggleNotifications,
+  loadConfigFromStorage,
+  setProvider,
+  setApiKey,
+  setModel,
+  setOllamaEndpoint,
+  setOllamaModels,
+  setShowSuggestions,
+  setFilteredModels,
+  filterModels,
+  setIsSettingsModalOpen,
+  saveConfigToStorage,
+  setResumeData,
+  setStatus,
+  setError,
+  setIsSaveModalOpen,
+  resetState,
 } from './slices';
-
-// Export API hooks
-export {
-  useGetExampleItemsQuery,
-  useGetExampleItemQuery,
-  useCreateExampleItemMutation,
-  useUpdateExampleItemMutation,
-  useDeleteExampleItemMutation,
-} from './api/example.api';

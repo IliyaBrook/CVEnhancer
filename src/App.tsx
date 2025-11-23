@@ -1,5 +1,5 @@
 import './utils/suppressWarnings'
-import {useState, useEffect} from 'react';
+import { useEffect } from 'react';
 import {
 	AIProviderSettings,
 	FileUploader,
@@ -10,58 +10,54 @@ import {
 	JsonFileSelector,
 	SaveJsonModal,
 } from '@/components';
-import {useAIConfig} from '@/hooks';
-import {parseFile} from '@/utils';
-import {enhanceResume} from '@/services';
-import {debug} from '@/config';
-import {resumeDataJSON} from '@/json_cv_data';
-import type {ResumeData, ProcessingStatus as StatusType, SupportedFileType} from '@/types';
-
+import { useAIConfig } from '@/hooks';
+import { parseFile } from '@/utils';
+import { enhanceResume } from '@/services';
+import { debug } from '@/config';
+import { resumeDataJSON } from '@/json_cv_data';
+import type { ResumeData, SupportedFileType } from '@/types';
+import { useAppDispatch, useAppSelector, setResumeData, setStatus, setError, setIsSaveModalOpen } from '@/store';
 
 function App() {
-	const {config, updateConfig} = useAIConfig();
-	const [resumeData, setResumeData] = useState<ResumeData | null>(null);
-	const [status, setStatus] = useState<StatusType>('idle');
-	const [error, setError] = useState<string>('');
-	const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+	const { config, updateConfig } = useAIConfig();
+	const dispatch = useAppDispatch();
+	const { resumeData, status, error, isSaveModalOpen } = useAppSelector(state => state.app);
 	
 	useEffect(() => {
 		if (debug) {
-			setResumeData(resumeDataJSON);
-			setStatus('completed');
+			dispatch(setResumeData(resumeDataJSON));
+			dispatch(setStatus('completed'));
 		}
-	}, []);
+	}, [dispatch]);
 	
 	const handleJsonFileSelect = (data: ResumeData) => {
-		setResumeData(data);
-		setStatus('completed');
+		dispatch(setResumeData(data));
+		dispatch(setStatus('completed'));
 	};
 	
 	const handleFileSelect = async (file: File, fileType: SupportedFileType, jobTitle?: string) => {
-		setStatus('parsing');
-		setError('');
+		dispatch(setStatus('parsing'));
+		dispatch(setError(''));
 		
 		try {
 			if (!config) {
-				setError('Please configure AI provider settings first');
-				setStatus('error');
+				dispatch(setError('Please configure AI provider settings first'));
+				dispatch(setStatus('error'));
 				return;
 			}
 			
-			// Check if API key is present for the current provider
 			if (config.provider !== 'ollama') {
 				const hasApiKey =
 					(config.provider === 'openai' && config.apiKeys?.openai) ||
 					(config.provider === 'claude' && config.apiKeys?.claude);
 				
 				if (!hasApiKey) {
-					setError('Please configure AI provider settings first');
-					setStatus('error');
+					dispatch(setError('Please configure AI provider settings first'));
+					dispatch(setStatus('error'));
 					return;
 				}
 			}
 			
-			// Parse file with config to determine vision mode
 			const parsedData = await parseFile(file, fileType, config);
 			
 			console.log('=== Parsed Resume Data ===');
@@ -74,18 +70,18 @@ function App() {
 				console.log('Number of images:', parsedData.images.length);
 			}
 			
-			setStatus('enhancing');
+			dispatch(setStatus('enhancing'));
 			const enhanced = await enhanceResume(parsedData, config, jobTitle);
 			
 			console.log('=== Generated Resume Data ===');
 			console.log(enhanced);
 			
-			setResumeData(enhanced);
-			setStatus('completed');
+			dispatch(setResumeData(enhanced));
+			dispatch(setStatus('completed'));
 		} catch (err) {
 			console.error('Processing error:', err);
-			setError(err instanceof Error ? err.message : 'Unknown error occurred');
-			setStatus('error');
+			dispatch(setError(err instanceof Error ? err.message : 'Unknown error occurred'));
+			dispatch(setStatus('error'));
 		}
 	};
 	
@@ -147,7 +143,7 @@ function App() {
 							<>
 								<ExportButtons resumeData={resumeData} disabled={status === 'parsing' || status === 'enhancing'} />
 								<button
-									onClick={() => setIsSaveModalOpen(true)}
+									onClick={() => dispatch(setIsSaveModalOpen(true))}
 									disabled={status === 'parsing' || status === 'enhancing'}
 									className='group w-full rounded-2xl border-2 border-violet-300 bg-gradient-to-r from-violet-50 to-purple-50 px-6 py-4 shadow-lg transition-all duration-300 hover:border-violet-400 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50'
 								>
@@ -232,7 +228,7 @@ function App() {
 			
 			<SaveJsonModal
 				isOpen={isSaveModalOpen}
-				onClose={() => setIsSaveModalOpen(false)}
+				onClose={() => dispatch(setIsSaveModalOpen(false))}
 				resumeData={resumeData}
 			/>
 		</div>

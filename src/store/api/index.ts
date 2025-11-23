@@ -1,1 +1,1 @@
-export { exampleApi } from './example.api.ts';
+export { aiApi, useEnhanceWithOpenAIMutation, useEnhanceWithClaudeMutation, useGenerateWithOllamaMutation, useFetchOllamaModelsQuery } from './ai.api';

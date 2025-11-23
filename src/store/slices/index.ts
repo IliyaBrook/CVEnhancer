@@ -1,29 +1,24 @@
-// Export slices
-export { exampleSlice } from './example.slice';
-export { counterSlice } from './counter.slice';
-export { userSlice } from './user.slice';
+export { aiConfigSlice } from './aiConfig.slice';
+export { appSlice } from './app.slice';
 
-// Export actions
 export {
-  addItem,
-  toggleItem,
-  removeItem,
-  setFilter,
-  setLoading,
-} from './example.slice';
+  loadConfigFromStorage,
+  setProvider,
+  setApiKey,
+  setModel,
+  setOllamaEndpoint,
+  setOllamaModels,
+  setShowSuggestions,
+  setFilteredModels,
+  filterModels,
+  setIsSettingsModalOpen,
+  saveConfigToStorage,
+} from './aiConfig.slice';
+
 export {
-  increment,
-  decrement,
-  incrementByAmount,
-  reset,
-  setStep,
-} from './counter.slice';
-export {
-  setUser,
-  logout,
-  toggleTheme,
-  setTheme,
-  updatePreferences,
-  setLanguage,
-  toggleNotifications,
-} from './user.slice';
+  setResumeData,
+  setStatus,
+  setError,
+  setIsSaveModalOpen,
+  resetState,
+} from './app.slice';
