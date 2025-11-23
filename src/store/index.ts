@@ -30,4 +30,5 @@ export {
   setJsonFiles,
   setJsonFilesLoading,
   setJsonFilesError,
+  setTemplateMode,
 } from './slices';

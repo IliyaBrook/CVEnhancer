@@ -6,28 +6,28 @@ import {
   ResumePreview,
   ExportButtons,
   ProcessingStatus,
-  PDFDebugViewer,
+  PDFExportViewer,
   JsonFileSelector,
   SaveJsonModal,
+  TemplateModeToggle,
 } from '@/components';
 import { parseFile } from '@/utils';
 import { enhanceResume } from '@/services';
-import { debug } from '@/config';
 import { resumeDataJSON } from '@/json_cv_data';
 import type { ResumeData, SupportedFileType } from '@/types';
 import { useAppDispatch, useAppSelector, setResumeData, setStatus, setError, openSaveModal } from '@/store';
 
 function App() {
   const dispatch = useAppDispatch();
-  const { resumeData, status, error } = useAppSelector(state => state.app);
+  const { resumeData, status, error, isTemplateMode } = useAppSelector(state => state.app);
   const config = useAppSelector(state => state.aiConfig.config);
 
   useEffect(() => {
-    if (debug) {
+    if (isTemplateMode) {
       dispatch(setResumeData(resumeDataJSON));
       dispatch(setStatus('completed'));
     }
-  }, [dispatch]);
+  }, [dispatch, isTemplateMode]);
 
   const handleJsonFileSelect = (data: ResumeData) => {
     dispatch(setResumeData(data));
@@ -95,8 +95,9 @@ function App() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8 xl:gap-10">
           <div className="space-y-6 lg:col-span-1">
             <AIProviderSettings />
-            {debug && <JsonFileSelector onFileSelect={handleJsonFileSelect} />}
-            <FileUploader onFileSelect={handleFileSelect} />
+            <TemplateModeToggle />
+            {isTemplateMode && <JsonFileSelector onFileSelect={handleJsonFileSelect} />}
+            {!isTemplateMode && <FileUploader onFileSelect={handleFileSelect} />}
 
             {error && (
               <div className="rounded-xl border-2 border-rose-300 bg-gradient-to-r from-rose-50 to-red-50 p-5 shadow-lg shadow-rose-500/20 transition-all duration-300">
@@ -148,7 +149,7 @@ function App() {
 
           <div className="lg:col-span-2">
             <ResumePreview resumeData={resumeData} />
-            {resumeData && <PDFDebugViewer resumeData={resumeData} isDebugMode={debug} />}
+            {resumeData && <PDFExportViewer resumeData={resumeData} />}
           </div>
         </div>
 

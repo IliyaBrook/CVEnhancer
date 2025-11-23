@@ -27,8 +27,6 @@ const stopOption: string[] = ['}\n\n', '\n\nHuman:', '\n\n\n'];
 // For JSON generation, we don't need stop sequences with the prefill approach
 const claudeStopSequences: string[] = ['\n\nHuman:'];
 
-export const debug = getEnvBoolean('VITE_DEBUG', false);
-
 // OPEN AI
 export const openaiOptions: OpenAIOptions = {
   temperature: getEnvNumber('VITE_OPENAI_TEMPERATURE'),

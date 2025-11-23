@@ -24,7 +24,7 @@ const resumeConfigPersistConfig = {
 const appPersistConfig = {
   key: 'cvenhancer:app',
   storage,
-  whitelist: ['jobTitle', 'selectedJsonFile'],
+  whitelist: ['jobTitle', 'selectedJsonFile', 'isTemplateMode'],
 };
 
 export const createPersistedReducer = <S>(

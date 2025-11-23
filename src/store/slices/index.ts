@@ -29,6 +29,7 @@ export {
   setJsonFiles,
   setJsonFilesLoading,
   setJsonFilesError,
+  setTemplateMode,
 } from './app.slice';
 
 export {

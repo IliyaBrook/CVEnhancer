@@ -22,6 +22,7 @@ export interface AppState {
   selectedJsonFile: string;
   saveModal: SaveModalState;
   jsonFileSelector: JsonFileSelectorState;
+  isTemplateMode: boolean;
 }
 
 const initialState: AppState = {
@@ -41,6 +42,7 @@ const initialState: AppState = {
     loading: false,
     error: '',
   },
+  isTemplateMode: false,
 };
 
 export const appSlice = createSlice({
@@ -105,6 +107,10 @@ export const appSlice = createSlice({
       state.jsonFileSelector.error = action.payload;
     },
     
+    setTemplateMode: (state, action: PayloadAction<boolean>) => {
+      state.isTemplateMode = action.payload;
+    },
+    
     resetState: (state) => {
       state.resumeData = null;
       state.status = 'idle';
@@ -128,4 +134,5 @@ export const {
   setJsonFiles,
   setJsonFilesLoading,
   setJsonFilesError,
+  setTemplateMode,
 } = appSlice.actions;
