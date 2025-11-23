@@ -22,13 +22,12 @@ const RenderEducation = ({ edu }: { edu: Education }) => (
 export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
   const config = useAppSelector(state => state.resumeConfig.config);
 
-
   if (!resumeData) {
     return (
-      <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-gray-50 p-8 shadow-xl transition-all duration-300 hover:shadow-2xl">
-        <div className="mb-6 flex items-center gap-3 border-b-2 border-gray-200 pb-6">
-          <div className="rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 p-2.5 shadow-lg">
-            <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="default-container">
+        <div className="mb-5 flex items-center gap-2.5 border-b-2 border-gray-200 pb-5">
+          <div className="rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 p-2 shadow-lg">
+            <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -37,17 +36,17 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
               />
             </svg>
           </div>
-          <h2 className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-2xl font-bold text-transparent">
+          <h2 className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-xl font-bold text-transparent">
             Resume Preview
           </h2>
           {config.pdf.singlePageExport && (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-red-500"></span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500"></span>
               Single Page Mode
             </span>
           )}
         </div>
-        <div className="py-16 text-center">
+        <div className="py-12 text-center">
           <div className="mb-6 inline-flex rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-6">
             <svg className="h-20 w-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -66,10 +65,10 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
   }
 
   return (
-    <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-gray-50 p-8 shadow-xl transition-all duration-300 hover:shadow-2xl">
-      <div className="mb-6 flex items-center gap-3 border-b-2 border-gray-200 pb-6">
-        <div className="rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 p-2.5 shadow-lg">
-          <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="default-container">
+      <div className="mb-5 flex items-center gap-2.5 border-b-2 border-gray-200 pb-5">
+        <div className="rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 p-2 shadow-lg">
+          <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -78,12 +77,12 @@ export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
             />
           </svg>
         </div>
-        <h2 className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-2xl font-bold text-transparent">
+        <h2 className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-xl font-bold text-transparent">
           Resume Preview
         </h2>
         {config.pdf.singlePageExport && (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-red-500"></span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500"></span>
             Single Page Mode
           </span>
         )}

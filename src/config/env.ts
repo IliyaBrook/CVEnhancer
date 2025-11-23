@@ -1,15 +1,5 @@
 import { ClaudeOptions, OpenAIOptions, OllamaOptions } from '@/types';
 
-const getEnvBoolean = (key: string, defaultValue: boolean = false): boolean => {
-  const value = import.meta.env[key];
-  if (!value) return defaultValue;
-
-  if (value === 'true') return true;
-  if (value === 'false') return false;
-
-  throw new Error(`${key} must be 'true' or 'false', got: ${value}`);
-};
-
 const getEnvNumber = (key: string, defaultValue: number = 0): number => {
   const value = import.meta.env[key];
   if (!value) return defaultValue;

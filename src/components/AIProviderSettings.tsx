@@ -163,15 +163,15 @@ export const AIProviderSettings: React.FC = () => {
         onClose={() => dispatch(setIsSettingsModalOpen(false))}
       />
       
-      <div className="group bg-gradient-to-br from-white to-violet-50/30 rounded-2xl shadow-lg hover:shadow-2xl border border-violet-100/50 p-6 mb-6 transition-all duration-300 hover:scale-[1.02] hover:border-violet-200">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="group bg-gradient-to-br from-white to-violet-50/30 rounded-2xl shadow-lg hover:shadow-2xl border border-violet-100/50 p-5 mb-6 transition-all duration-300 hover:border-violet-200">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl shadow-lg">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
               </svg>
             </div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+            <h2 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
               AI Provider Settings
             </h2>
           </div>
@@ -187,15 +187,15 @@ export const AIProviderSettings: React.FC = () => {
           </button>
         </div>
       
-      <div className="mb-4">
-        <label className="block text-sm font-semibold text-gray-700 mb-2.5 flex items-center gap-2">
+      <div className="mb-3.5">
+        <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
           Select AI Provider
         </label>
         <select
           value={provider}
           onChange={(e) => dispatch(setProvider(e.target.value as AIProvider))}
-          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 cursor-pointer appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUgN0wxMCAxMkwxNSA3IiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=')] bg-[length:20px_20px] bg-[position:right_12px_center] bg-no-repeat pr-12 font-medium text-gray-900"
+          className="w-full px-3.5 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 cursor-pointer appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUgN0wxMCAxMkwxNSA3IiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=')] bg-[length:20px_20px] bg-[position:right_12px_center] bg-no-repeat pr-12 font-medium text-gray-900 text-sm"
         >
           <option value={AIProviderEnum.OPENAI}>OpenAI</option>
           <option value={AIProviderEnum.CLAUDE}>Claude (Anthropic)</option>
@@ -204,8 +204,8 @@ export const AIProviderSettings: React.FC = () => {
       </div>
 
       {requiresApiKey() && (
-        <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2.5 flex items-center gap-2">
+        <div className="mb-3.5">
+          <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
             API Key
             {getApiKeyDocLink() && (
@@ -224,15 +224,15 @@ export const AIProviderSettings: React.FC = () => {
             value={getCurrentApiKey()}
             onChange={(e) => setCurrentApiKey(e.target.value)}
             placeholder={getApiKeyPlaceholder()}
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 placeholder:text-gray-400 font-mono text-sm"
+            className="w-full px-3.5 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 placeholder:text-gray-400 font-mono text-sm"
           />
         </div>
       )}
 
       {provider === AIProviderEnum.OLLAMA && (
         <>
-          <div className="mb-4">
-            <label className="block text-sm font-semibold text-gray-700 mb-2.5 flex items-center gap-2">
+          <div className="mb-3.5">
+            <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
               Ollama Endpoint
             </label>
@@ -241,12 +241,12 @@ export const AIProviderSettings: React.FC = () => {
               value={ollamaEndpoint}
               onChange={(e) => dispatch(setOllamaEndpoint(e.target.value))}
               placeholder="http://localhost:11434"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 placeholder:text-gray-400 font-mono text-sm"
+              className="w-full px-3.5 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 placeholder:text-gray-400 font-mono text-sm"
             />
           </div>
 
-          <div className="mb-4 relative">
-            <label className="block text-sm font-semibold text-gray-700 mb-2.5 flex items-center gap-2">
+          <div className="mb-3.5 relative">
+            <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
               Select Model
             </label>
@@ -258,7 +258,7 @@ export const AIProviderSettings: React.FC = () => {
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
               placeholder="Type or select a model..."
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 placeholder:text-gray-400 font-medium text-gray-900"
+              className="w-full px-3.5 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 placeholder:text-gray-400 font-medium text-gray-900 text-sm"
             />
             {showSuggestions && filteredModels.length > 0 && (
               <div className="absolute z-10 w-full mt-2 bg-white border-2 border-violet-200 rounded-xl shadow-2xl max-h-60 overflow-y-auto backdrop-blur-sm">
@@ -286,8 +286,8 @@ export const AIProviderSettings: React.FC = () => {
       )}
 
       {(provider === AIProviderEnum.OPENAI || provider === AIProviderEnum.CLAUDE) && (
-        <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2.5 flex items-center gap-2">
+        <div className="mb-3.5">
+          <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
             Model (Optional)
           </label>
@@ -296,7 +296,7 @@ export const AIProviderSettings: React.FC = () => {
             value={getCurrentModel()}
             onChange={(e) => setCurrentModel(e.target.value)}
             placeholder={getDefaultModel()}
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 placeholder:text-gray-400 font-mono text-sm"
+            className="w-full px-3.5 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-violet-500/20 focus:border-violet-500 transition-all duration-200 bg-white hover:border-violet-300 placeholder:text-gray-400 font-mono text-sm"
           />
         </div>
       )}
@@ -304,9 +304,9 @@ export const AIProviderSettings: React.FC = () => {
       <button
         onClick={handleSave}
         disabled={requiresApiKey() && !getCurrentApiKey()}
-        className="w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white py-3.5 px-6 rounded-xl font-semibold shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:scale-[1.02] disabled:bg-gradient-to-r disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed disabled:shadow-none disabled:scale-100 transition-all duration-200 flex items-center justify-center gap-2 group"
+        className="w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white py-3 px-5 rounded-xl font-semibold shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:scale-[1.02] disabled:bg-gradient-to-r disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed disabled:shadow-none disabled:scale-100 transition-all duration-200 flex items-center justify-center gap-2 group text-sm"
       >
-        <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
         </svg>
         Save Settings

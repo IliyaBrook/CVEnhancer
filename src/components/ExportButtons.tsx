@@ -189,9 +189,9 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
   };
 
   return (
-    <div className="rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-gray-50 p-6 shadow-lg">
-      <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-gray-800">
-        <svg className="h-5 w-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="default-container">
+      <h3 className="mb-4 flex items-center gap-2 text-base font-bold text-gray-800">
+        <svg className="h-4 w-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -201,21 +201,21 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
         </svg>
         Export Options
       </h3>
-      <div className="flex flex-col gap-4 sm:flex-row">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <button
           onClick={handleDownloadPDF}
           disabled={disabled || !resumeData}
-          className="group flex flex-1 items-center justify-center rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3 font-semibold text-white shadow-lg shadow-violet-500/30 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-violet-500/40 disabled:scale-100 disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none"
+          className="group flex flex-1 items-center justify-center rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/30 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-violet-500/40 disabled:scale-100 disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none"
         >
-          <img alt="download pdf" src={'/pdf_icon.svg'} className="size-14" />
+          <img alt="download pdf" src={'/pdf_icon.svg'} className="size-12" />
           Download
         </button>
         <button
           onClick={handleCopyHTML}
           disabled={disabled || !resumeData}
-          className="group flex flex-1 items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 px-6 py-3 font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/40 disabled:scale-100 disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none"
+          className="group flex flex-1 items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/40 disabled:scale-100 disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none"
         >
-          <img alt="copy as html" src={'/html_doc.svg'} className="size-14" />
+          <img alt="copy as html" src={'/html_doc.svg'} className="size-12" />
           Copy
         </button>
       </div>

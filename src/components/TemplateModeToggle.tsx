@@ -10,32 +10,30 @@ export const TemplateModeToggle: React.FC = () => {
   };
 
   return (
-    <div className="rounded-2xl border-2 border-violet-300 bg-gradient-to-r from-violet-50 to-purple-50 p-6 shadow-lg">
+    <div className="default-container">
       <div className="mb-4">
-        <h3 className="text-lg font-bold text-gray-800">Application Mode</h3>
-        <p className="mt-1 text-sm text-gray-600">
-          Choose how you want to work with resumes
-        </p>
+        <h3 className="text-base font-bold text-gray-800">Application Mode</h3>
+        <p className="mt-1 text-xs text-gray-600">Choose how you want to work with resumes</p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <button
           onClick={handleToggle}
-          className={`w-full rounded-xl border-2 p-4 text-left transition-all duration-300 ${
+          className={`w-full rounded-xl border-2 p-3.5 text-left transition-all duration-300 ${
             !isTemplateMode
               ? 'border-violet-500 bg-violet-100 shadow-md'
               : 'border-gray-200 bg-white hover:border-violet-300'
           }`}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <div
-              className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+              className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                 !isTemplateMode
                   ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white'
                   : 'bg-gray-100 text-gray-400'
               }`}
             >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -45,12 +43,12 @@ export const TemplateModeToggle: React.FC = () => {
               </svg>
             </div>
             <div className="flex-1">
-              <div className="font-bold text-gray-800">Upload Mode</div>
+              <div className="text-sm font-bold text-gray-800">Upload Mode</div>
               <div className="text-xs text-gray-600">Upload your own resume file</div>
             </div>
             {!isTemplateMode && (
-              <div className="h-6 w-6 rounded-full bg-violet-500 text-white flex items-center justify-center">
-                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500 text-white">
+                <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -64,21 +62,21 @@ export const TemplateModeToggle: React.FC = () => {
 
         <button
           onClick={handleToggle}
-          className={`w-full rounded-xl border-2 p-4 text-left transition-all duration-300 ${
+          className={`w-full rounded-xl border-2 p-3.5 text-left transition-all duration-300 ${
             isTemplateMode
               ? 'border-violet-500 bg-violet-100 shadow-md'
               : 'border-gray-200 bg-white hover:border-violet-300'
           }`}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <div
-              className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+              className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                 isTemplateMode
                   ? 'bg-gradient-to-br from-violet-500 to-purple-600 text-white'
                   : 'bg-gray-100 text-gray-400'
               }`}
             >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -88,12 +86,12 @@ export const TemplateModeToggle: React.FC = () => {
               </svg>
             </div>
             <div className="flex-1">
-              <div className="font-bold text-gray-800">Template Mode</div>
+              <div className="text-sm font-bold text-gray-800">Template Mode</div>
               <div className="text-xs text-gray-600">Load saved resume templates</div>
             </div>
             {isTemplateMode && (
-              <div className="h-6 w-6 rounded-full bg-violet-500 text-white flex items-center justify-center">
-                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-500 text-white">
+                <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
