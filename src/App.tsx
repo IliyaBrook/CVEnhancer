@@ -115,7 +115,7 @@ function App() {
               <button
                 onClick={() => dispatch(openSaveModal())}
                 disabled={status === 'parsing' || status === 'enhancing'}
-                className="group w-full rounded-2xl border-2 border-violet-300 from-violet-50 to-purple-50 px-5 py-3.5 shadow-lg transition-all duration-300 hover:border-violet-400 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+                className="group w-full rounded-2xl border-2 border-violet-300 bg-gradient-to-r from-violet-50 to-purple-50 px-5 py-3.5 shadow-lg transition-all duration-300 hover:border-violet-400 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <div className="flex items-center justify-center gap-2.5">
                   <div className="rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 p-1.5 shadow-md transition-transform duration-300 group-hover:scale-110">
