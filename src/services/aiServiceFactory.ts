@@ -699,6 +699,8 @@ const enhanceWithOllama = async (
 
   // Ollama request with retry logic
   const ollamaRequest = async (prompt: string, stepName: string, contextText?: string, retries = 2): Promise<any> => {
+    let lastError: Error | null = null;
+
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
         const ollamaBody: OllamaApiBody = {
@@ -710,11 +712,10 @@ const enhanceWithOllama = async (
           format: 'json',
           options: {
             ...ollamaOptions,
-            temperature: attempt > 0 ? 0.3 : ollamaOptions.temperature, // Lower temperature on retry
+            temperature: attempt > 0 ? 0.3 : ollamaOptions.temperature,
           },
         };
 
-        // Add images for vision models
         if (isVision && images.length > 0) {
           (ollamaBody as any).images = images;
         }
@@ -727,27 +728,31 @@ const enhanceWithOllama = async (
         );
 
         if ('error' in result) {
-          throw new Error(result.error?.toString() || 'Ollama API error');
+          lastError = new Error(result.error?.toString() || 'Ollama API error');
+          throw lastError;
         }
 
         const data = result.data;
         const jsonContent = extractJSON(data.response || data.thinking || data.message || data.content || '');
 
         if (!jsonContent || jsonContent.length < 10) {
-          throw new Error('Empty or invalid response');
+          lastError = new Error('Empty or invalid response');
+          throw lastError;
         }
 
         return JSON.parse(jsonContent);
       } catch (error) {
-        if (attempt === retries) {
-          console.error(`${stepName} - Failed after ${retries + 1} attempts:`, error);
-          throw new Error(`${stepName} failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        lastError = error instanceof Error ? error : new Error(String(error));
+        
+        if (attempt < retries) {
+          console.warn(`${stepName} - Attempt ${attempt + 1} failed, retrying...`);
+          await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
         }
-        console.warn(`${stepName} - Attempt ${attempt + 1} failed, retrying...`);
-        await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
       }
     }
-    throw new Error(`${stepName} - Max retries reached`);
+
+    console.error(`${stepName} - Failed after ${retries + 1} attempts:`, lastError);
+    throw new Error(`${stepName} failed: ${lastError?.message || 'Unknown error'}`);
   };
 
   try {

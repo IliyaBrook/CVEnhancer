@@ -6,16 +6,31 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 export interface PDFImageOptions {
-  scale?: number; // Scaling factor for rendering (default: 2.0 for high quality)
-  maxPages?: number; // Maximum number of pages to convert (default: 3)
+  scale?: number;
+  maxPages?: number;
 }
 
-/**
- * Convert PDF file to base64 images
- * @param file PDF file to convert
- * @param options Conversion options
- * @returns Array of base64 image strings (without data:image prefix for Ollama)
- */
+const renderPageToCanvas = async (page: pdfjsLib.PDFPageProxy, scale: number): Promise<HTMLCanvasElement> => {
+  const viewport = page.getViewport({ scale });
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+
+  if (!context) {
+    throw new Error('Failed to get canvas 2d context');
+  }
+
+  canvas.height = viewport.height;
+  canvas.width = viewport.width;
+
+  const renderContext: any = {
+    canvasContext: context,
+    viewport: viewport,
+  };
+  
+  await page.render(renderContext).promise;
+  return canvas;
+};
+
 export const convertPDFToImages = async (
   file: File,
   options: PDFImageOptions = {}
@@ -30,30 +45,8 @@ export const convertPDFToImages = async (
 
   for (let pageNum = 1; pageNum <= pagesToProcess; pageNum++) {
     const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({ scale });
-
-    // Create canvas element
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-
-    if (!context) {
-      throw new Error('Failed to get canvas 2d context');
-    }
-
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
-
-    // Render PDF page to canvas
-    const renderContext: any = {
-      canvasContext: context,
-      viewport: viewport,
-    };
-    await page.render(renderContext).promise;
-
-    // Convert canvas to base64
+    const canvas = await renderPageToCanvas(page, scale);
     const base64Image = canvas.toDataURL('image/png');
-
-    // For Ollama, remove the data:image/png;base64, prefix
     const base64Data = base64Image.split(',')[1];
     images.push(base64Data);
   }
@@ -61,12 +54,6 @@ export const convertPDFToImages = async (
   return images;
 };
 
-/**
- * Convert PDF file to base64 images with full data URL (for OpenAI/Claude)
- * @param file PDF file to convert
- * @param options Conversion options
- * @returns Array of full base64 data URLs
- */
 export const convertPDFToDataURLs = async (
   file: File,
   options: PDFImageOptions = {}
@@ -81,24 +68,7 @@ export const convertPDFToDataURLs = async (
 
   for (let pageNum = 1; pageNum <= pagesToProcess; pageNum++) {
     const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({ scale });
-
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-
-    if (!context) {
-      throw new Error('Failed to get canvas 2d context');
-    }
-
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
-
-    const renderContext: any = {
-      canvasContext: context,
-      viewport: viewport,
-    };
-    await page.render(renderContext).promise;
-
+    const canvas = await renderPageToCanvas(page, scale);
     images.push(canvas.toDataURL('image/png'));
   }
 
