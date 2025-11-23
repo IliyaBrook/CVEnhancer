@@ -2,6 +2,13 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import type { Reducer } from '@reduxjs/toolkit';
 
+const rootPersistConfig = {
+  key: 'cvenhancer:root',
+  storage,
+  version: 1,
+  blacklist: ['aiApi'],
+};
+
 const aiConfigPersistConfig = {
   key: 'cvenhancer:aiConfig',
   storage,
@@ -25,4 +32,4 @@ export const createPersistedReducer = <S>(
   reducer: Reducer<S>
 ) => persistReducer(config, reducer);
 
-export { aiConfigPersistConfig, resumeConfigPersistConfig, appPersistConfig };
+export { rootPersistConfig, aiConfigPersistConfig, resumeConfigPersistConfig, appPersistConfig };

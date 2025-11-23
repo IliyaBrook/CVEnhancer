@@ -1,6 +1,16 @@
 import {createApi, fetchBaseQuery, retry} from '@reduxjs/toolkit/query/react';
+import {REHYDRATE} from 'redux-persist';
+import type {Action} from '@reduxjs/toolkit';
 import type {ClaudeApiBody, OllamaApiBody, OpenAIApiBody} from '@/types/api.body';
 import type {ResumeData} from '@/types';
+
+function isHydrateAction(action: Action): action is Action<typeof REHYDRATE> & {
+	key: string;
+	payload: any;
+	err: unknown;
+} {
+	return action.type === REHYDRATE;
+}
 
 interface OpenAIRequest {
 	body: OpenAIApiBody;
@@ -63,6 +73,11 @@ export const aiApi = createApi({
 	reducerPath: 'aiApi',
 	baseQuery: staggeredBaseQuery,
 	tagTypes: ['AI'],
+	extractRehydrationInfo(action, {reducerPath}): any {
+		if (isHydrateAction(action)) {
+			return action.payload?.[reducerPath];
+		}
+	},
 	endpoints: (builder) => ({
 		enhanceWithOpenAI: builder.mutation<ResumeData, OpenAIRequest>({
 			query: ({body, apiKey}) => ({

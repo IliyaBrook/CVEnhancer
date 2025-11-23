@@ -554,13 +554,8 @@ const enhanceWithOpenAI = async (
   const resumeText = parsedData.text || '';
   const dataURLs = parsedData.dataURLs || [];
 
-  if (isVision) {
-    console.log('[OpenAI Vision] Using vision mode with', dataURLs.length, 'images');
-  }
-
   let userContent: any;
   if (isVision && dataURLs.length > 0) {
-    // Vision mode: send images
     userContent = [
       { type: 'text', text: `${prompt}\n\nAnalyze the resume image(s) and extract information.` },
       ...dataURLs.map(url => ({
@@ -569,7 +564,6 @@ const enhanceWithOpenAI = async (
       })),
     ];
   } else {
-    // Text mode
     userContent = `${prompt}\n\n<resume>\n${resumeText}\n</resume>`;
   }
 
@@ -621,13 +615,8 @@ const enhanceWithClaude = async (
   const resumeText = parsedData.text || '';
   const images = parsedData.images || [];
 
-  if (isVision) {
-    console.log('[Claude Vision] Using vision mode with', images.length, 'images');
-  }
-
   let userContent: any;
   if (isVision && images.length > 0) {
-    // Vision mode: send images (Claude expects base64 without prefix)
     userContent = [
       ...images.map(imageData => ({
         type: 'image',
@@ -686,21 +675,10 @@ const enhanceWithOllama = async (
   const resumeText = parsedData.text || '';
   const images = parsedData.images || [];
 
-  if (isVision) {
-    console.log('[Ollama Vision] Using vision mode with', images.length, 'images');
-  }
-
-  // Determine if we need to split Step 2 based on text length
-  // If resume is very long, split experience extraction into multiple requests
   const shouldSplitStep2 = resumeText.length > 8000 && !isVision;
-  if (shouldSplitStep2) {
-    console.log('[Ollama] Large resume detected, will split experience extraction into multiple requests');
-  }
 
-  // Ollama request with retry logic
   const ollamaRequest = async (prompt: string, stepName: string, contextText?: string, retries = 2): Promise<any> => {
     let lastError: Error | null = null;
-
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
         const ollamaBody: OllamaApiBody = {
@@ -743,7 +721,7 @@ const enhanceWithOllama = async (
         return JSON.parse(jsonContent);
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        
+
         if (attempt < retries) {
           console.warn(`${stepName} - Attempt ${attempt + 1} failed, retrying...`);
           await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
@@ -786,9 +764,6 @@ const enhanceWithOllama = async (
         chunks.push(currentChunk.trim());
       }
 
-      console.log(`[Ollama] Split resume into ${chunks.length} chunks for experience extraction`);
-
-      // Process each chunk
       for (let i = 0; i < chunks.length; i++) {
         const step2Prompt = createOllamaStep2Prompt(jobTitle);
         const chunkData = await ollamaRequest(

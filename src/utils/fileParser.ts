@@ -53,11 +53,8 @@ export const parseFile = async (
 
 const parsePDF = async (file: File, useVision: boolean = false, config?: AIConfig): Promise<ParsedResumeData> => {
   if (useVision) {
-    // Vision mode: convert PDF to images
     const scale = getRecommendedScale(getModelForProvider(config));
     const maxPages = getMaxPages(getModelForProvider(config));
-
-    console.log(`[Vision Mode] Converting PDF to images (scale: ${scale}, maxPages: ${maxPages})`);
 
     const images = await convertPDFToImages(file, { scale, maxPages });
     const dataURLs = await convertPDFToDataURLs(file, { scale, maxPages });
