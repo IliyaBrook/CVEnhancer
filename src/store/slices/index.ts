@@ -3,7 +3,6 @@ export { appSlice } from './app.slice';
 export { resumeConfigSlice } from './resumeConfig.slice';
 
 export {
-  loadConfigFromStorage,
   setProvider,
   setApiKey,
   setModel,
@@ -13,7 +12,6 @@ export {
   setFilteredModels,
   filterModels,
   setIsSettingsModalOpen,
-  saveConfigToStorage,
 } from './aiConfig.slice';
 
 export {
@@ -21,11 +19,12 @@ export {
   setStatus,
   setError,
   setIsSaveModalOpen,
+  setJobTitle,
+  setSelectedJsonFile,
   resetState,
 } from './app.slice';
 
 export {
-  loadResumeConfigFromStorage,
   updateResumeConfig,
   updateExperienceSettings,
   updateSkillsSettings,

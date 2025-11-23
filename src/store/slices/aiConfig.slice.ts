@@ -1,7 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { AIConfig, AIProvider } from '@/types';
 import { AIProvider as AIProviderEnum } from '@/types';
-import { saveConfig, loadConfig } from '@/utils';
 
 export interface AIConfigState {
   config: AIConfig | null;
@@ -38,17 +37,6 @@ export const aiConfigSlice = createSlice({
   name: 'aiConfig',
   initialState,
   reducers: {
-    loadConfigFromStorage: (state) => {
-      const loadedConfig = loadConfig();
-      if (loadedConfig) {
-        state.config = loadedConfig;
-        state.provider = loadedConfig.provider;
-        state.apiKeys = loadedConfig.apiKeys || {};
-        state.models = loadedConfig.models || {};
-        state.ollamaEndpoint = loadedConfig.ollamaEndpoint || 'http://localhost:11434';
-      }
-    },
-    
     setProvider: (state, action: PayloadAction<AIProvider>) => {
       state.provider = action.payload;
     },
@@ -92,22 +80,10 @@ export const aiConfigSlice = createSlice({
     setIsSettingsModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isSettingsModalOpen = action.payload;
     },
-    
-    saveConfigToStorage: (state) => {
-      const newConfig: AIConfig = {
-        provider: state.provider,
-        apiKeys: state.provider !== AIProviderEnum.OLLAMA ? state.apiKeys : undefined,
-        models: state.models,
-        ollamaEndpoint: state.provider === AIProviderEnum.OLLAMA ? state.ollamaEndpoint : undefined,
-      };
-      saveConfig(newConfig);
-      state.config = newConfig;
-    },
   },
 });
 
 export const {
-  loadConfigFromStorage,
   setProvider,
   setApiKey,
   setModel,
@@ -117,5 +93,4 @@ export const {
   setFilteredModels,
   filterModels,
   setIsSettingsModalOpen,
-  saveConfigToStorage,
 } = aiConfigSlice.actions;

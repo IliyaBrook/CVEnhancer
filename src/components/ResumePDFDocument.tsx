@@ -4,6 +4,7 @@ import type { ResumeData, Education } from '@/types';
 import { resumePdfStyles as styles } from '@/styles/resumePdfStyles';
 import HtmlContent from './HtmlContent';
 import { store } from '@/store';
+import type { RootState } from '@/store';
 
 // Education component for reuse - defined outside to prevent recreation on each render
 interface EducationSectionProps {
@@ -71,7 +72,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
   };
 
   const { personalInfo, experience, skills, education, militaryService = '' } = safeResumeData;
-  const config = store.getState().resumeConfig.config;
+  const config = (store.getState() as RootState).resumeConfig.config;
 
   return (
     <Document>

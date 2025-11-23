@@ -1,7 +1,8 @@
 import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {validateFile} from '@/utils/fileValidation';
-import {saveJobTitle, loadJobTitle} from '@/utils/storage';
 import type {SupportedFileType} from '@/types';
+import {useAppDispatch, useAppSelector} from '@/store';
+import {setJobTitle as setJobTitleAction} from '@/store/slices';
 
 interface FileUploaderProps {
 	onFileSelect: (file: File, fileType: SupportedFileType, jobTitle?: string) => void;
@@ -10,18 +11,20 @@ interface FileUploaderProps {
 export const FileUploader: React.FC<FileUploaderProps> = ({onFileSelect}) => {
 	const [isDragging, setIsDragging] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const [jobTitle, setJobTitle] = useState<string>('');
+	const [localJobTitle, setLocalJobTitle] = useState<string>('');
 	const dragCounter = useRef(0);
 	
+	const dispatch = useAppDispatch();
+	const jobTitle = useAppSelector(state => state.app.jobTitle);
+
 	useEffect(() => {
-		const savedJobTitle = loadJobTitle();
-		setJobTitle(savedJobTitle);
-	}, []);
+		setLocalJobTitle(jobTitle);
+	}, [jobTitle]);
 	
 	const handleJobTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newValue = e.target.value;
-		setJobTitle(newValue);
-		saveJobTitle(newValue);
+		setLocalJobTitle(newValue);
+		dispatch(setJobTitleAction(newValue));
 	};
 	
 	const processFile = useCallback(
@@ -36,10 +39,10 @@ export const FileUploader: React.FC<FileUploaderProps> = ({onFileSelect}) => {
 			}
 			
 			if (validation.fileType) {
-				onFileSelect(file, validation.fileType, jobTitle || undefined);
+				onFileSelect(file, validation.fileType, localJobTitle || undefined);
 			}
 		},
-		[onFileSelect, jobTitle]
+		[onFileSelect, localJobTitle]
 	);
 	
 	const handleDragEnter = useCallback((e: React.DragEvent) => {
@@ -114,7 +117,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({onFileSelect}) => {
 				<label className='mb-2 block text-sm font-semibold text-gray-700'>Job Title / Profession (Optional)</label>
 				<input
 					type='text'
-					value={jobTitle}
+					value={localJobTitle}
 					onChange={handleJobTitleChange}
 					placeholder='e.g., Full Stack Developer, Sales Manager'
 					className='w-full rounded-xl border-2 border-gray-200 bg-white/80 px-4 py-3 outline-none backdrop-blur-sm transition-all duration-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200'

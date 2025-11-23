@@ -6,6 +6,8 @@ export interface AppState {
   status: ProcessingStatus;
   error: string;
   isSaveModalOpen: boolean;
+  jobTitle: string;
+  selectedJsonFile: string;
 }
 
 const initialState: AppState = {
@@ -13,6 +15,8 @@ const initialState: AppState = {
   status: 'idle',
   error: '',
   isSaveModalOpen: false,
+  jobTitle: '',
+  selectedJsonFile: '',
 };
 
 export const appSlice = createSlice({
@@ -35,6 +39,14 @@ export const appSlice = createSlice({
       state.isSaveModalOpen = action.payload;
     },
     
+    setJobTitle: (state, action: PayloadAction<string>) => {
+      state.jobTitle = action.payload;
+    },
+    
+    setSelectedJsonFile: (state, action: PayloadAction<string>) => {
+      state.selectedJsonFile = action.payload;
+    },
+    
     resetState: (state) => {
       state.resumeData = null;
       state.status = 'idle';
@@ -48,5 +60,7 @@ export const {
   setStatus,
   setError,
   setIsSaveModalOpen,
+  setJobTitle,
+  setSelectedJsonFile,
   resetState,
 } = appSlice.actions;

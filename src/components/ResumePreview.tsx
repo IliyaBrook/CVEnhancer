@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import type { ResumeData, Education } from '@/types';
 import { resumePdfStyles as styles } from '@/styles';
 import { stylesToCss } from '@/utils';
 import HtmlContent from './HtmlContent';
-import { useAppDispatch, useAppSelector } from '@/store';
-import { loadResumeConfigFromStorage } from '@/store/slices';
+import { useAppSelector } from '@/store';
 
 interface ResumePreviewProps {
   resumeData: ResumeData | null;
@@ -21,12 +20,8 @@ const RenderEducation = ({ edu }: { edu: Education }) => (
 );
 
 export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
-  const dispatch = useAppDispatch();
   const config = useAppSelector(state => state.resumeConfig.config);
 
-  useEffect(() => {
-    dispatch(loadResumeConfigFromStorage());
-  }, [dispatch]);
 
   if (!resumeData) {
     return (

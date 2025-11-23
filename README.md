@@ -486,66 +486,6 @@ yarn format:check
 yarn preview
 ```
 
-### Key Files Explained
-
-#### `src/services/aiServiceFactory.ts`
-
-The heart of the AI integration. Handles:
-
-- Resume enhancement prompts for each AI provider
-- API calls with retry logic
-- JSON extraction from AI responses
-- Enforcement of resume constraints (max jobs, bullet points, etc.)
-- Provider-specific implementations:
-	- OpenAI: Uses structured output with JSON schema
-	- Claude: Uses prompt prefilling for reliable JSON
-	- Ollama: Two-step process (personal info + experience separately)
-
-#### `src/components/ResumeSettingsModal.tsx`
-
-Complete settings interface with:
-
-- Experience configuration (jobs, bullet points, metrics)
-- Skills configuration (categories, skills per category)
-- Education configuration (entries, date visibility)
-- Exclude lists for jobs and education
-- Real-time saving to localStorage
-
-#### `src/utils/storage.ts`
-
-localStorage abstraction layer:
-
-- `saveConfig()` / `loadConfig()` - AI provider settings
-- `saveResumeConfig()` / `loadResumeConfig()` - Resume enhancement settings
-- Error handling for localStorage access issues
-
-#### `src/hooks/useAIConfig.ts`
-
-React hook for AI configuration state management:
-
-- Loads configuration from localStorage on mount
-- Provides `updateConfig()` to save changes
-- Automatically syncs with localStorage
-
-#### `src/config/env.ts`
-
-Environment variable parsing with:
-
-- Type-safe getters (`getEnvString`, `getEnvNumber`, `getEnvBoolean`)
-- Default values for optional variables
-- Validation with helpful error messages
-- Exports for OpenAI, Claude, and Ollama options
-
-#### `src/json_cv_data/resumeData.ts`
-
-Debug mode data management:
-
-- Imports sample resume data from JSON files
-- Default: `resumeData.json` (example resume)
-- Can be switched to custom `*_private.json` files for testing
-- Used when `VITE_DEBUG=true` to bypass AI processing
-- Enables rapid UI iteration without API costs
-
 ### Development Tips
 
 1. **Debug Mode**: Set `VITE_DEBUG=true` in `.env` for rapid development

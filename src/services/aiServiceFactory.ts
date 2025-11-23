@@ -9,13 +9,13 @@ import {
 	ParsedResumeData
 } from '@/types';
 import {claudeOptions, ollamaOptions, openaiOptions} from '@/config';
-import {loadResumeConfig} from '@/utils';
 import resumeAiConfigDefault from '@/config/resume-ai-config.json';
 import {store} from '@/store';
+import type {RootState} from '@/store';
 import {aiApi} from '@/store/api';
 
 const getResumeConfig = (): ResumeConfig => {
-	const userConfig = loadResumeConfig();
+	const userConfig = (store.getState() as RootState).resumeConfig.config;
 	return userConfig || (resumeAiConfigDefault as ResumeConfig);
 };
 

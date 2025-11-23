@@ -1,4 +1,4 @@
-export { store } from './store';
+export { store, persistor } from './store';
 export type { RootState, AppDispatch, AppStore } from './store';
 
 export { useAppDispatch, useAppSelector } from './hooks';
@@ -7,7 +7,6 @@ export { aiApi, useFetchOllamaModelsQuery } from './api';
 
 export { aiConfigSlice, appSlice } from './slices';
 export {
-  loadConfigFromStorage,
   setProvider,
   setApiKey,
   setModel,
@@ -17,10 +16,11 @@ export {
   setFilteredModels,
   filterModels,
   setIsSettingsModalOpen,
-  saveConfigToStorage,
   setResumeData,
   setStatus,
   setError,
   setIsSaveModalOpen,
+  setJobTitle,
+  setSelectedJsonFile,
   resetState,
 } from './slices';

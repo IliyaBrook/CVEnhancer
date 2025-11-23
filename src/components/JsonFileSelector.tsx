@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
-import {saveSelectedJsonFile, loadSelectedJsonFile} from '@/utils/storage';
+import {useAppDispatch, useAppSelector} from '@/store';
+import {setSelectedJsonFile} from '@/store/slices';
 
 interface JsonFile {
 	name: string;
@@ -12,6 +13,9 @@ interface JsonFileSelectorProps {
 }
 
 export function JsonFileSelector({onFileSelect}: JsonFileSelectorProps) {
+	const dispatch = useAppDispatch();
+	const savedSelectedFile = useAppSelector(state => state.app.selectedJsonFile);
+	
 	const [files, setFiles] = useState<JsonFile[]>([]);
 	const [selectedFile, setSelectedFile] = useState<string>('');
 	const [loading, setLoading] = useState(false);
@@ -26,8 +30,8 @@ export function JsonFileSelector({onFileSelect}: JsonFileSelectorProps) {
 			const response = await axios.get<JsonFile[]>('/api/json-files');
 			setFiles(response.data);
 			
-			const savedFile = loadSelectedJsonFile();
-			if (savedFile && response.data.some(f => f.name === savedFile)) {
+			const savedFile = savedSelectedFile;
+			if (savedFile && response.data.some((f: any) => f.name === savedFile)) {
 				setSelectedFile(savedFile);
 				void loadFile(savedFile);
 			}
@@ -55,12 +59,12 @@ export function JsonFileSelector({onFileSelect}: JsonFileSelectorProps) {
 	const handleFileChange = async (filename: string) => {
 		if (!filename) {
 			setSelectedFile('');
-			saveSelectedJsonFile('');
+			dispatch(setSelectedJsonFile(''));
 			return;
 		}
 		
 		setSelectedFile(filename);
-		saveSelectedJsonFile(filename);
+		dispatch(setSelectedJsonFile(filename));
 		await loadFile(filename);
 	};
 	

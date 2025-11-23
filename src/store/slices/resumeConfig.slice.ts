@@ -1,6 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { ResumeConfig } from '@/types';
-import { saveResumeConfig, loadResumeConfig } from '@/utils';
 import resumeConfigDefault from '@/config/resume-ai-config.json';
 
 export interface ResumeConfigState {
@@ -29,17 +28,8 @@ export const resumeConfigSlice = createSlice({
   name: 'resumeConfig',
   initialState,
   reducers: {
-    loadResumeConfigFromStorage: (state) => {
-      const loadedConfig = loadResumeConfig();
-      if (loadedConfig) {
-        state.config = ensureConfigCompatibility(loadedConfig);
-      }
-    },
-    
     updateResumeConfig: (state, action: PayloadAction<ResumeConfig>) => {
-      const updatedConfig = ensureConfigCompatibility(action.payload);
-      state.config = updatedConfig;
-      saveResumeConfig(updatedConfig);
+      state.config = ensureConfigCompatibility(action.payload);
     },
     
     updateExperienceSettings: (state, action: PayloadAction<Partial<ResumeConfig['experience']>>) => {
@@ -47,7 +37,6 @@ export const resumeConfigSlice = createSlice({
         ...state.config.experience,
         ...action.payload,
       };
-      saveResumeConfig(state.config);
     },
     
     updateSkillsSettings: (state, action: PayloadAction<Partial<ResumeConfig['skills']>>) => {
@@ -55,7 +44,6 @@ export const resumeConfigSlice = createSlice({
         ...state.config.skills,
         ...action.payload,
       };
-      saveResumeConfig(state.config);
     },
     
     updateEducationSettings: (state, action: PayloadAction<Partial<ResumeConfig['education']>>) => {
@@ -63,7 +51,6 @@ export const resumeConfigSlice = createSlice({
         ...state.config.education,
         ...action.payload,
       };
-      saveResumeConfig(state.config);
     },
     
     updatePdfSettings: (state, action: PayloadAction<Partial<ResumeConfig['pdf']>>) => {
@@ -71,13 +58,11 @@ export const resumeConfigSlice = createSlice({
         ...state.config.pdf,
         ...action.payload,
       };
-      saveResumeConfig(state.config);
     },
     
     addExcludeJob: (state, action: PayloadAction<string>) => {
       if (action.payload.trim()) {
         state.config.experience.exclude.push(action.payload.trim());
-        saveResumeConfig(state.config);
       }
     },
     
@@ -85,13 +70,11 @@ export const resumeConfigSlice = createSlice({
       state.config.experience.exclude = state.config.experience.exclude.filter(
         (_, index) => index !== action.payload
       );
-      saveResumeConfig(state.config);
     },
     
     addExcludeEducation: (state, action: PayloadAction<string>) => {
       if (action.payload.trim()) {
         state.config.education.exclude.push(action.payload.trim());
-        saveResumeConfig(state.config);
       }
     },
     
@@ -99,18 +82,15 @@ export const resumeConfigSlice = createSlice({
       state.config.education.exclude = state.config.education.exclude.filter(
         (_, index) => index !== action.payload
       );
-      saveResumeConfig(state.config);
     },
     
     resetResumeConfig: (state) => {
       state.config = ensureConfigCompatibility(resumeConfigDefault as ResumeConfig);
-      saveResumeConfig(state.config);
     },
   },
 });
 
 export const {
-  loadResumeConfigFromStorage,
   updateResumeConfig,
   updateExperienceSettings,
   updateSkillsSettings,

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import type { AIConfig, AIProvider } from '@/types';
+import type { AIProvider } from '@/types';
 import { AIProvider as AIProviderEnum } from '@/types';
 import { useAppDispatch, useAppSelector } from '@/store';
 import {
-  loadConfigFromStorage,
   setProvider,
   setApiKey,
   setModel,
@@ -12,7 +11,6 @@ import {
   setShowSuggestions,
   filterModels,
   setIsSettingsModalOpen,
-  saveConfigToStorage,
 } from '@/store/slices';
 import { useFetchOllamaModelsQuery } from '@/store/api';
 import { ResumeSettingsModal } from './ResumeSettingsModal';
@@ -39,9 +37,6 @@ export const AIProviderSettings: React.FC = () => {
     }
   );
 
-  useEffect(() => {
-    dispatch(loadConfigFromStorage());
-  }, [dispatch]);
 
   useEffect(() => {
     if (isOllamaModelsSuccess && ollamaModelsData?.models) {
@@ -97,7 +92,7 @@ export const AIProviderSettings: React.FC = () => {
   };
 
   const handleSave = () => {
-    dispatch(saveConfigToStorage());
+    dispatch(setIsSettingsModalOpen(false));
   };
 
   const requiresApiKey = () => {
@@ -267,7 +262,7 @@ export const AIProviderSettings: React.FC = () => {
             />
             {showSuggestions && filteredModels.length > 0 && (
               <div className="absolute z-10 w-full mt-2 bg-white border-2 border-violet-200 rounded-xl shadow-2xl max-h-60 overflow-y-auto backdrop-blur-sm">
-                {filteredModels.map((m) => (
+                {filteredModels.map((m: string) => (
                   <div
                     key={m}
                     onClick={() => handleModelSelect(m)}

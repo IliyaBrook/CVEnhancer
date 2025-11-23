@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { PDFViewer } from '@react-pdf/renderer';
 import type { ResumeData } from '@/types';
 import { ResumePDFDocument } from './ResumePDFDocument';
-import { useAppDispatch, useAppSelector } from '@/store';
-import { loadResumeConfigFromStorage } from '@/store/slices';
+import { useAppSelector } from '@/store';
 
 interface PDFDebugViewerProps {
   resumeData: ResumeData;
@@ -11,12 +10,8 @@ interface PDFDebugViewerProps {
 }
 
 export const PDFDebugViewer: React.FC<PDFDebugViewerProps> = ({ resumeData, isDebugMode = false }) => {
-  const dispatch = useAppDispatch();
   const config = useAppSelector(state => state.resumeConfig.config);
 
-  useEffect(() => {
-    dispatch(loadResumeConfigFromStorage());
-  }, [dispatch]);
 
   const title = isDebugMode ? 'PDF Export Preview (Debug Mode)' : 'PDF Export Preview';
 

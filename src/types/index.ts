@@ -1,6 +1,6 @@
 export * from './ai.types'
 export * from './resume.types'
 export * from './file.types'
-export * from './common.types'
+export type { ParsedResumeData } from './common.types'
 export * from './api.options'
 export * from './api.body'

@@ -25,14 +25,33 @@
 			"@/*": [
 				"./*"
 			],
-			"@/utils": ["./utils/index.ts"],
-			"@/types": ["./types/index.ts"],
-			"@/services": ["./services/index.ts"],
-			"@/hooks": ["./hooks/index.ts"],
-			"@/components": ["./components/index.ts"],
-			"@/config": ["./config/index.ts"],
-			"@/json_cv_data": ["./json_cv_data/index.ts"],
-			"@/styles": ["./styles/index.ts"],
+			"@/utils": [
+				"./utils/index.ts"
+			],
+			"@/types": [
+				"./types/index.ts"
+			],
+			"@/services": [
+				"./services/index.ts"
+			],
+			"@/hooks": [
+				"./hooks/index.ts"
+			],
+			"@/components": [
+				"./components/index.ts"
+			],
+			"@/config": [
+				"./config/index.ts"
+			],
+			"@/json_cv_data": [
+				"./json_cv_data/index.ts"
+			],
+			"@/styles": [
+				"./styles/index.ts"
+			],
+			"@/store": [
+				"./store/index.ts"
+			]
 		}
 	},
 	"include": [

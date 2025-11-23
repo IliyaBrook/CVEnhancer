@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import type {ResumeConfig} from '@/types';
 import {useAppDispatch, useAppSelector} from '@/store';
-import {loadResumeConfigFromStorage, updateResumeConfig,} from '@/store/slices';
+import {updateResumeConfig} from '@/store/slices';
 
 interface ResumeSettingsModalProps {
 	isOpen: boolean;
@@ -17,9 +17,6 @@ export const ResumeSettingsModal: React.FC<ResumeSettingsModalProps> = ({isOpen,
 	const [excludeEducationInput, setExcludeEducationInput] = useState('');
 	
 	useEffect(() => {
-		if (isOpen) {
-			dispatch(loadResumeConfigFromStorage());
-		}
 	}, [isOpen, dispatch]);
 	
 	useEffect(() => {
