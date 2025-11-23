@@ -17,11 +17,10 @@ export const ResumeSettingsModal: React.FC<ResumeSettingsModalProps> = ({isOpen,
 	const [excludeEducationInput, setExcludeEducationInput] = useState('');
 	
 	useEffect(() => {
-	}, [isOpen, dispatch]);
-	
-	useEffect(() => {
-		setLocalConfig(config);
-	}, [config]);
+		if (isOpen) {
+			setLocalConfig(config);
+		}
+	}, [isOpen, config]);
 	
 	const handleSave = () => {
 		dispatch(updateResumeConfig(localConfig));

@@ -1,3 +1,5 @@
+// noinspection SuspiciousTypeOfGuard
+
 import React from 'react';
 import { Document, Page, Text, View } from '@react-pdf/renderer';
 import type { ResumeData, Education } from '@/types';

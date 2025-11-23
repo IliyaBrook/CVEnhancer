@@ -21,3 +21,4 @@ playwright-profile
 # do not ignore rules
 !.vscode/extensions.json
 !.env.example
+!.eslintignore

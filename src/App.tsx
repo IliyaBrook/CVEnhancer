@@ -15,11 +15,11 @@ import { enhanceResume } from '@/services';
 import { debug } from '@/config';
 import { resumeDataJSON } from '@/json_cv_data';
 import type { ResumeData, SupportedFileType } from '@/types';
-import { useAppDispatch, useAppSelector, setResumeData, setStatus, setError, setIsSaveModalOpen } from '@/store';
+import { useAppDispatch, useAppSelector, setResumeData, setStatus, setError, openSaveModal } from '@/store';
 
 function App() {
 	const dispatch = useAppDispatch();
-	const { resumeData, status, error, isSaveModalOpen } = useAppSelector(state => state.app);
+	const { resumeData, status, error } = useAppSelector(state => state.app);
 	const config = useAppSelector(state => state.aiConfig.config);
 	
 	useEffect(() => {
@@ -142,7 +142,7 @@ function App() {
 							<>
 								<ExportButtons resumeData={resumeData} disabled={status === 'parsing' || status === 'enhancing'} />
 								<button
-									onClick={() => dispatch(setIsSaveModalOpen(true))}
+									onClick={() => dispatch(openSaveModal())}
 									disabled={status === 'parsing' || status === 'enhancing'}
 									className='group w-full rounded-2xl border-2 border-violet-300 bg-gradient-to-r from-violet-50 to-purple-50 px-6 py-4 shadow-lg transition-all duration-300 hover:border-violet-400 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50'
 								>
@@ -225,11 +225,7 @@ function App() {
 				</footer>
 			</div>
 			
-			<SaveJsonModal
-				isOpen={isSaveModalOpen}
-				onClose={() => dispatch(setIsSaveModalOpen(false))}
-				resumeData={resumeData}
-			/>
+			<SaveJsonModal />
 		</div>
 	);
 }

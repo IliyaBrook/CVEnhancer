@@ -18,10 +18,17 @@ export {
   setResumeData,
   setStatus,
   setError,
-  setIsSaveModalOpen,
   setJobTitle,
   setSelectedJsonFile,
   resetState,
+  openSaveModal,
+  closeSaveModal,
+  setSaveModalFilename,
+  setSaveModalStatus,
+  setSaveModalError,
+  setJsonFiles,
+  setJsonFilesLoading,
+  setJsonFilesError,
 } from './app.slice';
 
 export {

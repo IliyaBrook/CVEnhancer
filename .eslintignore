@@ -1,0 +1,5 @@
+vite.config.ts
+tailwind.config.js
+eslint.config.js
+**/*.css
+**/*.scss

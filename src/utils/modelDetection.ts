@@ -34,7 +34,7 @@ const VL_MODEL_PATTERNS = [
 /**
  * Check if a model supports vision/image input based on model name
  * @param modelName The model name to check
- * @param provider The AI provider (optional, for future use)
+ * @param _provider
  * @returns true if the model supports vision
  */
 export const isVisionModel = (modelName: string | undefined, _provider?: AIProvider): boolean => {
@@ -44,10 +44,7 @@ export const isVisionModel = (modelName: string | undefined, _provider?: AIProvi
 
   const lowerModelName = modelName.toLowerCase();
 
-  // Check against known VL patterns
-  return VL_MODEL_PATTERNS.some(pattern =>
-    lowerModelName.includes(pattern.toLowerCase())
-  );
+  return VL_MODEL_PATTERNS.some(pattern => lowerModelName.includes(pattern.toLowerCase()));
 };
 
 /**
