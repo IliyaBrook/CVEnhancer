@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { PDFViewer } from '@react-pdf/renderer';
-import type { ResumeData, ResumeConfig } from '@/types';
+import type { ResumeData } from '@/types';
 import { ResumePDFDocument } from './ResumePDFDocument';
-import { loadResumeConfig } from '@/utils';
-import resumeConfigDefault from '@/config/resume-ai-config.json';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { loadResumeConfigFromStorage } from '@/store/slices';
 
 interface PDFDebugViewerProps {
   resumeData: ResumeData;
@@ -11,18 +11,12 @@ interface PDFDebugViewerProps {
 }
 
 export const PDFDebugViewer: React.FC<PDFDebugViewerProps> = ({ resumeData, isDebugMode = false }) => {
-  const [config, setConfig] = useState<ResumeConfig>(resumeConfigDefault as ResumeConfig);
+  const dispatch = useAppDispatch();
+  const config = useAppSelector(state => state.resumeConfig.config);
 
   useEffect(() => {
-    const loadedConfig = loadResumeConfig();
-    if (loadedConfig) {
-      // Ensure pdf settings exist for backward compatibility
-      if (!loadedConfig.pdf) {
-        loadedConfig.pdf = { singlePageExport: false };
-      }
-      setConfig(loadedConfig);
-    }
-  }, []);
+    dispatch(loadResumeConfigFromStorage());
+  }, [dispatch]);
 
   const title = isDebugMode ? 'PDF Export Preview (Debug Mode)' : 'PDF Export Preview';
 

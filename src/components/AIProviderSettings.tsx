@@ -17,12 +17,7 @@ import {
 import { useFetchOllamaModelsQuery } from '@/store/api';
 import { ResumeSettingsModal } from './ResumeSettingsModal';
 
-interface AIProviderSettingsProps {
-  config: AIConfig | null;
-  onConfigChange: (config: AIConfig) => void;
-}
-
-export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfigChange }) => {
+export const AIProviderSettings: React.FC = () => {
   const dispatch = useAppDispatch();
   const {
     provider,
@@ -103,11 +98,6 @@ export const AIProviderSettings: React.FC<AIProviderSettingsProps> = ({ onConfig
 
   const handleSave = () => {
     dispatch(saveConfigToStorage());
-    const state = (window as any).__REDUX_STORE__?.getState?.() || {};
-    const savedConfig = state.aiConfig?.config;
-    if (savedConfig) {
-      onConfigChange(savedConfig);
-    }
   };
 
   const requiresApiKey = () => {

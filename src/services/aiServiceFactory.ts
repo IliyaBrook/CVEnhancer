@@ -14,10 +14,6 @@ import resumeAiConfigDefault from '@/config/resume-ai-config.json';
 import {store} from '@/store';
 import {aiApi} from '@/store/api';
 
-/**
- * Get resume configuration from localStorage or fallback to default
- * This ensures user settings are always respected
- */
 const getResumeConfig = (): ResumeConfig => {
 	const userConfig = loadResumeConfig();
 	return userConfig || (resumeAiConfigDefault as ResumeConfig);

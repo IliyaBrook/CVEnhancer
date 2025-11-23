@@ -1,5 +1,6 @@
 export { aiConfigSlice } from './aiConfig.slice';
 export { appSlice } from './app.slice';
+export { resumeConfigSlice } from './resumeConfig.slice';
 
 export {
   loadConfigFromStorage,
@@ -22,3 +23,17 @@ export {
   setIsSaveModalOpen,
   resetState,
 } from './app.slice';
+
+export {
+  loadResumeConfigFromStorage,
+  updateResumeConfig,
+  updateExperienceSettings,
+  updateSkillsSettings,
+  updateEducationSettings,
+  updatePdfSettings,
+  addExcludeJob,
+  removeExcludeJob,
+  addExcludeEducation,
+  removeExcludeEducation,
+  resetResumeConfig,
+} from './resumeConfig.slice';

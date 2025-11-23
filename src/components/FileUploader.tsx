@@ -13,13 +13,11 @@ export const FileUploader: React.FC<FileUploaderProps> = ({onFileSelect}) => {
 	const [jobTitle, setJobTitle] = useState<string>('');
 	const dragCounter = useRef(0);
 	
-	// Load job title from localStorage on mount
 	useEffect(() => {
 		const savedJobTitle = loadJobTitle();
 		setJobTitle(savedJobTitle);
 	}, []);
 	
-	// Save job title to localStorage when it changes
 	const handleJobTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newValue = e.target.value;
 		setJobTitle(newValue);

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import type { ResumeData, ResumeConfig, Education } from '@/types';
+import React, { useEffect } from 'react';
+import type { ResumeData, Education } from '@/types';
 import { resumePdfStyles as styles } from '@/styles';
-import { stylesToCss, loadResumeConfig } from '@/utils';
-import resumeConfigDefault from '@/config/resume-ai-config.json';
+import { stylesToCss } from '@/utils';
 import HtmlContent from './HtmlContent';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { loadResumeConfigFromStorage } from '@/store/slices';
 
 interface ResumePreviewProps {
   resumeData: ResumeData | null;
@@ -20,24 +21,12 @@ const RenderEducation = ({ edu }: { edu: Education }) => (
 );
 
 export const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
-  const [config, setConfig] = useState<ResumeConfig>(resumeConfigDefault as ResumeConfig);
+  const dispatch = useAppDispatch();
+  const config = useAppSelector(state => state.resumeConfig.config);
 
   useEffect(() => {
-    const loadedConfig = loadResumeConfig();
-    if (loadedConfig) {
-      // Ensure placement exists for backward compatibility
-      if (!loadedConfig.education.placement) {
-        loadedConfig.education.placement = 'main-content';
-      }
-      // Ensure pdf settings exist for backward compatibility
-      if (!loadedConfig.pdf) {
-        loadedConfig.pdf = { singlePageExport: false };
-      }
-      setConfig(loadedConfig);
-    }
-  }, []);
-
-  // Helper function to safely render text (protect against null/undefined)
+    dispatch(loadResumeConfigFromStorage());
+  }, [dispatch]);
 
   if (!resumeData) {
     return (

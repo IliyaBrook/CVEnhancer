@@ -1,10 +1,9 @@
 import React from 'react';
 import { Document, Page, Text, View } from '@react-pdf/renderer';
-import type { ResumeData, ResumeConfig, Education } from '@/types';
+import type { ResumeData, Education } from '@/types';
 import { resumePdfStyles as styles } from '@/styles/resumePdfStyles';
-import { loadResumeConfig } from '@/utils';
-import resumeConfigDefault from '@/config/resume-ai-config.json';
 import HtmlContent from './HtmlContent';
+import { store } from '@/store';
 
 // Education component for reuse - defined outside to prevent recreation on each render
 interface EducationSectionProps {
@@ -57,7 +56,6 @@ interface ResumePDFDocumentProps {
 }
 
 export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData }) => {
-  // Validate and sanitize resumeData to prevent rendering errors
   const safeResumeData: ResumeData = {
     personalInfo: resumeData?.personalInfo || {
       name: 'N/A',
@@ -73,19 +71,7 @@ export const ResumePDFDocument: React.FC<ResumePDFDocumentProps> = ({ resumeData
   };
 
   const { personalInfo, experience, skills, education, militaryService = '' } = safeResumeData;
-  const loadedConfig = loadResumeConfig() || (resumeConfigDefault as ResumeConfig);
-
-  // Ensure placement exists for backward compatibility
-  if (!loadedConfig.education.placement) {
-    loadedConfig.education.placement = 'main-content';
-  }
-
-  // Ensure pdf settings exist for backward compatibility
-  if (!loadedConfig.pdf) {
-    loadedConfig.pdf = { singlePageExport: false };
-  }
-
-  const config: ResumeConfig = loadedConfig;
+  const config = store.getState().resumeConfig.config;
 
   return (
     <Document>

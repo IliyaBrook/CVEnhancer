@@ -10,7 +10,6 @@ import {
 	JsonFileSelector,
 	SaveJsonModal,
 } from '@/components';
-import { useAIConfig } from '@/hooks';
 import { parseFile } from '@/utils';
 import { enhanceResume } from '@/services';
 import { debug } from '@/config';
@@ -19,9 +18,9 @@ import type { ResumeData, SupportedFileType } from '@/types';
 import { useAppDispatch, useAppSelector, setResumeData, setStatus, setError, setIsSaveModalOpen } from '@/store';
 
 function App() {
-	const { config, updateConfig } = useAIConfig();
 	const dispatch = useAppDispatch();
 	const { resumeData, status, error, isSaveModalOpen } = useAppSelector(state => state.app);
+	const config = useAppSelector(state => state.aiConfig.config);
 	
 	useEffect(() => {
 		if (debug) {
@@ -112,7 +111,7 @@ function App() {
 				
 				<div className='grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8 xl:gap-10'>
 					<div className='space-y-6 lg:col-span-1'>
-						<AIProviderSettings config={config} onConfigChange={updateConfig} />
+						<AIProviderSettings />
 						{debug && <JsonFileSelector onFileSelect={handleJsonFileSelect} />}
 						<FileUploader onFileSelect={handleFileSelect} />
 						
