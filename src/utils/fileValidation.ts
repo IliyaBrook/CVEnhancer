@@ -5,19 +5,16 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 const MIME_TYPES: Record<SupportedFileType, string[]> = {
   pdf: ['application/pdf'],
-  docx: [
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/msword'
-  ],
+  docx: ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/msword'],
   jpeg: ['image/jpeg', 'image/jpg'],
-  png: ['image/png']
+  png: ['image/png'],
 };
 
 export const validateFile = (file: File): FileValidationResult => {
   if (file.size > MAX_FILE_SIZE) {
     return {
       isValid: false,
-      error: 'File size exceeds 10MB limit'
+      error: 'File size exceeds 10MB limit',
     };
   }
 
@@ -25,13 +22,13 @@ export const validateFile = (file: File): FileValidationResult => {
   if (!fileType) {
     return {
       isValid: false,
-      error: 'Unsupported file type. Please upload PDF, DOCX, JPEG, or PNG files'
+      error: 'Unsupported file type. Please upload PDF, DOCX, JPEG, or PNG files',
     };
   }
 
   return {
     isValid: true,
-    fileType
+    fileType,
   };
 };
 
@@ -48,10 +45,4 @@ const getFileType = (file: File): SupportedFileType | null => {
   }
 
   return null;
-};
-
-export const formatFileSize = (bytes: number): string => {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };

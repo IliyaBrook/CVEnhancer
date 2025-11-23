@@ -24,7 +24,10 @@ export interface AlertProps {
   zIndex?: number;
 }
 
-const variantStyles: Record<AlertVariant, { bg: string; border: string; text: string; iconBg: string; iconBorder: string; iconColor: string }> = {
+const variantStyles: Record<
+  AlertVariant,
+  { bg: string; border: string; text: string; iconBg: string; iconBorder: string; iconColor: string }
+> = {
   success: {
     bg: 'bg-green-50',
     border: 'border-green-300',
@@ -84,7 +87,11 @@ const getVariantIcon = (variant: AlertVariant, className: string = 'h-5 w-5'): R
     case 'warning':
       return (
         <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
         </svg>
       );
     case 'info':
@@ -194,7 +201,7 @@ export const Alert: React.FC<AlertProps> = ({
 
   return (
     <div
-      className={` ${position ? 'fixed animate-[slideIn_0.3s_ease-out]' : 'relative'} ${position ? positionStyles[position] : ''} ${isStandardVariant(variant) ? `${styles.bg} ${styles.border}` : 'border-gray-200 bg-white'} ${customColorClass} rounded-xl border-2 shadow-md hover:shadow-lg transition-all duration-300 ${sizeConfig.padding} ${onClick ? 'cursor-pointer' : ''} ${className} `}
+      className={` ${position ? 'fixed animate-[slideIn_0.3s_ease-out]' : 'relative'} ${position ? positionStyles[position] : ''} ${isStandardVariant(variant) ? `${styles.bg} ${styles.border}` : 'border-gray-200 bg-white'} ${customColorClass} rounded-xl border-2 shadow-md transition-all duration-300 hover:shadow-lg ${sizeConfig.padding} ${onClick ? 'cursor-pointer' : ''} ${className} `}
       style={{
         zIndex: position ? zIndex : undefined,
         ...customColorStyle,
@@ -204,7 +211,9 @@ export const Alert: React.FC<AlertProps> = ({
     >
       <div className="flex items-start gap-3">
         {showIcon && (
-          <div className={`${isStandardVariant(variant) ? `${styles.iconBg} ${styles.iconBorder} border-2` : 'bg-gray-100 border-2 border-gray-300'} flex-shrink-0 rounded-lg p-2 shadow-sm`}>
+          <div
+            className={`${isStandardVariant(variant) ? `${styles.iconBg} ${styles.iconBorder} border-2` : 'border-2 border-gray-300 bg-gray-100'} flex-shrink-0 rounded-lg p-2 shadow-sm`}
+          >
             <div className={isStandardVariant(variant) ? styles.iconColor : 'text-gray-700'}>
               {icon ? icon : getVariantIcon(standardVariant)}
             </div>
@@ -235,7 +244,7 @@ export const Alert: React.FC<AlertProps> = ({
               e.stopPropagation();
               handleClose();
             }}
-            className="text-gray-600 hover:text-gray-900 flex-shrink-0 rounded-lg p-1 transition-all hover:bg-gray-900/10"
+            className="flex-shrink-0 rounded-lg p-1 text-gray-600 transition-all hover:bg-gray-900/10 hover:text-gray-900"
             aria-label="Close"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,8 +255,4 @@ export const Alert: React.FC<AlertProps> = ({
       </div>
     </div>
   );
-};
-
-export const AlertPortal: React.FC<AlertProps> = props => {
-  return <Alert {...props} />;
 };

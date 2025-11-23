@@ -4,10 +4,7 @@ import type { SupportedFileType, ParsedResumeData, AIConfig } from '@/types';
 import { convertPDFToImages, convertPDFToDataURLs } from './pdfToImage';
 import { isVisionModel, getRecommendedScale, getMaxPages } from './modelDetection';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url
-).toString();
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString();
 
 /**
  * Get the model name for the current provider
@@ -54,20 +51,7 @@ export const parseFile = async (
   }
 };
 
-/**
- * Legacy function for backward compatibility
- * @deprecated Use parseFile with config parameter instead
- */
-export const parseFileAsText = async (file: File, fileType: SupportedFileType): Promise<string> => {
-  const result = await parseFile(file, fileType);
-  return result.text || '';
-};
-
-const parsePDF = async (
-  file: File,
-  useVision: boolean = false,
-  config?: AIConfig
-): Promise<ParsedResumeData> => {
+const parsePDF = async (file: File, useVision: boolean = false, config?: AIConfig): Promise<ParsedResumeData> => {
   if (useVision) {
     // Vision mode: convert PDF to images
     const scale = getRecommendedScale(getModelForProvider(config));
