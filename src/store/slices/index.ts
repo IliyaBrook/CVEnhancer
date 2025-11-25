@@ -12,6 +12,7 @@ export {
   setFilteredModels,
   filterModels,
   setIsSettingsModalOpen,
+  selectAIConfig,
 } from './aiConfig.slice';
 
 export {

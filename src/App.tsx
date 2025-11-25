@@ -15,12 +15,12 @@ import { parseFile } from '@/utils';
 import { enhanceResume } from '@/services';
 import { resumeDataJSON } from '@/json_cv_data';
 import type { ResumeData, SupportedFileType } from '@/types';
-import { useAppDispatch, useAppSelector, setResumeData, setStatus, setError, openSaveModal } from '@/store';
+import { useAppDispatch, useAppSelector, setResumeData, setStatus, setError, openSaveModal, selectAIConfig } from '@/store';
 
 function App() {
   const dispatch = useAppDispatch();
   const { resumeData, status, error, isTemplateMode } = useAppSelector(state => state.app);
-  const config = useAppSelector(state => state.aiConfig.config);
+  const config = useAppSelector(selectAIConfig);
 
   useEffect(() => {
     if (isTemplateMode) {
@@ -44,12 +44,6 @@ function App() {
     dispatch(setError(''));
 
     try {
-      if (!config) {
-        dispatch(setError('Please configure AI provider settings first'));
-        dispatch(setStatus('error'));
-        return;
-      }
-
       if (config.provider !== 'ollama') {
         const hasApiKey =
           (config.provider === 'openai' && config.apiKeys?.openai) ||

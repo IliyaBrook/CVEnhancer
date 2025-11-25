@@ -94,3 +94,10 @@ export const {
   filterModels,
   setIsSettingsModalOpen,
 } = aiConfigSlice.actions;
+
+export const selectAIConfig = (state: { aiConfig: AIConfigState }): AIConfig => ({
+  provider: state.aiConfig.provider,
+  apiKeys: state.aiConfig.apiKeys,
+  models: state.aiConfig.models,
+  ollamaEndpoint: state.aiConfig.ollamaEndpoint,
+});

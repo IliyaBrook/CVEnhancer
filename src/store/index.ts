@@ -16,6 +16,7 @@ export {
   setFilteredModels,
   filterModels,
   setIsSettingsModalOpen,
+  selectAIConfig,
   setResumeData,
   setStatus,
   setError,
