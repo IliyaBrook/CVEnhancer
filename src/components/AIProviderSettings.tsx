@@ -31,6 +31,29 @@ export const AIProviderSettings: React.FC = () => {
     }
   }, [isOllamaModelsSuccess, ollamaModelsData, dispatch]);
 
+  useEffect(() => {
+    const currentModel = getCurrentModel();
+    if (!currentModel) {
+      const availableModels = getAvailableModels();
+      if (availableModels.length > 0) {
+        setCurrentModel(availableModels[0]);
+      }
+    }
+  }, [provider, ollamaModels]);
+
+  const getAvailableModels = (): string[] => {
+    switch (provider) {
+      case AIProviderEnum.OPENAI:
+        return OPENAI_MODELS;
+      case AIProviderEnum.CLAUDE:
+        return CLAUDE_MODELS;
+      case AIProviderEnum.OLLAMA:
+        return ollamaModels.length > 0 ? ollamaModels : OLLAMA_DEFAULT_MODELS;
+      default:
+        return [];
+    }
+  };
+
   const getCurrentModel = () => {
     switch (provider) {
       case AIProviderEnum.OPENAI:
@@ -88,18 +111,6 @@ export const AIProviderSettings: React.FC = () => {
     }
   };
 
-  const getDefaultModel = () => {
-    switch (provider) {
-      case AIProviderEnum.OPENAI:
-        return 'gpt-4';
-      case AIProviderEnum.CLAUDE:
-        return 'claude-3-sonnet-20240229';
-      case AIProviderEnum.OLLAMA:
-        return ollamaModels[0] || 'llama2';
-      default:
-        return '';
-    }
-  };
 
   const getApiKeyPlaceholder = () => {
     switch (provider) {
@@ -237,11 +248,11 @@ export const AIProviderSettings: React.FC = () => {
                 Select Model
               </label>
               <select
-                value={getCurrentModel() || getDefaultModel()}
+                value={getCurrentModel()}
                 onChange={e => setCurrentModel(e.target.value)}
                 className="w-full cursor-pointer appearance-none rounded-xl border-2 border-gray-200 bg-white bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUgN0wxMCAxMkwxNSA3IiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=')] bg-[length:20px_20px] bg-[position:right_12px_center] bg-no-repeat px-3.5 py-2.5 pr-12 text-sm font-medium text-gray-900 transition-all duration-200 hover:border-violet-300 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20"
               >
-                {(ollamaModels.length > 0 ? ollamaModels : OLLAMA_DEFAULT_MODELS).map(model => (
+                {getAvailableModels().map(model => (
                   <option key={model} value={model}>
                     {model}
                   </option>
@@ -258,22 +269,15 @@ export const AIProviderSettings: React.FC = () => {
               Select Model
             </label>
             <select
-              value={getCurrentModel() || getDefaultModel()}
+              value={getCurrentModel()}
               onChange={e => setCurrentModel(e.target.value)}
               className="w-full cursor-pointer appearance-none rounded-xl border-2 border-gray-200 bg-white bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUgN0wxMCAxMkwxNSA3IiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=')] bg-[length:20px_20px] bg-[position:right_12px_center] bg-no-repeat px-3.5 py-2.5 pr-12 text-sm font-medium text-gray-900 transition-all duration-200 hover:border-violet-300 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20"
             >
-              {provider === AIProviderEnum.OPENAI &&
-                OPENAI_MODELS.map(model => (
-                  <option key={model} value={model}>
-                    {model}
-                  </option>
-                ))}
-              {provider === AIProviderEnum.CLAUDE &&
-                CLAUDE_MODELS.map(model => (
-                  <option key={model} value={model}>
-                    {model}
-                  </option>
-                ))}
+              {getAvailableModels().map(model => (
+                <option key={model} value={model}>
+                  {model}
+                </option>
+              ))}
             </select>
           </div>
         )}

@@ -454,7 +454,7 @@ const extractJSON = (text: string): string => {
 
 const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
   const config = getResumeConfig();
-  
+
   const result: ResumeData = {
     personalInfo: { ...resumeData.personalInfo },
     experience: resumeData.experience ? [...resumeData.experience] : [],
@@ -658,7 +658,7 @@ const enhanceWithClaude = async (
   }
 
   const claudeBody: ClaudeApiBody = {
-    model: config.models?.claude || 'claude-3-5-sonnet-20241022',
+    model: config.models?.claude || '',
     messages: [
       {
         role: 'user',
@@ -666,7 +666,7 @@ const enhanceWithClaude = async (
       },
       {
         role: 'assistant',
-        content: '{', // Prefill to ensure JSON starts immediately
+        content: '{',
       },
     ],
     ...claudeOptions,

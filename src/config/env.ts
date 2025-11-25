@@ -31,7 +31,6 @@ export const openaiOptions: OpenAIOptions = {
 export const claudeOptions: ClaudeOptions = {
   temperature: getEnvNumber('VITE_CLAUDE_TEMPERATURE'),
   max_tokens: getEnvNumber('VITE_CLAUDE_MAX_TOKENS'),
-  // top_p: getEnvNumber('VITE_CLAUDE_TOP_P'), // Disabled - cannot use with temperature
   top_k: getEnvNumber('VITE_CLAUDE_TOP_K'),
   stop_sequences: claudeStopSequences,
 };
