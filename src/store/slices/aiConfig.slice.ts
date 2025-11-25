@@ -15,9 +15,6 @@ export interface AIConfigState {
     ollama?: string;
   };
   ollamaEndpoint: string;
-  ollamaModels: string[];
-  showSuggestions: boolean;
-  filteredModels: string[];
   isSettingsModalOpen: boolean;
 }
 
@@ -27,9 +24,6 @@ const initialState: AIConfigState = {
   apiKeys: {},
   models: {},
   ollamaEndpoint: 'http://localhost:11434',
-  ollamaModels: [],
-  showSuggestions: false,
-  filteredModels: [],
   isSettingsModalOpen: false,
 };
 
@@ -53,30 +47,6 @@ export const aiConfigSlice = createSlice({
       state.ollamaEndpoint = action.payload;
     },
     
-    setOllamaModels: (state, action: PayloadAction<string[]>) => {
-      state.ollamaModels = action.payload;
-      state.filteredModels = action.payload;
-    },
-    
-    setShowSuggestions: (state, action: PayloadAction<boolean>) => {
-      state.showSuggestions = action.payload;
-    },
-    
-    setFilteredModels: (state, action: PayloadAction<string[]>) => {
-      state.filteredModels = action.payload;
-    },
-    
-    filterModels: (state, action: PayloadAction<string>) => {
-      const query = action.payload;
-      if (query.trim() === '') {
-        state.filteredModels = state.ollamaModels;
-      } else {
-        state.filteredModels = state.ollamaModels.filter(m =>
-          m.toLowerCase().includes(query.toLowerCase())
-        );
-      }
-    },
-    
     setIsSettingsModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isSettingsModalOpen = action.payload;
     },
@@ -88,10 +58,6 @@ export const {
   setApiKey,
   setModel,
   setOllamaEndpoint,
-  setOllamaModels,
-  setShowSuggestions,
-  setFilteredModels,
-  filterModels,
   setIsSettingsModalOpen,
 } = aiConfigSlice.actions;
 

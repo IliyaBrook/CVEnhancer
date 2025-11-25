@@ -48,15 +48,6 @@ interface OllamaResponse {
 	content?: string;
 }
 
-interface OllamaModelsResponse {
-	models: Array<{
-		name: string;
-		model: string;
-		modified_at: string;
-		size: number;
-	}>;
-}
-
 const staggeredBaseQuery = retry(
 	fetchBaseQuery({
 		prepareHeaders: (headers) => {
@@ -119,12 +110,6 @@ export const aiApi = createApi({
 			}),
 		}),
 		
-		fetchOllamaModels: builder.query<OllamaModelsResponse, string>({
-			query: (endpoint) => ({
-				url: `${endpoint}/api/tags`,
-				method: 'GET',
-			}),
-		}),
 	}),
 });
 
@@ -132,5 +117,4 @@ export const {
 	useEnhanceWithOpenAIMutation,
 	useEnhanceWithClaudeMutation,
 	useGenerateWithOllamaMutation,
-	useFetchOllamaModelsQuery,
 } = aiApi;

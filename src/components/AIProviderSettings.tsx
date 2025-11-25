@@ -8,38 +8,26 @@ import {
   setApiKey,
   setModel,
   setOllamaEndpoint,
-  setOllamaModels,
   setIsSettingsModalOpen,
 } from '@/store/slices';
-import { useFetchOllamaModelsQuery } from '@/store/api';
 import { ResumeSettingsModal } from './ResumeSettingsModal';
 
 export const AIProviderSettings: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { provider, apiKeys, models, ollamaEndpoint, ollamaModels, isSettingsModalOpen } = useAppSelector(
+  const { provider, apiKeys, models, ollamaEndpoint, isSettingsModalOpen } = useAppSelector(
     state => state.aiConfig
   );
 
-  const { data: ollamaModelsData, isSuccess: isOllamaModelsSuccess } = useFetchOllamaModelsQuery(ollamaEndpoint, {
-    skip: provider !== AIProviderEnum.OLLAMA,
-  });
-
-  useEffect(() => {
-    if (isOllamaModelsSuccess && ollamaModelsData?.models) {
-      const modelNames = ollamaModelsData.models.map(m => m.name);
-      dispatch(setOllamaModels(modelNames));
-    }
-  }, [isOllamaModelsSuccess, ollamaModelsData, dispatch]);
-
   useEffect(() => {
     const currentModel = getCurrentModel();
-    if (!currentModel) {
-      const availableModels = getAvailableModels();
+    const availableModels = getAvailableModels();
+    
+    if (!currentModel || !availableModels.includes(currentModel)) {
       if (availableModels.length > 0) {
         setCurrentModel(availableModels[0]);
       }
     }
-  }, [provider, ollamaModels]);
+  }, [provider]);
 
   const getAvailableModels = (): string[] => {
     switch (provider) {
@@ -48,7 +36,7 @@ export const AIProviderSettings: React.FC = () => {
       case AIProviderEnum.CLAUDE:
         return CLAUDE_MODELS;
       case AIProviderEnum.OLLAMA:
-        return ollamaModels.length > 0 ? ollamaModels : OLLAMA_DEFAULT_MODELS;
+        return OLLAMA_DEFAULT_MODELS;
       default:
         return [];
     }

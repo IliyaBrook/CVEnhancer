@@ -3,7 +3,7 @@ export type { RootState, AppDispatch, AppStore } from './store';
 
 export { useAppDispatch, useAppSelector } from './hooks';
 
-export { aiApi, useFetchOllamaModelsQuery } from './api';
+export { aiApi } from './api';
 
 export { aiConfigSlice, appSlice } from './slices';
 export {
@@ -11,10 +11,6 @@ export {
   setApiKey,
   setModel,
   setOllamaEndpoint,
-  setOllamaModels,
-  setShowSuggestions,
-  setFilteredModels,
-  filterModels,
   setIsSettingsModalOpen,
   selectAIConfig,
   setResumeData,

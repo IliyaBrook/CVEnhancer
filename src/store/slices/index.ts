@@ -7,10 +7,6 @@ export {
   setApiKey,
   setModel,
   setOllamaEndpoint,
-  setOllamaModels,
-  setShowSuggestions,
-  setFilteredModels,
-  filterModels,
   setIsSettingsModalOpen,
   selectAIConfig,
 } from './aiConfig.slice';

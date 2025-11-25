@@ -1,1 +1,6 @@
-export { aiApi, useEnhanceWithOpenAIMutation, useEnhanceWithClaudeMutation, useGenerateWithOllamaMutation, useFetchOllamaModelsQuery } from './ai.api';
+export {
+  aiApi,
+  useEnhanceWithOpenAIMutation,
+  useEnhanceWithClaudeMutation,
+  useGenerateWithOllamaMutation,
+} from './ai.api';
