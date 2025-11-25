@@ -5,8 +5,16 @@ export const TemplateModeToggle: React.FC = () => {
   const dispatch = useAppDispatch();
   const isTemplateMode = useAppSelector(state => state.app.isTemplateMode);
 
-  const handleToggle = () => {
-    dispatch(setTemplateMode(!isTemplateMode));
+  const handleUploadModeClick = () => {
+    if (isTemplateMode) {
+      dispatch(setTemplateMode(false));
+    }
+  };
+
+  const handleTemplateModeClick = () => {
+    if (!isTemplateMode) {
+      dispatch(setTemplateMode(true));
+    }
   };
 
   return (
@@ -18,7 +26,7 @@ export const TemplateModeToggle: React.FC = () => {
 
       <div className="space-y-2.5">
         <button
-          onClick={handleToggle}
+          onClick={handleUploadModeClick}
           className={`w-full rounded-xl border-2 p-3.5 text-left transition-all duration-300 ${
             !isTemplateMode
               ? 'border-violet-500 bg-violet-100 shadow-md'
@@ -61,7 +69,7 @@ export const TemplateModeToggle: React.FC = () => {
         </button>
 
         <button
-          onClick={handleToggle}
+          onClick={handleTemplateModeClick}
           className={`w-full rounded-xl border-2 p-3.5 text-left transition-all duration-300 ${
             isTemplateMode
               ? 'border-violet-500 bg-violet-100 shadow-md'

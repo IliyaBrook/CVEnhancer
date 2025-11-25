@@ -26,6 +26,11 @@ function App() {
     if (isTemplateMode) {
       dispatch(setResumeData(resumeDataJSON));
       dispatch(setStatus('completed'));
+    } else {
+      // Очищаем данные при переключении на Upload Mode
+      dispatch(setResumeData(null));
+      dispatch(setStatus('idle'));
+      dispatch(setError(''));
     }
   }, [dispatch, isTemplateMode]);
 
