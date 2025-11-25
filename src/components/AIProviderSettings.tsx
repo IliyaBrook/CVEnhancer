@@ -220,7 +220,7 @@ export const AIProviderSettings: React.FC = () => {
 
         {requiresApiKey() && (
           <div className="mb-3.5">
-            <label className="mb-2 block flex items-center gap-2 text-sm font-semibold text-gray-700">
+            <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-700">
               <span className="h-1.5 w-1.5 rounded-full bg-violet-500"></span>
               API Key
               {getApiKeyDocLink() && (
@@ -247,7 +247,7 @@ export const AIProviderSettings: React.FC = () => {
         {provider === AIProviderEnum.OLLAMA && (
           <>
             <div className="mb-3.5">
-              <label className="mb-2 block flex items-center gap-2 text-sm font-semibold text-gray-700">
+              <label className="mb-2 items-center gap-2 text-sm font-semibold text-gray-700">
                 <span className="h-1.5 w-1.5 rounded-full bg-violet-500"></span>
                 Ollama Endpoint
               </label>
@@ -261,7 +261,7 @@ export const AIProviderSettings: React.FC = () => {
             </div>
 
             <div className="relative mb-3.5">
-              <label className="mb-2 block flex items-center gap-2 text-sm font-semibold text-gray-700">
+              <label className="mb-2 items-center gap-2 text-sm font-semibold text-gray-700">
                 <span className="h-1.5 w-1.5 rounded-full bg-violet-500"></span>
                 Select Model
               </label>
@@ -302,7 +302,7 @@ export const AIProviderSettings: React.FC = () => {
 
         {(provider === AIProviderEnum.OPENAI || provider === AIProviderEnum.CLAUDE) && (
           <div className="mb-3.5">
-            <label className="mb-2 block flex items-center gap-2 text-sm font-semibold text-gray-700">
+            <label className="mb-2 items-center gap-2 text-sm font-semibold text-gray-700">
               <span className="h-1.5 w-1.5 rounded-full bg-violet-500"></span>
               Model (Optional)
             </label>
