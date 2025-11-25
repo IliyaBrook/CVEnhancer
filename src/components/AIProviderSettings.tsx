@@ -1,15 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import type { AIProvider } from '@/types';
 import { AIProvider as AIProviderEnum } from '@/types';
 import { useAppDispatch, useAppSelector } from '@/store';
+import { CLAUDE_MODELS, OLLAMA_DEFAULT_MODELS, OPENAI_MODELS } from '@/config';
 import {
   setProvider,
   setApiKey,
   setModel,
   setOllamaEndpoint,
   setOllamaModels,
-  setShowSuggestions,
-  filterModels,
   setIsSettingsModalOpen,
 } from '@/store/slices';
 import { useFetchOllamaModelsQuery } from '@/store/api';
@@ -17,18 +16,9 @@ import { ResumeSettingsModal } from './ResumeSettingsModal';
 
 export const AIProviderSettings: React.FC = () => {
   const dispatch = useAppDispatch();
-  const {
-    provider,
-    apiKeys,
-    models,
-    ollamaEndpoint,
-    ollamaModels,
-    showSuggestions,
-    filteredModels,
-    isSettingsModalOpen,
-  } = useAppSelector(state => state.aiConfig);
-
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { provider, apiKeys, models, ollamaEndpoint, ollamaModels, isSettingsModalOpen } = useAppSelector(
+    state => state.aiConfig
+  );
 
   const { data: ollamaModelsData, isSuccess: isOllamaModelsSuccess } = useFetchOllamaModelsQuery(ollamaEndpoint, {
     skip: provider !== AIProviderEnum.OLLAMA,
@@ -66,25 +56,6 @@ export const AIProviderSettings: React.FC = () => {
         dispatch(setModel({ provider: 'ollama', model: value }));
         break;
     }
-  };
-
-  const handleModelInputChange = (value: string) => {
-    setCurrentModel(value);
-    dispatch(filterModels(value));
-    dispatch(setShowSuggestions(true));
-  };
-
-  const handleModelSelect = (selectedModel: string) => {
-    setCurrentModel(selectedModel);
-    dispatch(setShowSuggestions(false));
-  };
-
-  const handleInputFocus = () => {
-    dispatch(setShowSuggestions(true));
-  };
-
-  const handleInputBlur = () => {
-    setTimeout(() => dispatch(setShowSuggestions(false)), 200);
   };
 
   const handleSave = () => {
@@ -247,7 +218,7 @@ export const AIProviderSettings: React.FC = () => {
         {provider === AIProviderEnum.OLLAMA && (
           <>
             <div className="mb-3.5">
-              <label className="mb-2 items-center gap-2 text-sm font-semibold text-gray-700">
+              <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-700">
                 <span className="h-1.5 w-1.5 rounded-full bg-violet-500"></span>
                 Ollama Endpoint
               </label>
@@ -260,59 +231,50 @@ export const AIProviderSettings: React.FC = () => {
               />
             </div>
 
-            <div className="relative mb-3.5">
-              <label className="mb-2 items-center gap-2 text-sm font-semibold text-gray-700">
+            <div className="mb-3.5">
+              <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-700">
                 <span className="h-1.5 w-1.5 rounded-full bg-violet-500"></span>
                 Select Model
               </label>
-              <input
-                ref={inputRef}
-                type="text"
-                value={getCurrentModel()}
-                onChange={e => handleModelInputChange(e.target.value)}
-                onFocus={handleInputFocus}
-                onBlur={handleInputBlur}
-                placeholder="Type or select a model..."
-                className="w-full rounded-xl border-2 border-gray-200 bg-white px-3.5 py-2.5 text-sm font-medium text-gray-900 transition-all duration-200 placeholder:text-gray-400 hover:border-violet-300 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20"
-              />
-              {showSuggestions && filteredModels.length > 0 && (
-                <div className="absolute z-10 mt-2 max-h-60 w-full overflow-y-auto rounded-xl border-2 border-violet-200 bg-white shadow-2xl backdrop-blur-sm">
-                  {filteredModels.map((m: string) => (
-                    <div
-                      key={m}
-                      onClick={() => handleModelSelect(m)}
-                      className="group/item flex cursor-pointer items-center gap-2 border-b border-gray-100 px-4 py-3 transition-all duration-150 last:border-b-0 hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50"
-                    >
-                      <span className="h-1.5 w-1.5 rounded-full bg-violet-400 opacity-0 transition-opacity group-hover/item:opacity-100"></span>
-                      <span className="font-medium text-gray-700 group-hover/item:text-violet-700">{m}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {showSuggestions && filteredModels.length === 0 && getCurrentModel().trim() !== '' && (
-                <div className="absolute z-10 mt-1 w-full rounded-lg border border-gray-300 bg-white shadow-lg">
-                  <div className="px-4 py-2 text-sm text-gray-500">
-                    No matching models. Press Enter to use "{getCurrentModel()}"
-                  </div>
-                </div>
-              )}
+              <select
+                value={getCurrentModel() || getDefaultModel()}
+                onChange={e => setCurrentModel(e.target.value)}
+                className="w-full cursor-pointer appearance-none rounded-xl border-2 border-gray-200 bg-white bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUgN0wxMCAxMkwxNSA3IiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=')] bg-[length:20px_20px] bg-[position:right_12px_center] bg-no-repeat px-3.5 py-2.5 pr-12 text-sm font-medium text-gray-900 transition-all duration-200 hover:border-violet-300 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20"
+              >
+                {(ollamaModels.length > 0 ? ollamaModels : OLLAMA_DEFAULT_MODELS).map(model => (
+                  <option key={model} value={model}>
+                    {model}
+                  </option>
+                ))}
+              </select>
             </div>
           </>
         )}
 
         {(provider === AIProviderEnum.OPENAI || provider === AIProviderEnum.CLAUDE) && (
           <div className="mb-3.5">
-            <label className="mb-2 items-center gap-2 text-sm font-semibold text-gray-700">
+            <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-700">
               <span className="h-1.5 w-1.5 rounded-full bg-violet-500"></span>
-              Model (Optional)
+              Select Model
             </label>
-            <input
-              type="text"
-              value={getCurrentModel()}
+            <select
+              value={getCurrentModel() || getDefaultModel()}
               onChange={e => setCurrentModel(e.target.value)}
-              placeholder={getDefaultModel()}
-              className="w-full rounded-xl border-2 border-gray-200 bg-white px-3.5 py-2.5 font-mono text-sm transition-all duration-200 placeholder:text-gray-400 hover:border-violet-300 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20"
-            />
+              className="w-full cursor-pointer appearance-none rounded-xl border-2 border-gray-200 bg-white bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUgN0wxMCAxMkwxNSA3IiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=')] bg-[length:20px_20px] bg-[position:right_12px_center] bg-no-repeat px-3.5 py-2.5 pr-12 text-sm font-medium text-gray-900 transition-all duration-200 hover:border-violet-300 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20"
+            >
+              {provider === AIProviderEnum.OPENAI &&
+                OPENAI_MODELS.map(model => (
+                  <option key={model} value={model}>
+                    {model}
+                  </option>
+                ))}
+              {provider === AIProviderEnum.CLAUDE &&
+                CLAUDE_MODELS.map(model => (
+                  <option key={model} value={model}>
+                    {model}
+                  </option>
+                ))}
+            </select>
           </div>
         )}
 
