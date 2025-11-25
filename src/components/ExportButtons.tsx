@@ -21,15 +21,15 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
       experience
         ?.map(
           exp => `
-      <div class="job">
-        <div class="company-info">
-          <span class="company-name">${exp.company}</span>, <span class="location">${exp.location || ''}</span>
+      <div class='job'>
+        <div class='company-info'>
+          <span class='company-name'>${exp.company}</span>, <span class='location'>${exp.location || ''}</span>
         </div>
-        <div class="job-title-line">
-          <span class="job-title">${exp.title}</span>
-          <span class="date-range">${exp.dateRange}</span>
+        <div class='job-title-line'>
+          <span class='job-title'>${exp.title}</span>
+          <span class='date-range'>${exp.dateRange}</span>
         </div>
-        ${exp.duties ? `<ul class="job-duties">${exp.duties.map(d => `<li>${d}</li>`).join('')}</ul>` : ''}
+        ${exp.duties ? `<ul class='job-duties'>${exp.duties.map(d => `<li>${d}</li>`).join('')}</ul>` : ''}
       </div>
     `
         )
@@ -39,9 +39,9 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
       skills
         ?.map(
           category => `
-      <div class="skill-category">
-        <div class="skill-category-title">${category.categoryTitle}:</div>
-        <ul class="skill-list">${category.skills.map(s => `<li>${s}</li>`).join('')}</ul>
+      <div class='skill-category'>
+        <div class='skill-category-title'>${category.categoryTitle}:</div>
+        <ul class='skill-list'>${category.skills.map(s => `<li>${s}</li>`).join('')}</ul>
       </div>
     `
         )
@@ -51,12 +51,12 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
       education
         ?.map(
           edu => `
-      <div class="education-item">
-        <div class="university">${edu.institution}</div>
-        <div class="degree">${edu.degree}</div>
-        ${edu.field ? `<div class="degree">${edu.field}</div>` : ''}
-        ${edu.location ? `<div class="education-location">${edu.location}</div>` : ''}
-        ${edu.dateRange && edu.dateRange !== '-' ? `<div class="education-date">${edu.dateRange}</div>` : ''}
+      <div class='education-item'>
+        <div class='university'>${edu.institution}</div>
+        <div class='degree'>${edu.degree}</div>
+        ${edu.field ? `<div class='degree'>${edu.field}</div>` : ''}
+        ${edu.location ? `<div class='education-location'>${edu.location}</div>` : ''}
+        ${edu.dateRange && edu.dateRange !== '-' ? `<div class='education-date'>${edu.dateRange}</div>` : ''}
       </div>
     `
         )
@@ -68,10 +68,10 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
       .join('');
 
     return `<!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
   <title>${personalInfo.name} - Resume</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -111,16 +111,16 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
   </style>
 </head>
 <body>
-  <div class="resume-container">
-    <div class="main-content">
-      <div class="header">
-        <h1 class="name">${personalInfo.name}</h1>
-        ${personalInfo.title ? `<div class="title">${personalInfo.title}</div>` : ''}
+  <div class='resume-container'>
+    <div class='main-content'>
+      <div class='header'>
+        <h1 class='name'>${personalInfo.name}</h1>
+        ${personalInfo.title ? `<div class='title'>${personalInfo.title}</div>` : ''}
       </div>
       ${
         experience && experience.length > 0
           ? `
-        <div class="section-title">WORK EXPERIENCE</div>
+        <div class='section-title'>WORK EXPERIENCE</div>
         ${experienceHTML}
       `
           : ''
@@ -128,7 +128,7 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
       ${
         education && education.length > 0
           ? `
-        <div class="section-title">EDUCATION</div>
+        <div class='section-title'>EDUCATION</div>
         ${educationHTML}
       `
           : ''
@@ -136,24 +136,24 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
       ${
         militaryService && militaryService.trim().length > 0
           ? `
-        <div style="margin-top: 15px;">
-          <div class="section-title">MILITARY SERVICE</div>
-          <p style="color: #555; font-size: 11px; line-height: 1.4;">${militaryService}</p>
+        <div style='margin-top: 15px;'>
+          <div class='section-title'>MILITARY SERVICE</div>
+          <p style='color: #555; font-size: 11px; line-height: 1.4;'>${militaryService}</p>
         </div>
       `
           : ''
       }
     </div>
-    <div class="sidebar">
-      <div class="sidebar-section">
-        <div class="section-title">CONTACT</div>
-        <ul class="contact-info">${contactHTML}</ul>
+    <div class='sidebar'>
+      <div class='sidebar-section'>
+        <div class='section-title'>CONTACT</div>
+        <ul class='contact-info'>${contactHTML}</ul>
       </div>
       ${
         skills && skills.length > 0
           ? `
-        <div class="sidebar-section">
-          <div class="section-title">SKILLS</div>
+        <div class='sidebar-section'>
+          <div class='section-title'>SKILLS</div>
           ${skillsHTML}
         </div>
       `
@@ -202,22 +202,32 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, disabl
         Export Options
       </h3>
       <div className="flex flex-col gap-3 sm:flex-row">
-        <button
-          onClick={handleDownloadPDF}
-          disabled={disabled || !resumeData}
-          className="group flex flex-1 items-center justify-center rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/30 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-violet-500/40 disabled:scale-100 disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none"
-        >
-          <img alt="download pdf" src={'/pdf_icon.svg'} className="size-12" />
-          Download
-        </button>
-        <button
-          onClick={handleCopyHTML}
-          disabled={disabled || !resumeData}
-          className="group flex flex-1 items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/40 disabled:scale-100 disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none"
-        >
-          <img alt="copy as html" src={'/html_doc.svg'} className="size-12" />
-          Copy
-        </button>
+        <div className="flex w-full flex-col gap-2">
+          <button
+            onClick={handleDownloadPDF}
+            disabled={disabled || !resumeData}
+            className="group flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-sm font-medium text-white shadow-md shadow-violet-500/25 transition-all duration-200 hover:shadow-lg hover:shadow-violet-500/35 hover:brightness-110 disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none disabled:brightness-100"
+          >
+            <div className="flex w-full items-center justify-center">
+              <div className="flex items-center gap-3">
+                <img alt="download pdf" src={'/pdf_icon.svg'} className="size-8" />
+                <span className="whitespace-nowrap">Download PDF</span>
+              </div>
+            </div>
+          </button>
+          <button
+            onClick={handleCopyHTML}
+            disabled={disabled || !resumeData}
+            className="group flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-green-600 px-4 py-2 text-sm font-medium text-white shadow-md shadow-emerald-500/25 transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/35 hover:brightness-110 disabled:cursor-not-allowed disabled:from-gray-300 disabled:to-gray-400 disabled:shadow-none disabled:brightness-100"
+          >
+            <div className="flex w-full items-center justify-center">
+              <div className="flex items-center gap-3">
+                <img alt="copy as html" src={'/html_doc.svg'} className="size-8" />
+                <span className="min-w-[94.53px] whitespace-nowrap text-start">Copy HTML</span>
+              </div>
+            </div>
+          </button>
+        </div>
       </div>
       <Alert {...alertState} onClose={hideAlert} position="bottom-center" />
     </div>
