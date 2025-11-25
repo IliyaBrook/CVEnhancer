@@ -454,11 +454,19 @@ const extractJSON = (text: string): string => {
 
 const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
   const config = getResumeConfig();
+  
+  const result: ResumeData = {
+    personalInfo: { ...resumeData.personalInfo },
+    experience: resumeData.experience ? [...resumeData.experience] : [],
+    education: resumeData.education ? [...resumeData.education] : [],
+    skills: resumeData.skills ? [...resumeData.skills] : [],
+    projects: [],
+    militaryService: resumeData.militaryService || '',
+  };
 
-  if (config?.experience && resumeData.experience) {
-    // Filter out excluded jobs
+  if (config?.experience && result.experience) {
     if (config.experience.exclude && Array.isArray(config.experience.exclude) && config.experience.exclude.length > 0) {
-      resumeData.experience = resumeData.experience.filter(
+      result.experience = result.experience.filter(
         job =>
           !config.experience.exclude?.some(excludedTitle =>
             job.title?.toLowerCase().includes(excludedTitle.toLowerCase())
@@ -466,45 +474,39 @@ const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
       );
     }
 
-    // Limit number of jobs (as fallback, model should already respect this)
     const maxJobs = config.experience.maxJobs;
     if (maxJobs !== null && maxJobs !== undefined) {
-      resumeData.experience = resumeData.experience.slice(0, maxJobs);
+      result.experience = result.experience.slice(0, maxJobs);
     }
 
-    // Limit bullet points per job (as fallback, model should already respect this)
     const bulletPointsPerJob = config.experience.bulletPointsPerJob;
     if (bulletPointsPerJob !== null && bulletPointsPerJob !== undefined) {
-      resumeData.experience = resumeData.experience.map(job => ({
+      result.experience = result.experience.map(job => ({
         ...job,
         duties: job.duties ? job.duties.slice(0, bulletPointsPerJob) : [],
       }));
     }
-
-    // REMOVED: Hard truncation with "..." - model should respect maxBulletLength in prompts
-    // This allows models to create proper content within the character limit
   }
 
-  if (config?.skills && resumeData.skills) {
+  if (config?.skills && result.skills) {
     const categoriesLimit = config.skills.categoriesLimit;
     const skillsPerCategory = config.skills.skillsPerCategory;
 
     if (categoriesLimit !== null && categoriesLimit !== undefined) {
-      resumeData.skills = resumeData.skills.slice(0, categoriesLimit);
+      result.skills = result.skills.slice(0, categoriesLimit);
     }
 
     if (skillsPerCategory !== null && skillsPerCategory !== undefined) {
-      resumeData.skills = resumeData.skills.map(category => ({
+      result.skills = result.skills.map(category => ({
         ...category,
         skills: category.skills ? category.skills.slice(0, skillsPerCategory) : [],
       }));
     }
   }
 
-  if (config?.education && resumeData.education) {
-    // Filter out excluded education entries
+  if (config?.education && result.education) {
     if (config.education.exclude && Array.isArray(config.education.exclude) && config.education.exclude.length > 0) {
-      resumeData.education = resumeData.education.filter(
+      result.education = result.education.filter(
         edu =>
           !config.education.exclude?.some(
             excludedTerm =>
@@ -515,16 +517,13 @@ const enforceResumeConstraints = (resumeData: ResumeData): ResumeData => {
       );
     }
 
-    // Limit number of education entries (as fallback, model should already respect this)
     const maxEntries = config.education.maxEntries;
     if (maxEntries !== null && maxEntries !== undefined) {
-      resumeData.education = resumeData.education.slice(0, maxEntries);
+      result.education = result.education.slice(0, maxEntries);
     }
   }
 
-  delete resumeData.projects;
-
-  return resumeData;
+  return result;
 };
 
 export const enhanceResume = async (
