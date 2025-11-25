@@ -728,6 +728,7 @@ const enhanceWithOllama = async (
 
         if ('error' in result) {
           lastError = new Error(result.error?.toString() || 'Ollama API error');
+          // noinspection ExceptionCaughtLocallyJS
           throw lastError;
         }
 
@@ -736,6 +737,7 @@ const enhanceWithOllama = async (
 
         if (!jsonContent || jsonContent.length < 10) {
           lastError = new Error('Empty or invalid response');
+          // noinspection ExceptionCaughtLocallyJS
           throw lastError;
         }
 
