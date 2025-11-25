@@ -47,7 +47,7 @@ export const ProcessingStatus: React.FC<ProcessingStatusProps> = ({ status }) =>
 
   return (
     <div
-      className={`w-full rounded-2xl border-2 px-5 py-3.5 shadow-lg transition-all duration-300 ${colorClasses[config.color]}`}
+      className={`h-fit w-full rounded-2xl border-2 px-5 py-3.5 shadow-lg transition-all duration-300 ${colorClasses[config.color]}`}
     >
       <div className="flex items-center gap-2.5">
         {config.spinner && (
