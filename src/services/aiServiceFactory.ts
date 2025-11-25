@@ -567,8 +567,11 @@ const enhanceWithOpenAI = async (
     userContent = `${prompt}\n\n<resume>\n${resumeText}\n</resume>`;
   }
 
+  const modelName = config.models?.openai || 'gpt-4o-2024-08-06';
+  const isGPT5Model = modelName.toLowerCase().startsWith('gpt-5');
+
   const openAiBody: OpenAIApiBody = {
-    model: config.models?.openai || 'gpt-4o-2024-08-06',
+    model: modelName,
     messages: [
       {
         role: 'system',
@@ -590,6 +593,25 @@ const enhanceWithOpenAI = async (
     },
     ...openaiOptions,
   };
+
+  // gpt 5
+
+  if (isGPT5Model) {
+    if ('max_tokens' in openAiBody) {
+      const max_completion_tokens = openAiBody.max_tokens;
+      delete openAiBody.max_tokens;
+      (openAiBody as any).max_completion_tokens = max_completion_tokens;
+    }
+    if ('presence_penalty' in openAiBody) {
+      delete openAiBody.presence_penalty;
+    }
+    if ('frequency_penalty' in openAiBody) {
+      delete openAiBody.frequency_penalty;
+    }
+    if ('stop' in openAiBody) {
+      delete openAiBody.stop;
+    }
+  }
 
   const result = await store.dispatch(
     aiApi.endpoints.enhanceWithOpenAI.initiate({
